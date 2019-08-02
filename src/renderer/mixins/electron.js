@@ -26,6 +26,36 @@ export default {
           })
         })
       })
+    },
+
+    /**
+     *
+     * @param {Object} config
+     * @param {String} config.protocol
+     * @param {String} config.host
+     * @param {String} config.port
+     * @param {String} config.username
+     * @param {String} config.password
+     * @returns Promise<void>
+     */
+    electron_setProxy (config) {
+      const { protocol, host, port, username, password } = config
+      const credentials = username.length ? `${username}:${password}@` : ''
+      const uri = `${protocol}://${credentials}${host}:${port}`
+
+      const webContents = electron.remote.getCurrentWindow().webContents
+
+      return new Promise((resolve, reject) => {
+        if (webContents && webContents.session) {
+          webContents.session.setProxy({
+            proxyRules: uri
+          }, () => {
+            resolve()
+          })
+        } else {
+          reject(new Error())
+        }
+      })
     }
   }
 }

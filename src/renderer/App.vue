@@ -90,6 +90,7 @@
 
       <AlertMessage />
     </div>
+    <AppProxy />
   </div>
 </template>
 
@@ -98,7 +99,7 @@ import '@/styles/style.css'
 import fs from 'fs'
 import CleanCss from 'clean-css'
 import { isEmpty, pull, uniq } from 'lodash'
-import { AppFooter, AppIntro, AppSidemenu } from '@/components/App'
+import { AppFooter, AppIntro, AppSidemenu, AppProxy } from '@/components/App'
 import AlertMessage from '@/components/AlertMessage'
 import { TransactionModal } from '@/components/Transaction'
 import config from '@config'
@@ -114,6 +115,7 @@ export default {
     AppFooter,
     AppIntro,
     AppSidemenu,
+    AppProxy,
     AlertMessage,
     TransactionModal
   },

@@ -456,6 +456,12 @@ export default {
     TITLE: 'Networks'
   },
 
+  MODAL_PROXY: {
+    TITLE: 'Connect to LAN proxy',
+    AUTHENTICATION: 'Authentication',
+    CONNECT: 'Connect'
+  },
+
   MODAL_PEER: {
     CANCEL: 'Cancel',
     CONNECT: 'Connect',
