@@ -215,7 +215,7 @@ export default {
     }
   },
 
-  data: vm => ({
+  data: () => ({
     form: {
       amount: '',
       fee: 0,
@@ -473,7 +473,7 @@ export default {
     form: {
       recipientId: {
         required,
-        isValid (value) {
+        isValid () {
           if (this.$refs.recipient) {
             return !this.$refs.recipient.$v.$invalid
           }
@@ -482,7 +482,7 @@ export default {
       },
       amount: {
         required,
-        isValid (value) {
+        isValid () {
           if (this.$refs.amount) {
             return !this.$refs.amount.$v.$invalid
           }
@@ -500,7 +500,7 @@ export default {
         }
       },
       passphrase: {
-        isValid (value) {
+        isValid () {
           if (this.currentWallet.isLedger || this.currentWallet.passphrase) {
             return true
           }
@@ -514,7 +514,7 @@ export default {
       },
       vendorField: {},
       walletPassword: {
-        isValid (value) {
+        isValid () {
           if (this.currentWallet.isLedger || !this.currentWallet.passphrase) {
             return true
           }
@@ -531,7 +531,7 @@ export default {
         }
       },
       secondPassphrase: {
-        isValid (value) {
+        isValid () {
           if (!this.currentWallet.secondPublicKey) {
             return true
           }
