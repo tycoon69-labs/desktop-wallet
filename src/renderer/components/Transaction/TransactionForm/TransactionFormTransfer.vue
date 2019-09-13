@@ -183,6 +183,7 @@ import WalletSelection from '@/components/Wallet/WalletSelection'
 import TransactionService from '@/services/transaction'
 import WalletService from '@/services/wallet'
 import onSubmit from './mixin-on-submit'
+import BigNumber from 'bignumber.js'
 
 export default {
   name: 'TransactionFormTransfer',
@@ -256,7 +257,7 @@ export default {
     },
     maximumAvailableAmount () {
       if (!this.currentWallet) {
-        return 0
+        return new BigNumber(0)
       }
       return this.currency_subToUnit(this.currentWallet.balance).minus(this.form.fee)
     },
@@ -315,15 +316,16 @@ export default {
     wallet () {
       this.ensureAvailableAmount()
       this.$v.form.recipientId.$touch()
+    },
+    schema () {
+      this.populateFromSchema()
     }
   },
 
   mounted () {
     // Note: we set this here and not in the data property so validation is triggered properly when fields get pre-populated
     if (this.schema) {
-      this.$set(this.form, 'amount', this.schema.amount || '')
-      this.$set(this.form, 'recipientId', this.schema.address || '')
-      this.$set(this.form, 'vendorField', this.schema.vendorField || '')
+      this.populateFromSchema()
     }
     if (this.currentWallet && this.currentWallet.id) {
       this.$set(this, 'wallet', this.currentWallet || null)
@@ -334,6 +336,13 @@ export default {
   },
 
   methods: {
+    populateFromSchema () {
+      this.$set(this.form, 'amount', this.schema.amount || '')
+      this.$set(this.form, 'recipientId', this.schema.address || '')
+      this.$set(this.form, 'vendorField', this.schema.vendorField || '')
+      this.$v.$touch()
+    },
+
     emitNext (transaction) {
       this.$emit('next', {
         transaction,
