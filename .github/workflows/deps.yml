@@ -1,9 +1,6 @@
 name: Dependencies
 
-on:
-  push:
-    branches:
-      - "**"
+on: [push]
 
 jobs:
   unit:
@@ -27,10 +24,8 @@ jobs:
       - name: Update
         run: |
           ncu -u
-
           git config --global user.name "${GITHUB_ACTOR}"
           git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
-
           git checkout -b "deps/ncu"
           git add -A
           git commit -m 'update dependencies'
