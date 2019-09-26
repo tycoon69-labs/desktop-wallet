@@ -1,9 +1,9 @@
-name: Test & Build
+name: Dependencies
 
 on:
   push:
     branches:
-      - "develop"
+      - "**"
 
 jobs:
   unit:
