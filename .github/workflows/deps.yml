@@ -26,19 +26,14 @@ jobs:
 
       - name: Update
         run: |
-          # update
           ncu -u
 
-          # identify who pushed
           git config --global user.name "${GITHUB_ACTOR}"
           git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
 
-          # add files
           git checkout -b "deps/ncu"
           git add -A
           git commit -m 'update dependencies'
-
-          # deploy
           git push origin deps/ncu https://${GH_TOKEN}@github.com/ArkEcosystem/desktop-wallet.git
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
