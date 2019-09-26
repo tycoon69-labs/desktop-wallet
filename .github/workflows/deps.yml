@@ -1,0 +1,44 @@
+name: Test & Build
+
+on:
+  push:
+    branches:
+      - "develop"
+
+jobs:
+  unit:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [12.x]
+
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Prepare
+        run: yarn global add npm-check-updates
+
+      - name: Update
+        run: |
+          # update
+          ncu -u
+
+          # identify who pushed
+          git config --global user.name "${GITHUB_ACTOR}"
+          git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+
+          # add files
+          git checkout -b "deps/ncu"
+          git add -A
+          git commit -m 'chore(deps): update dependencies'
+
+          # deploy
+          git push https://${GH_TOKEN}@github.com/ArkEcosystem/desktop-wallet.git
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
