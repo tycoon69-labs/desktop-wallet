@@ -3582,15 +3582,15 @@ data-urls@^1.0.0:
     whatwg-mimetype "^2.2.0"
     whatwg-url "^7.0.0"
 
-date-fns@2.0.0-alpha.7:
-  version "2.0.0-alpha.7"
-  resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-2.0.0-alpha.7.tgz#245ad16f95764eababfb2c0a41fd5d033c20e57a"
-  integrity sha1-JFrRb5V2Tqur+ywKQf1dAzwg5Xo=
-
 date-fns@^1.27.2:
   version "1.30.1"
   resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-1.30.1.tgz#2e71bf0b119153dbb4cc4e88d9ea5acfb50dc05c"
   integrity sha512-hBSVCvSmWC+QypYObzwGOd9wqdDpOt+0wl0KbU+R+uuZBS1jN8VsD1ss3irQDknRj5NvxiTF6oj/nDRnN/UQNw==
+
+date-fns@^2.0.0-beta.4:
+  version "2.4.1"
+  resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-2.4.1.tgz#b53f9bb65ae6bd9239437035710e01cf383b625e"
+  integrity sha512-2RhmH/sjDSCYW2F3ZQxOUx/I7PvzXpi89aQL2d3OAxSTwLx6NilATeUbe0menFE3Lu5lFkOFci36ivimwYHHxw==
 
 date-now@^0.1.4:
   version "0.1.4"
@@ -4110,10 +4110,10 @@ electron-builder@^21.2.0:
     update-notifier "^3.0.1"
     yargs "^13.3.0"
 
-electron-chromedriver@^6.0.0:
-  version "6.0.0"
-  resolved "https://registry.yarnpkg.com/electron-chromedriver/-/electron-chromedriver-6.0.0.tgz#a91b940c83f1c42ced52c9ef0605d8721613a8a2"
-  integrity sha512-UIhRl0sN5flfUjqActXsFrZQU1NmBObvlxzPnyeud8vhR67TllXCoqfvhQJmIrJAJJK+5M1DFhJ5iTGT++dvkg==
+electron-chromedriver@^7.0.0:
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/electron-chromedriver/-/electron-chromedriver-7.0.0.tgz#204e1bfcdf2dfd56e5a3b8e6f37d19b1433a7937"
+  integrity sha512-7qymT0fn3VTit0peym1iz4Y+fTwq9EPsv1V9Qh+vQdoVqP/4SM9lOHrsBeuFN1JJADZLu7R119ZvMkP6EnLYhw==
   dependencies:
     electron-download "^4.1.1"
     extract-zip "^1.6.7"
@@ -10603,13 +10603,13 @@ spdy@^4.0.1:
     select-hose "^2.0.0"
     spdy-transport "^3.0.0"
 
-spectron@^8.0.0:
-  version "8.0.0"
-  resolved "https://registry.yarnpkg.com/spectron/-/spectron-8.0.0.tgz#86e83c5dccb174850c052e2e718d5b1158764a52"
-  integrity sha512-MI9+lAamDnw7S0vKaxXjU3g5qaW5KANaFLc+Hgq+QmMCkQbZLt6ukFFGfalmwIuYrmq+yWQPCD4CXgt3VSHrLA==
+spectron@^9.0.0:
+  version "9.0.0"
+  resolved "https://registry.yarnpkg.com/spectron/-/spectron-9.0.0.tgz#6581780027172095e168353c82ed934212a0c97f"
+  integrity sha512-aMxprQ+5/8hDl27P6FafIuuL8jAueJ7WEc6S6pEEQNU7xGCMcfj0RY6TB1i9BtkazMymIxAkmwqlK233Fbhcgw==
   dependencies:
     dev-null "^0.1.1"
-    electron-chromedriver "^6.0.0"
+    electron-chromedriver "^7.0.0"
     request "^2.87.0"
     split "^1.0.0"
     webdriverio "^4.13.0"
@@ -11833,12 +11833,12 @@ vue-eslint-parser@^5.0.0:
     esquery "^1.0.1"
     lodash "^4.17.11"
 
-vue-good-table@2.16.5:
-  version "2.16.5"
-  resolved "https://registry.yarnpkg.com/vue-good-table/-/vue-good-table-2.16.5.tgz#c6bfeabcb6cfb88590daf99763887d13f33e22db"
-  integrity sha512-1X47ejqiTCqqYCCQFswJFPaXMIAUk+8HWvA861Aok+J5+HfG12q3RRJl3wyF9FUC0DZVz7TDF7x6pT/dBP8oUw==
+vue-good-table@^2.18.0:
+  version "2.18.0"
+  resolved "https://registry.yarnpkg.com/vue-good-table/-/vue-good-table-2.18.0.tgz#707c806cf5496e072cb3e0cb39bc6b6322403e89"
+  integrity sha512-wC0I9D7TyfSf0zrYwIpNtXdbSPRir//q7TNpGZ8/MfgW5mLMspk9I0MVq856M3ecgwTqgqXXtO87+i0sgQxALg==
   dependencies:
-    date-fns "2.0.0-alpha.7"
+    date-fns "^2.0.0-beta.4"
     diacriticless "1.0.1"
     lodash.assign "^4.2.0"
     lodash.clonedeep "^4.5.0"
