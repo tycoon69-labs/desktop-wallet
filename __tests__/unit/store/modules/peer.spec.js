@@ -77,8 +77,8 @@ describe('peer store module', () => {
   })
 
   it('should get random seed server peer', () => {
-    const randomSeedPeers = store.getters['peer/randomSeedPeers'](5, 'ark.mainnet')
-    const randomSeedPeers2 = store.getters['peer/randomSeedPeers'](5, 'ark.mainnet')
+    const randomSeedPeers = store.getters['peer/randomSeedPeers'](5, 't69.mainnet')
+    const randomSeedPeers2 = store.getters['peer/randomSeedPeers'](5, 't69.mainnet')
     expect(randomSeedPeers).not.toEqual(randomSeedPeers2)
   })
 

@@ -13,7 +13,7 @@
           </p>
 
           <img
-            :src="assets_loadImage(`pages/profile-new/step-${step}.svg`)"
+            :src="assets_loadImage(`pages/profile-new/step-${step}.png`)"
             :title="$t(`PAGES.PROFILE_NEW.STEP${step}.INSTRUCTIONS.HEADER`)"
             class="w-full xl:w-4/5 mt-10"
           >
@@ -112,9 +112,9 @@
                 @select="selectNetwork"
               />
 
-              <p class="mt-5 mb-1 text-theme-page-text font-semibold">
+              <!--p class="mt-5 mb-1 text-theme-page-text font-semibold">
                 {{ $t('PAGES.PROFILE_NEW.STEP2.CUSTOM_NETWORK') }}
-              </p>
+              </!--p>
               <p class="text-theme-page-text-light mb-5">
                 {{ $t('PAGES.PROFILE_NEW.STEP2.CUSTOM_NETWORK_EXPLAIN') }}
               </p>
@@ -124,7 +124,7 @@
                 :is-custom="true"
                 :add-button="true"
                 @select="selectNetwork"
-              />
+              /-->
             </div>
           </MenuStepItem>
 
@@ -324,7 +324,7 @@ export default {
    * Reuse the settings of the current profile every time the page is created
    */
   created () {
-    this.selectNetwork(this.defaultNetworks.find(network => network.id === 'ark.mainnet'))
+    this.selectNetwork(this.defaultNetworks.find(network => network.id === 't69.mainnet'))
     this.schema.background = this.background
     this.schema.bip39Language = this.bip39Language
     this.schema.currency = this.currency

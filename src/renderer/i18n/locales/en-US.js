@@ -2,8 +2,8 @@ export default {
   COMMON: {
     ADDRESS: 'Address',
     ALL: 'All',
-    APP_NAME: 'ARK Desktop Wallet',
-    APP_NAME_SHORT: 'ARK Desktop',
+    APP_NAME: 'T69 Desktop Wallet',
+    APP_NAME_SHORT: 'T69 Desktop',
     APPEARANCE: 'Appearance',
     AVATAR: 'Avatar',
     BACK: 'Back',
@@ -12,7 +12,7 @@ export default {
     CONFIRM: 'Confirm',
     CURRENCY: 'Currency',
     DATE: 'Date',
-    DELEGATE: 'Delegate',
+    DELEGATE: 'Leader',
     DONE: 'Done',
     FAILED_UPDATE: 'Failed to update \'{name}\'. Reason: {reason}',
     FAILED_FETCH: 'Failed to fetch {name}. Reason: "{msg}".',
@@ -69,38 +69,38 @@ export default {
       OWNER: 'This also brings greater responsibility for you, the account owner.',
       WARNING: {
         ACCOUNT: 'Unlike your traditional bank account, {CANNOT_RESTORE}.',
-        CANNOT_RESTORE: 'lost passwords, passphrases or stolen funds cannot be restored by the delegates, ARK.io team, or anyone else'
+        CANNOT_RESTORE: 'lost passwords, passphrases or stolen funds cannot be restored by the delegates, tycoonchain.com team, or anyone else'
       },
       SECURITY: 'The security of your account is solely up to you.'
     },
     RESPONSIBILITY: {
       TITLE: 'Your Responsibility',
       STORAGE: {
-        EXPLANATION: 'The {PASSPHRASE} of each wallet address is able to sign transactions and move funds. This means if your computer dies but you have your passphrase, you can still access your funds. The ARK Desktop Wallet has an additional feature that lets you set an {ENCRYPTED} as well, for easier management. If your computer dies, you cannot use the encrypted password to access your funds from a different machine. {NEED}.',
+        EXPLANATION: 'The {PASSPHRASE} of each wallet address is able to sign transactions and move funds. This means if your computer dies but you have your passphrase, you can still access your funds. The T69 Desktop Wallet has an additional feature that lets you set an {ENCRYPTED} as well, for easier management. If your computer dies, you cannot use the encrypted password to access your funds from a different machine. {NEED}.',
         PASSPHRASE: 'passphrase',
         ENCRYPTED: 'encrypted password',
         NEED: 'You will need the passphrase'
       },
       BACKUP: {
         ALWAYS: 'Always backup your passphrase and keep it in a safe place.',
-        OPTIONS: 'You can write it down on thick paper and store multiple copies in secure locations. You can also store it on an encrypted flash drive. Alternatively, you can use a Ledger Nano S USB hardware device, available at Ledger.com, to store and access your funds and the ARK Desktop Wallet. You can plug your Ledger Nano S into your computer and access the ARK blockchain without needing to enter your passphrase.'
+        OPTIONS: 'You can write it down on thick paper and store multiple copies in secure locations. You can also store it on an encrypted flash drive. Alternatively, you can use a Ledger Nano S USB hardware device, available at Ledger.com, to store and access your funds and the T69 Desktop Wallet. You can plug your Ledger Nano S into your computer and access the T69 blockchain without needing to enter your passphrase.'
       },
       REMEMBER: 'Remember, anyone who has your passphrase can access your funds. Never share your account with anyone and avoid storing it in locations that are susceptible to hacks, such as the Cloud.'
     },
     TURN: {
       TITLE: 'Your Turn',
-      KNOWLEDGE: 'Now, armed with the knowledge of how important it is to keep your passphrases safe, you are ready to claim your financial autonomy with the ARK Desktop Wallet.',
-      SUPPORT: 'ARK is an open-source ecosystem and if you need assistance, the ARK community and team is here to help. Create a post on reddit.ark.io, or join the real-time chat system at slack.ark.io.',
-      CONCLUSION: 'Everyone here on the ARK.io team hopes you enjoy using the ARK Desktop Wallet to participate in the blockchain revolution!'
+      KNOWLEDGE: 'Now, armed with the knowledge of how important it is to keep your passphrases safe, you are ready to claim your financial autonomy with the T69 Desktop Wallet.',
+      SUPPORT: 'T69 is an open-source ecosystem and if you need assistance, the T69 community and team is here to help. Create a post on reddit.tycoonchain.com, or join the real-time chat system at slack.tycoonchain.com.',
+      CONCLUSION: 'Everyone here on the tycoonchain.com team hopes you enjoy using the T69 Desktop Wallet to participate in the blockchain revolution!'
     }
   },
 
   SEARCH: {
-    DEFAULT_PLACEHOLDER: 'Find transaction, address or delegate',
+    DEFAULT_PLACEHOLDER: 'Find transaction, address or leader',
     FILTER: 'Filter',
     SEARCH_BY: 'Search by',
     SELECT_OPTION: 'Select an option',
-    DELEGATE: 'Delegate',
+    DELEGATE: 'Leader',
     WALLETS: 'Wallets',
     PERIOD: 'Period'
   },
@@ -225,7 +225,7 @@ export default {
   },
 
   APP_FOOTER: {
-    TEXT: 'Made with ♥ by ARK'
+    TEXT: 'Made with ♥ by TycoonChain69'
   },
 
   APP_SIDEMENU: {
@@ -335,10 +335,10 @@ export default {
 
   INPUT_DELEGATE: {
     ERROR: {
-      REQUIRED: 'The delegate name, address or public key is required',
-      USERNAME_NOT_FOUND: 'The delegate \'{0}\' could not be found',
-      ADDRESS_NOT_FOUND: 'The delegate with the address \'{0}\' could not be found',
-      PUBLIC_KEY_NOT_FOUND: 'The delegate with the public key \'{0}\' could not be found'
+      REQUIRED: 'The leader name, address or public key is required',
+      USERNAME_NOT_FOUND: 'The leader \'{0}\' could not be found',
+      ADDRESS_NOT_FOUND: 'The leader with the address \'{0}\' could not be found',
+      PUBLIC_KEY_NOT_FOUND: 'The leader with the public key \'{0}\' could not be found'
     },
     SEARCH_HINT: 'You can search by username, address or public key'
   },
@@ -445,7 +445,7 @@ export default {
     EPOCH: 'Epoch',
     WIF: 'WIF',
     SLIP44: 'Slip44',
-    ACTIVE_DELEGATES: 'Active Delegates',
+    ACTIVE_DELEGATES: 'Active Leaders',
     MARKET_TICKER: 'Market Ticker (Optional)',
     FAILED_FETCH: 'Failed to fetch network information',
     NETWORK_IN_USE: 'This network is in use by one or more profiles and cannot be removed',
@@ -615,7 +615,7 @@ export default {
 
     WALLET: {
       TRANSACTIONS: 'Transactions',
-      DELEGATES: 'Delegates',
+      DELEGATES: 'Leaders',
       STATISTICS: 'Statistics',
       SIGN_VERIFY: 'Sign',
       PURCHASE: 'Purchase {ticker}'
@@ -623,7 +623,7 @@ export default {
 
     WALLET_EXCHANGE: {
       CHANGELLY_TERMS: {
-        TITLE: 'Purchase {ticker} directly within ARK Desktop Wallet with our Changelly integration',
+        TITLE: 'Purchase {ticker} directly within T69 Desktop Wallet with our Changelly integration',
         CONTENT: 'Changelly lets you exchange other cryptocurrencies into {ticker} and has an option to buy {ticker} directly with your credit or debit cards.',
         CONFIRMATION: 'I have read and I agree with the {terms} and the {privacy} from Changelly. By clicking {button}, I acknowledge and understand that my transaction may trigger AML/KYC verification according to Changelly {kyc}.',
         TERMS_OF_USE: 'terms of use',
@@ -650,7 +650,7 @@ export default {
       ADDRESS: 'Address',
       NAME: 'Name',
       VOTING_FOR: 'Voting for',
-      DELEGATE_NOT_ACTIVE: '{delegate} ({rank}) is not an active delegate',
+      DELEGATE_NOT_ACTIVE: '{leader} ({rank}) is not an active leader',
       BALANCE: 'Balance',
       DELETE: 'Delete'
     },
@@ -745,7 +745,7 @@ export default {
   PLUGIN_ENABLE_CONFIRMATION: {
     QUESTION: 'Are you sure you want to enable the "{name}" plugin?',
     NO: 'No, keep it disabled',
-    NOTICE: 'WARNING: By accepting this disclaimer, you are confirming that you are adding an untested and unverified third-party plugin to the desktop wallet. ARK SCIC assumes no liability for any harm caused by this plug-in and has no responsibility to test them for security vulnerabilities. All security testing and vulnerability discovery is the sole responsibility of the plugin author. ARK SCIC makes no warranties, express or implied, regarding the conditions of merchantability or fitness for particular purpose of any third-party plugin. ARK SCIC makes no representations about the functionality, accuracy, availability, quality, completeness, security, validity or non-infringement of any third-party plugins. Any third-party plugin used is done so at your own risk.',
+    NOTICE: 'WARNING: By accepting this disclaimer, you are confirming that you are adding an untested and unverified third-party plugin to the desktop wallet. T69 SCIC assumes no liability for any harm caused by this plug-in and has no responsibility to test them for security vulnerabilities. All security testing and vulnerability discovery is the sole responsibility of the plugin author. T69 SCIC makes no warranties, express or implied, regarding the conditions of merchantability or fitness for particular purpose of any third-party plugin. T69 SCIC makes no representations about the functionality, accuracy, availability, quality, completeness, security, validity or non-infringement of any third-party plugins. Any third-party plugin used is done so at your own risk.',
     YES: 'Yes, enable it'
   },
 
@@ -796,26 +796,26 @@ export default {
     TYPE: {
       TRANSFER: 'Transfer',
       SECOND_SIGNATURE: 'Second Signature',
-      DELEGATE_REGISTRATION: 'Delegate Registration',
+      DELEGATE_REGISTRATION: 'Leader Registration',
       VOTE: 'Vote',
       UNVOTE: 'Unvote',
       MULTI_SIGNATURE: 'Multi Signature',
       IPFS: 'IPFS',
       TIMELOCK_TRANSFER: 'Timelock Transfer',
       MULTI_PAYMENT: 'Multi Payment',
-      DELEGATE_RESIGNATION: 'Delegate Resignation'
+      DELEGATE_RESIGNATION: 'Leader Resignation'
     },
     ERROR: {
       TRANSFER: 'Your transaction could not be sent',
       SECOND_SIGNATURE: 'Second signature could not be registered',
-      DELEGATE_REGISTRATION: 'Could not register as delegate',
+      DELEGATE_REGISTRATION: 'Could not register as leader',
       VOTE: 'Vote could not be registered',
       UNVOTE: 'Unvote could not be registered',
       MULTI_SIGNATURE: 'Multi signature could not be created',
       IPFS: 'IPFS',
       TIMELOCK_TRANSFER: 'Timelock transfer could not be created',
       MULTI_PAYMENT: 'Multi payment could not be created',
-      DELEGATE_RESIGNATION: 'Delegate resignation was unsuccessful',
+      DELEGATE_RESIGNATION: 'Leader resignation was unsuccessful',
       SAVE_OFFLINE: 'Failed to save transaction file',
       LOAD_FROM_FILE: 'Failed to load transaction file',
       EXPIRED: 'Transaction expired before it was processed: {transactionId}',
@@ -823,7 +823,7 @@ export default {
       NOTHING_SENT: 'The transaction could not be sent. Please check your network connection or change peer'
     },
     FOOTER_TEXT: {
-      DELEGATE_REGISTRATION: 'Keep in mind that you cannot change the name of your delegate after the registration has been registered on the blockchain.'
+      DELEGATE_REGISTRATION: 'Keep in mind that you cannot change the name of your leader after the registration has been registered on the blockchain.'
     },
     INFO: {
       BROADCASTING: 'Your transaction is being broadcast to the network',
@@ -832,20 +832,20 @@ export default {
     SUCCESS: {
       TRANSFER: 'Your transaction was sent successfully',
       SECOND_SIGNATURE: 'Second signature successfully registered',
-      DELEGATE_REGISTRATION: 'Successfully registered as delegate',
+      DELEGATE_REGISTRATION: 'Successfully registered as leader',
       VOTE: 'Voted successfully',
       UNVOTE: 'Unvoted successfully',
       MULTI_SIGNATURE: 'Multi signature created successfully',
       IPFS: 'IPFS',
       TIMELOCK_TRANSFER: 'Timelock transfer created successfully',
       MULTI_PAYMENT: 'Multi payment created successfully',
-      DELEGATE_RESIGNATION: 'Delegate resignation was successful',
+      DELEGATE_RESIGNATION: 'Leader resignation was successful',
       SAVE_OFFLINE: 'The transaction file was saved successfully in: {path}',
       LOAD_FROM_FILE: 'The transaction file was loaded successfully'
     },
     VOTE: {
-      VOTE_DELEGATE: 'Vote for delegate {delegate}',
-      UNVOTE_DELEGATE: 'Unvote delegate {delegate}'
+      VOTE_DELEGATE: 'Vote for leader {delegate}',
+      UNVOTE_DELEGATE: 'Unvote leader {delegate}'
     },
     WARNING: {
       BROADCAST: 'Transaction was broadcasted to other peers. It may not be accepted by them'
@@ -914,7 +914,7 @@ export default {
     VOTE: 'voted for',
     UNVOTE: 'unvoted',
     NEW_SECOND_SIGNATURE: 'New second signature: {address}',
-    NEW_DELEGATE_REGISTRATION: 'New delegate: {address} registered as {username}',
+    NEW_DELEGATE_REGISTRATION: 'New leader: {address} registered as {username}',
     NEW_VOTE: 'New vote: {address} {voteUnvote} {publicKey}',
     NEW_TRANSFER_SENT: 'New transfer: {amount} sent from {sender} to {recipient}',
     NEW_TRANSFER_RECEIVED: 'New transfer: {amount} received from {sender} to {recipient}'
@@ -934,7 +934,7 @@ export default {
     ACTIONS: {
       WALLET_NAME: 'Wallet name',
       CONTACT_NAME: 'Contact name',
-      REGISTER_DELEGATE: 'Register delegate',
+      REGISTER_DELEGATE: 'Register leader',
       SECOND_PASSPHRASE: '2nd passphrase',
       DELETE_WALLET: 'Delete wallet',
       SHOW_PUBLIC_KEY: 'Show public key',
@@ -978,7 +978,7 @@ export default {
     USERNAME: 'Username',
     RANK_BANNER: 'Rank: {rank}',
     APPROVAL: 'Vote %',
-    FORGED: 'Forged',
+    FORGED: 'Minted',
     BLOCKS: 'Blocks',
     VOTERS: 'Voters',
     UNVOTE: 'Unvote',
@@ -986,21 +986,21 @@ export default {
     VOTE: 'Vote',
     USERNAME_EMPTY_ERROR: 'The username must have at least 1 character',
     USERNAME_ERROR: 'No special characters or uppercase allowed',
-    USERNAME_EXISTS: 'A delegate with this username already exists',
+    USERNAME_EXISTS: 'A leader with this username already exists',
     USERNAME_MAX_LENGTH_ERROR: 'The username must be less than or equal to 20 characters long',
-    ALREADY_REGISTERED: 'This wallet is already registered as a delegate',
+    ALREADY_REGISTERED: 'This wallet is already registered as a leader',
     BLOG: 'Voting Guide',
-    EXPLANATION: 'Voting is an optional, but important mechanism that keeps the ARK network secure. The {delegates} delegates with the most votes from the network are responsible for verifying and forging transactions into new blocks. This page can be used to cast your vote for a delegate that you support. Learn more about voting for a delegate by clicking on the following link:',
-    VOTE_DELEGATE: 'Vote Delegate {delegate}',
-    UNVOTE_DELEGATE: 'Unvote Delegate {delegate}',
+    EXPLANATION: 'Voting is an optional, but important mechanism that keeps the T69 network secure. The {delegates} delegates with the most votes from the network are responsible for verifying and minting transactions into new blocks. This page can be used to cast your vote for a leader that you support. Learn more about voting for a leader by clicking on the following link:',
+    VOTE_DELEGATE: 'Vote Leader {delegate}',
+    UNVOTE_DELEGATE: 'Unvote Leader {delegate}',
     CURRENTLY_VOTED: 'You are currently voting for {delegate}',
-    VOTED_FOR: 'You voted for delegate {delegate}',
-    WALLET_VOTED_FOR: 'This wallet voted for delegate {delegate}',
+    VOTED_FOR: 'You voted for leader {delegate}',
+    WALLET_VOTED_FOR: 'This wallet voted for leader {delegate}',
     VOTE_INFO: 'Info:',
-    NO_VOTE: 'This wallet is not voting. To view more information and vote, use the search or click on any delegate',
+    NO_VOTE: 'This wallet is not voting. To view more information and vote, use the search or click on any leader',
     AWAITING_VOTE_CONFIRMATION: 'Your {type} is awaiting confirmation',
     LOADING_VOTE: 'Loading vote details...',
-    SEARCH_DELEGATE: 'Search delegate'
+    SEARCH_DELEGATE: 'Search leader'
   },
 
   WALLET_GRID: {

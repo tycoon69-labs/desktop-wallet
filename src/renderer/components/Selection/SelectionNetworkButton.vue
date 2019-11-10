@@ -65,13 +65,14 @@ export default {
 
   computed: {
     image () {
-      if (this.networkImage) {
-        return this.assets_loadImage(this.networkImage)
-      } else if (this.isCustom) {
-        return this.assets_loadImage('networks/default.svg')
-      } else {
-        return this.assets_loadImage(`networks/${this.network.id}.svg`)
-      }
+      return this.assets_loadImage(`networks/${this.network.id}.png`)
+      // if (this.networkImage) {
+      //   return this.assets_loadImage(this.networkImage)
+      // } else if (this.isCustom) {
+      //   return this.assets_loadImage('networks/default.svg')
+      // } else {
+      //   return this.assets_loadImage(`networks/${this.network.id}.png`)
+      // }
     }
   }
 }

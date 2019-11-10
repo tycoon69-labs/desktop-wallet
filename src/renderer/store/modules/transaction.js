@@ -81,6 +81,8 @@ export default {
       if (!networkId || !state.staticFees[networkId]) {
         return null
       }
+      console.log('==== static fee ====')
+      console.log(state.staticFees[networkId][type])
 
       return state.staticFees[networkId][type]
     }
@@ -118,6 +120,7 @@ export default {
       state.transactions[transaction.profileId].splice(index, 1)
     },
     SET_STATIC_FEES (state, data) {
+      console.log(data.staticFees)
       state.staticFees[data.networkId] = data.staticFees
     }
   },

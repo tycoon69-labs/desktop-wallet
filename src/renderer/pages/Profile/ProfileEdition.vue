@@ -435,7 +435,7 @@ export default {
     },
     instructionsImage () {
       const name = this.isProfileTab ? 'step-1' : 'step-3'
-      return `pages/profile-new/${name}.svg`
+      return `pages/profile-new/${name}.png`
     },
     nameError () {
       if (this.$v.modified.name.$dirty && this.$v.modified.name.$invalid) {

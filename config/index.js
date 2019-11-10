@@ -2,7 +2,7 @@ const os = require('os')
 const path = require('path')
 
 exports.APP = {
-  website: 'https://ark.io',
+  website: 'https://tycoonchain.com',
   transactionExpiryMinutes: 45
 }
 
@@ -12,8 +12,8 @@ exports.NETWORKS = [
 ]
 
 exports.PEERS = {
-  'ark.mainnet': require('./peers/mainnet.json'),
-  'ark.devnet': require('./peers/devnet.json')
+  't69.mainnet': require('./peers/mainnet.json'),
+  't69.devnet': require('./peers/devnet.json')
 }
 
 exports.ANNOUNCEMENTS = {
@@ -116,11 +116,11 @@ exports.THEMES = [
 
 exports.V1 = {
   fees: [
-    0.1 * 1e8, // Transfer
-    5 * 1e8, // Second signautre
-    25 * 1e8, // Delegate registration
-    1 * 1e8, // Vote
-    5 * 1e8, // Multisignature
+    1 * 1e8, // Transfer
+    50 * 1e8, // Second signautre
+    250 * 1e8, // Delegate registration
+    10 * 1e8, // Vote
+    50 * 1e8, // Multisignature
     0 * 1e8, // IPFS (not supported yet)
     0 * 1e8, // Timelock transfer (not supported yet)
     0 * 1e8, // Multu-payment (not supported yet)

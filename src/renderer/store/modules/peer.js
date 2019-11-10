@@ -298,8 +298,8 @@ export default {
       }
 
       const networkLookup = {
-        'ark.mainnet': 'mainnet',
-        'ark.devnet': 'devnet'
+        't69.mainnet': 'mainnet',
+        't69.devnet': 'devnet'
       }
 
       let peerDiscovery = null

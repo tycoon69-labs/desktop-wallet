@@ -43,7 +43,7 @@
           />
 
           <!-- Announcements -->
-          <MenuNavigationItem
+          <!--MenuNavigationItem
             id="announcements"
             :title="$t('APP_SIDEMENU.ANNOUNCEMENTS')"
             class="AppSidemenu__item"
@@ -51,10 +51,10 @@
             :show-badge="showUnread"
             icon="whitepaper"
             @click="redirect($event)"
-          />
+          /-->
 
           <!-- Plugins -->
-          <MenuNavigationItem
+          <!--MenuNavigationItem
             id="plugins"
             :title="$t('APP_SIDEMENU.PLUGINS')"
             :is-horizontal="isHorizontal"
@@ -62,7 +62,7 @@
             class="AppSidemenu__item"
             icon="plugins"
             @click="redirect($event)"
-          />
+          /-->
 
           <!-- Plugin pages -->
           <MenuNavigationItem
@@ -104,6 +104,7 @@
           <AppSidemenuNetworkStatus
             :is-horizontal="isHorizontal"
             :outside-click="true"
+            :hidden="true"
           />
 
           <!-- Profile settings -->

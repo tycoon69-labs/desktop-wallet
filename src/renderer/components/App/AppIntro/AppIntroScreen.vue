@@ -17,6 +17,7 @@
         <img
           :class="showLogo ? 'h-3/5 w-3/5' : 'h-full w-full'"
           :src="assets_loadImage(image)"
+          style="object-fit: contain;"
         >
       </div>
     </div>
