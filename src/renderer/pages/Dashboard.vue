@@ -6,7 +6,7 @@
       >
         <MarketChart
           :period="period"
-          :is-expanded="isChartExpanded"
+          :is-expanded="false"
         >
           <MarketChartHeader
             class="mb-5"

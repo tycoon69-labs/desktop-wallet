@@ -8,7 +8,11 @@ export default {
   namespaced: true,
 
   state: () => ({
-    tickers: {}
+    tickers: {
+      'T69/USD': {
+        price: 0.1569
+      }
+    }
   }),
 
   getters: {

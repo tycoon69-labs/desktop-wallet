@@ -11,7 +11,7 @@ export default {
     language: null,
     hideWalletButtonText: false,
     isMarketChartEnabled: true,
-    marketChartOptions: { isEnabled: true, isExpanded: true, period: 'day' },
+    marketChartOptions: { isEnabled: true, isExpanded: false, period: 'day' },
     name: null,
     profileId: null,
     theme: null,

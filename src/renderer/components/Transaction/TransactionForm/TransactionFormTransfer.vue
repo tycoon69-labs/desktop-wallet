@@ -386,8 +386,13 @@ export default {
 
       let success = true
       let transaction
+
+      console.log(transactionData)
+      console.log(this.currentWallet.isLedger)
       if (!this.currentWallet || !this.currentWallet.isLedger) {
         transaction = await this.$client.buildTransfer(transactionData, this.$refs.fee && this.$refs.fee.isAdvancedFee)
+
+        console.log(transaction)
       } else {
         success = false
         this.showLedgerLoader = true
