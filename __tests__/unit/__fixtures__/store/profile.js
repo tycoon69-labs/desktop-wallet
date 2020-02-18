@@ -2,7 +2,7 @@ const profile1 = {
   id: 'profile1',
   networkId: 'main',
   background: 'bg',
-  currency: 'usd',
+  currency: 'usdt',
   language: 'en',
   name: 'Profile 1',
   theme: 'light'

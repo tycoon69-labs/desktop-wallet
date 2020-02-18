@@ -87,7 +87,7 @@
         <div class="flexify">
           <!-- Important notification / new releases -->
           <AppSidemenuImportantNotification
-            v-if="isImportantNotificationVisible && hasAvailableRelease"
+            v-if="false && isImportantNotificationVisible && hasAvailableRelease"
             :is-horizontal="isHorizontal"
             class="AppSidemenu__item"
             @close="hideImportantNotification"

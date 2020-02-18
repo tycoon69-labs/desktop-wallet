@@ -559,17 +559,17 @@ export default {
         TITLE: '1. Dettagli profilo',
         AVATAR: 'Seleziona il tuo avatar preferito o la prima lettera del nome del tuo profilo'
       },
+      // STEP2: {
+      //   INSTRUCTIONS: {
+      //     HEADER: 'Selezione rete',
+      //     TEXT: 'Seleziona la rete di questo profilo'
+      //   },
+      //   CUSTOM_NETWORK: 'oppure scegli una rete personalizzata',
+      //   CUSTOM_NETWORK_EXPLAIN: 'Puoi selezionare la tua rete personalizzata o scegliere una delle reti disponibili.',
+      //   NAME: 'Nome profilo',
+      //   TITLE: '2. Rete'
+      // },
       STEP2: {
-        INSTRUCTIONS: {
-          HEADER: 'Selezione rete',
-          TEXT: 'Seleziona la rete di questo profilo'
-        },
-        CUSTOM_NETWORK: 'oppure scegli una rete personalizzata',
-        CUSTOM_NETWORK_EXPLAIN: 'Puoi selezionare la tua rete personalizzata o scegliere una delle reti disponibili.',
-        NAME: 'Nome profilo',
-        TITLE: '2. Rete'
-      },
-      STEP3: {
         INSTRUCTIONS: {
           HEADER: 'Aspetto',
           TEXT: 'Personalizza questa applicazione scegliendo uno dei nostri temi e sfondi'
@@ -578,7 +578,7 @@ export default {
         THEME: 'Scegli modalità chiara o modalità scura',
         BACKGROUND: 'Scegli il tuo sfondo preferito',
         NAME: 'Nome profilo',
-        TITLE: '3. Aspetto'
+        TITLE: '2. Aspetto'
       }
     },
 

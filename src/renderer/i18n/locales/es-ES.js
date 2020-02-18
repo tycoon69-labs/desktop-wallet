@@ -40,13 +40,13 @@ export default {
         },
         NAME: 'Nombre del perfil'
       },
+      // STEP2: {
+      //   INSTRUCTIONS: {
+      //     HEADER: 'Selección de red',
+      //     TEXT: 'Elige la red a la que se conectará ester perfil'
+      //   }
+      // },
       STEP2: {
-        INSTRUCTIONS: {
-          HEADER: 'Selección de red',
-          TEXT: 'Elige la red a la que se conectará ester perfil'
-        }
-      },
-      STEP3: {
         INSTRUCTIONS: {
           HEADER: 'Apariencia',
           TEXT: 'Personaliza esta aplicación seleccionando uno de nuestro temas y fondos.'

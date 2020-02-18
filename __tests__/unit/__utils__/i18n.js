@@ -20,7 +20,7 @@ const useI18n = vue => {
       'es-ES': {
         currency: {
           style: 'currency',
-          currency: 'EUR',
+          currency: 'USD',
           currencyDisplay: 'symbol'
         }
       }

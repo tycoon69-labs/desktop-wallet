@@ -3,7 +3,7 @@ import { MARKET } from '@config'
 import i18n from '@/i18n'
 import alertEvents from '@/plugins/alert-events'
 import dayjs from 'dayjs'
-import { capitalize, keys, min, max } from 'lodash'
+import { capitalize, min, max } from 'lodash'
 import logger from 'electron-log'
 
 class CryptoCompare {
@@ -13,15 +13,11 @@ class CryptoCompare {
    * @return {(Object|null)} Return API response data or null on failure
    */
   async fetchMarketData (token) {
-    const query = {
-      fsyms: token,
-      tsyms: keys(MARKET.currencies).join(',')
-    }
-
     try {
-      const uri = `${MARKET.source.baseUrl}/data/pricemultifull`
-      const response = await got(uri, { query, json: true })
-      const data = response.body.RAW && response.body.RAW[token] ? response.body.RAW[token] : {}
+      const uri = 'https://emirex.com/api/v1/ticker'
+      const response = await got(uri)
+      const bodyJson = JSON.parse(response.body)
+      const data = bodyJson && bodyJson[`${token}USDT`] ? bodyJson[`${token}USDT`] : {}
 
       return this.__transformMarketResponse(data)
     } catch (error) {
@@ -31,6 +27,24 @@ class CryptoCompare {
         msg: error.message
       }))
     }
+    // const query = {
+    //   fsyms: token,
+    //   tsyms: keys(MARKET.currencies).join(',')
+    // }
+
+    // try {
+    //   const uri = `${MARKET.source.baseUrl}/data/pricemultifull`
+    //   const response = await got(uri, { query, json: true })
+    //   const data = response.body.RAW && response.body.RAW[token] ? response.body.RAW[token] : {}
+
+    //   return this.__transformMarketResponse(data)
+    // } catch (error) {
+    //   logger.error(error)
+    //   alertEvents.$error(i18n.t('COMMON.FAILED_FETCH', {
+    //     name: i18n.t('MARKET.MARKET'),
+    //     msg: error.message
+    //   }))
+    // }
   }
 
   /**
@@ -154,16 +168,22 @@ class CryptoCompare {
   __transformMarketResponse (response) {
     const marketData = {}
 
-    for (const currencyData of Object.values(response)) {
-      marketData[currencyData.TOSYMBOL] = {
-        currency: currencyData.TOSYMBOL,
-        price: currencyData.PRICE,
-        marketCap: currencyData.MKTCAP,
-        volume: currencyData.TOTALVOLUME24HTO,
-        date: new Date(currencyData.LASTUPDATE * 1000),
-        change24h: currencyData.CHANGEPCT24HOUR || null
-      }
+    // for (const currencyData of Object.values(response)) {
+    //   marketData[currencyData.TOSYMBOL] = {
+    //     currency: currencyData.TOSYMBOL,
+    //     price: currencyData.PRICE,
+    //     marketCap: currencyData.MKTCAP,
+    //     volume: currencyData.TOTALVOLUME24HTO,
+    //     date: new Date(currencyData.LASTUPDATE * 1000),
+    //     change24h: currencyData.CHANGEPCT24HOUR || null
+    //   }
+    // }
+    marketData.USD = {
+      currency: 'USD',
+      price: response.last
     }
+
+    console.log(marketData)
 
     return marketData
   }

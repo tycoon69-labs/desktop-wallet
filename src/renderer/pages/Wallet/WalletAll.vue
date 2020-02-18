@@ -186,7 +186,8 @@ export default {
 
     alternativeTotalBalance () {
       const balance = this.currency_subToUnit(this.totalBalance)
-      return this.currency_format(balance * this.price, { currency: this.alternativeCurrency })
+      return balance * this.price
+      // return this.currency_format(balance * this.price, { currency: this.alternativeCurrency })
     },
 
     isMarketEnabled () {

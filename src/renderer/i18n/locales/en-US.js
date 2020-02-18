@@ -570,17 +570,17 @@ export default {
         TITLE: '1. Profile details',
         AVATAR: 'Select your favorite avatar or the first letter of your profile name'
       },
+      // STEP2: {
+      //   INSTRUCTIONS: {
+      //     HEADER: 'Network selection',
+      //     TEXT: 'Choose the network of this profile.'
+      //   },
+      //   CUSTOM_NETWORK: 'or you can choose a custom network',
+      //   CUSTOM_NETWORK_EXPLAIN: 'You can select your custom network or choose any of the available networks.',
+      //   NAME: 'Profile name',
+      //   TITLE: '2. Network'
+      // },
       STEP2: {
-        INSTRUCTIONS: {
-          HEADER: 'Network selection',
-          TEXT: 'Choose the network of this profile.'
-        },
-        CUSTOM_NETWORK: 'or you can choose a custom network',
-        CUSTOM_NETWORK_EXPLAIN: 'You can select your custom network or choose any of the available networks.',
-        NAME: 'Profile name',
-        TITLE: '2. Network'
-      },
-      STEP3: {
         INSTRUCTIONS: {
           HEADER: 'Appearance',
           TEXT: 'Customize this application by selecting one of our themes and backgrounds.'
@@ -589,7 +589,7 @@ export default {
         THEME: 'Choose theme',
         BACKGROUND: 'Select your favorite background',
         NAME: 'Profile name',
-        TITLE: '3. Appearance'
+        TITLE: '2. Appearance'
       }
     },
 

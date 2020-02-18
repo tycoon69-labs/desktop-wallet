@@ -1,5 +1,5 @@
 import { isEmpty, random, shuffle } from 'lodash'
-import { PeerDiscovery } from '@arkecosystem/peers'
+import { PeerDiscovery } from '@tycoon69-labs/peers'
 import ClientService from '@/services/client'
 import config from '@config'
 import i18n from '@/i18n'

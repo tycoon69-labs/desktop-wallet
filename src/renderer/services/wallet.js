@@ -1,5 +1,5 @@
 import * as bip39 from 'bip39'
-import { Crypto, Identities } from '@arkecosystem/crypto'
+import { Crypto, Identities } from '@tycoon69-labs/crypto'
 import { version as mainnetVersion } from '@config/networks/mainnet'
 import store from '@/store'
 import got from 'got'
@@ -150,7 +150,7 @@ export default class WalletService {
       errors.push({ type: 'maxLength' })
     } else if (store.getters['delegate/byUsername'](username)) {
       errors.push({ type: 'exists' })
-    // Regex from `@arkecosystem/crypto`
+    // Regex from `@tycoon69-labs/crypto`
     } else if (!username.match(/^[a-z0-9!@$&_.]+$/)) {
       errors.push({ type: 'invalidFormat' })
     }

@@ -95,7 +95,7 @@
             </div>
           </MenuStepItem>
 
-          <MenuStepItem
+          <!-- <MenuStepItem
             :step="2"
             :is-back-visible="true"
             :is-next-enabled="!$v.step2.$invalid"
@@ -105,16 +105,15 @@
             @next="moveTo(3)"
           >
             <div class="flex flex-col">
-              <!-- Show the two default networks, and a button to load more -->
               <SelectionNetwork
                 :selected="selectedNetwork"
                 :networks="defaultNetworks"
                 @select="selectNetwork"
               />
 
-              <!--p class="mt-5 mb-1 text-theme-page-text font-semibold">
+              <p class="mt-5 mb-1 text-theme-page-text font-semibold">
                 {{ $t('PAGES.PROFILE_NEW.STEP2.CUSTOM_NETWORK') }}
-              </!--p>
+              </p>
               <p class="text-theme-page-text-light mb-5">
                 {{ $t('PAGES.PROFILE_NEW.STEP2.CUSTOM_NETWORK_EXPLAIN') }}
               </p>
@@ -124,17 +123,17 @@
                 :is-custom="true"
                 :add-button="true"
                 @select="selectNetwork"
-              /-->
+              >
             </div>
-          </MenuStepItem>
+          </MenuStepItem> -->
 
           <MenuStepItem
-            :step="3"
+            :step="2"
             :is-back-visible="true"
             :is-next-enabled="!$v.schema.$invalid"
-            :is-disabled="step < 3"
-            :title="$t('PAGES.PROFILE_NEW.STEP3.TITLE')"
-            @back="moveTo(2)"
+            :is-disabled="step < 2"
+            :title="$t('PAGES.PROFILE_NEW.STEP2.TITLE')"
+            @back="moveTo(1)"
             @next="create"
           >
             <div class="flex flex-col h-full w-full justify-around">
@@ -144,7 +143,7 @@
                     {{ $t('COMMON.IS_MARKET_CHART_ENABLED') }}
                   </h5>
                   <p class="text-theme-page-text-light">
-                    {{ $t('PAGES.PROFILE_NEW.STEP3.MARKET_CHART') }}
+                    {{ $t('PAGES.PROFILE_NEW.STEP2.MARKET_CHART') }}
                   </p>
                 </div>
                 <ButtonSwitch
@@ -159,7 +158,7 @@
                     {{ $t('COMMON.THEME') }}
                   </h5>
                   <p class="text-theme-page-text-light">
-                    {{ $t('PAGES.PROFILE_NEW.STEP3.THEME') }}
+                    {{ $t('PAGES.PROFILE_NEW.STEP2.THEME') }}
                   </p>
                 </div>
                 <SelectionTheme
@@ -173,7 +172,7 @@
                     {{ $t('COMMON.BACKGROUND') }}
                   </h5>
                   <p class="text-theme-page-text-light">
-                    {{ $t('PAGES.PROFILE_NEW.STEP3.BACKGROUND') }}
+                    {{ $t('PAGES.PROFILE_NEW.STEP2.BACKGROUND') }}
                   </p>
                 </div>
                 <SelectionBackground
@@ -195,7 +194,7 @@ import Profile from '@/models/profile'
 import { ButtonSwitch } from '@/components/Button'
 import { MenuStep, MenuStepItem } from '@/components/Menu'
 import { InputLanguage, InputSelect, InputText } from '@/components/Input'
-import { SelectionAvatar, SelectionBackground, SelectionNetwork, SelectionTheme } from '@/components/Selection'
+import { SelectionAvatar, SelectionBackground, SelectionTheme } from '@/components/Selection'
 
 export default {
   name: 'ProfileNew',
@@ -209,7 +208,7 @@ export default {
     MenuStepItem,
     SelectionAvatar,
     SelectionBackground,
-    SelectionNetwork,
+    // SelectionNetwork,
     SelectionTheme
   },
 

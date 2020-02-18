@@ -41,7 +41,7 @@ export default new BaseModel({
     currency: {
       type: 'string',
       minLength: 3,
-      maxLength: 3
+      maxLength: 4
     },
     timeFormat: {
       type: 'string',

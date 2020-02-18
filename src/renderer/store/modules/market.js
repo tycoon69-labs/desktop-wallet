@@ -9,9 +9,9 @@ export default {
 
   state: () => ({
     tickers: {
-      'T69/USD': {
-        price: 0.1569
-      }
+      // 'T69/USD': {
+      //   price: 0.2169
+      // }
     }
   }),
 
@@ -50,6 +50,7 @@ export default {
 
       const ticker = network.market.ticker
       const data = await cryptoCompare.fetchMarketData(ticker)
+      console.log(data)
       if (!data) return
 
       forEach(data, (value) => {

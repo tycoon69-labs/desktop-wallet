@@ -1,5 +1,5 @@
 import { Connection } from '@arkecosystem/client'
-import { Identities, Transactions } from '@arkecosystem/crypto'
+import { Identities, Transactions } from '@tycoon69-labs/crypto'
 import { castArray, chunk, orderBy } from 'lodash'
 import got from 'got'
 import moment from 'moment'
