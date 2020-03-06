@@ -8,7 +8,7 @@ const mocks = {
   $store: {
     getters: {
       'session/currency': 'USD',
-      'session/network': { token: 'T69' },
+      'session/network': { token: 'ARK' },
       'session/marketChartOptions': {
         isEnabled: true,
         isExpanded: true,

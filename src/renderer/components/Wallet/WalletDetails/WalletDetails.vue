@@ -102,7 +102,7 @@
           <template v-if="votedDelegate.rank">
             <i18n
               tag="span"
-              class="font-semibold px-6 border-r border-theme-line-separator"
+              class="font-semibold px-6"
               path="WALLET_DELEGATES.RANK_BANNER"
             >
               <strong place="rank">
@@ -160,13 +160,23 @@
 import electron from 'electron'
 import at from 'lodash/at'
 /* eslint-disable vue/no-unused-components */
-import { WalletSelectDelegate } from '@/components/Wallet'
 import { ButtonGeneric } from '@/components/Button'
 import { TransactionModal } from '@/components/Transaction'
-import { WalletExchange, WalletHeading, WalletTransactions, WalletDelegates, WalletStatistics } from '../'
-import WalletSignVerify from '../WalletSignVerify'
+import {
+  WalletBusiness,
+  WalletDelegates,
+  WalletExchange,
+  WalletHeading,
+  WalletIpfs,
+  WalletMultiSignature,
+  WalletSelectDelegate,
+  WalletSignVerify,
+  WalletStatistics,
+  WalletTransactions
+} from '../'
 import { MenuTab, MenuTabItem } from '@/components/Menu'
 import SvgIcon from '@/components/SvgIcon'
+import WalletService from '@/services/wallet'
 
 export default {
   components: {
@@ -174,9 +184,12 @@ export default {
     MenuTab,
     MenuTabItem,
     TransactionModal,
+    WalletBusiness,
     WalletDelegates,
     WalletExchange,
     WalletHeading,
+    WalletIpfs,
+    WalletMultiSignature,
     WalletSelectDelegate,
     WalletSignVerify,
     WalletStatistics,
@@ -227,19 +240,41 @@ export default {
           text: this.$t('PAGES.WALLET.DELEGATES')
         })
 
-        if (!this.currentWallet.isLedger) {
+        tabs.push({
+          component: 'WalletSignVerify',
+          componentName: 'WalletSignVerify',
+          text: this.$t('PAGES.WALLET.SIGN_VERIFY')
+        })
+
+        // if (this.currentNetwork && this.currentNetwork.market && this.currentNetwork.market.enabled) {
+        //   tabs.push({
+        //     component: 'WalletExchange',
+        //     componentName: 'WalletExchange',
+        //     text: this.$t('PAGES.WALLET.PURCHASE', { ticker: this.currentNetwork.market.ticker })
+        //   })
+        // }
+      }
+
+      if (this.currentNetwork.constants && this.currentNetwork.constants.aip11) {
+        tabs.push({
+          component: 'WalletIpfs',
+          componentName: 'WalletIpfs',
+          text: this.$t('PAGES.WALLET.IPFS')
+        })
+
+        if (this.isOwned) {
           tabs.push({
-            component: 'WalletSignVerify',
-            componentName: 'WalletSignVerify',
-            text: this.$t('PAGES.WALLET.SIGN_VERIFY')
+            component: 'WalletMultiSignature',
+            componentName: 'WalletMultiSignature',
+            text: this.$t('PAGES.WALLET.MULTI_SIGNATURE')
           })
         }
 
-        if (this.currentNetwork && this.currentNetwork.market && this.currentNetwork.market.enabled) {
+        if (WalletService.isBusiness(this.currentWallet, false)) {
           tabs.push({
-            component: 'WalletExchange',
-            componentName: 'WalletExchange',
-            text: this.$t('PAGES.WALLET.PURCHASE', { ticker: this.currentNetwork.market.ticker })
+            component: 'WalletBusiness',
+            componentName: 'WalletBusiness',
+            text: this.$t('PAGES.WALLET.BUSINESS')
           })
         }
       }
@@ -323,8 +358,11 @@ export default {
           break
       }
     },
-    async currentWallet () {
+    async currentWallet (newValue, prevValue) {
       await this.fetchWalletVote()
+      if (!newValue || !prevValue || newValue.address !== prevValue.address) {
+        this.currentTab = 'WalletTransactions'
+      }
     },
     tabs () {
       this.$nextTick(() => {
@@ -384,7 +422,7 @@ export default {
     getVoteTitle () {
       if (this.isUnvoting && this.votedDelegate) {
         return this.$t('WALLET_DELEGATES.UNVOTE_DELEGATE', { delegate: this.votedDelegate.username })
-      } else if (this.isVoting && this.selectedDelegate) {
+      } else if (this.isVoting && this.selectedDelegate && !this.selectedDelegate.isResigned) {
         return this.$t('WALLET_DELEGATES.VOTE_DELEGATE', { delegate: this.selectedDelegate.username })
       } else {
         return `${this.$t('COMMON.DELEGATE')} ${this.selectedDelegate.username}`

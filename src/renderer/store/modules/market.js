@@ -1,22 +1,15 @@
 import { MarketTicker } from '@/models/market'
-import { forEach, keys } from 'lodash'
-import cryptoCompare from '@/services/crypto-compare'
-import { MARKET } from '@config'
+import priceApi from '@/services/price-api'
 import Vue from 'vue'
 
 export default {
   namespaced: true,
 
   state: () => ({
-    tickers: {
-      // 'T69/USD': {
-      //   price: 0.2169
-      // }
-    }
+    tickers: {}
   }),
 
   getters: {
-    currencies: () => keys(MARKET.currencies),
     lastPrice: (_, getters) => {
       const lastTicker = getters.lastTicker
       return lastTicker ? lastTicker.price : null
@@ -35,9 +28,8 @@ export default {
   },
 
   mutations: {
-    UPDATE_TICKER (state, ticker) {
-      const marketTicker = MarketTicker.deserialize(ticker)
-      Vue.set(state.tickers, marketTicker.id, marketTicker)
+    UPDATE_TICKERS (state, tickers) {
+      Vue.set(state, 'tickers', tickers)
     }
   },
 
@@ -49,14 +41,21 @@ export default {
       }
 
       const ticker = network.market.ticker
-      const data = await cryptoCompare.fetchMarketData(ticker)
-      console.log(data)
-      if (!data) return
+      const data = await priceApi.fetchMarketData(ticker)
+      if (!data) {
+        return
+      }
 
-      forEach(data, (value) => {
-        value.token = ticker
-        commit('UPDATE_TICKER', value)
-      })
+      const tickers = {}
+      for (const value of Object.values(data)) {
+        const marketTicker = MarketTicker.deserialize({
+          ...value,
+          token: ticker
+        })
+
+        tickers[marketTicker.id] = marketTicker
+      }
+      commit('UPDATE_TICKERS', tickers)
     }
   }
 }

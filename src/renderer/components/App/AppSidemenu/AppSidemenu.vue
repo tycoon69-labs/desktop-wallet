@@ -43,7 +43,7 @@
           />
 
           <!-- Announcements -->
-          <!--MenuNavigationItem
+          <!-- <MenuNavigationItem
             id="announcements"
             :title="$t('APP_SIDEMENU.ANNOUNCEMENTS')"
             class="AppSidemenu__item"
@@ -51,18 +51,18 @@
             :show-badge="showUnread"
             icon="whitepaper"
             @click="redirect($event)"
-          /-->
+          /> -->
 
-          <!-- Plugins -->
-          <!--MenuNavigationItem
-            id="plugins"
-            :title="$t('APP_SIDEMENU.PLUGINS')"
+          <!-- Plugin Manager -->
+          <!-- <MenuNavigationItem
+            id="plugin-manager"
+            :title="$t('APP_SIDEMENU.PLUGIN_MANAGER')"
             :is-horizontal="isHorizontal"
             :can-activate="false"
             class="AppSidemenu__item"
-            icon="plugins"
+            icon="manage-plugins"
             @click="redirect($event)"
-          /-->
+          /> -->
 
           <!-- Plugin pages -->
           <MenuNavigationItem
@@ -72,7 +72,7 @@
             :is-horizontal="isHorizontal"
             :can-activate="false"
             class="AppSidemenu__item"
-            icon="more"
+            icon="my-plugins"
             @click="toggleShowPluginMenu"
           />
 

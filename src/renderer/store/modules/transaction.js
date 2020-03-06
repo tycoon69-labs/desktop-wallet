@@ -1,9 +1,9 @@
 import dayjs from 'dayjs'
 import { findIndex, unionBy } from 'lodash'
-import config from '@config'
-import BigNumber from '@/plugins/bignumber'
+import { APP, TRANSACTION_GROUPS, TRANSACTION_TYPES } from '@config'
 import eventBus from '@/plugins/event-bus'
 import TransactionModel from '@/models/transaction'
+import TransactionService from '@/services/transaction'
 import Vue from 'vue'
 
 const includes = (objects, find) => objects.map(a => a.id).includes(find.id)
@@ -35,7 +35,7 @@ export default {
       }).map(transaction => {
         transaction.isSender = transaction.sender === address
         transaction.isRecipient = transaction.recipient === address
-        transaction.totalAmount = new BigNumber(transaction.amount).plus(transaction.fee).toString()
+        transaction.totalAmount = TransactionService.getTotalAmount(transaction)
 
         return transaction
       })
@@ -59,7 +59,7 @@ export default {
       const transactions = state.transactions[profileId].map(transaction => {
         transaction.isSender = addresses.includes(transaction.sender)
         transaction.isRecipient = addresses.includes(transaction.recipient)
-        transaction.totalAmount = new BigNumber(transaction.amount).plus(transaction.fee).toString()
+        transaction.totalAmount = TransactionService.getTotalAmount(transaction)
 
         return transaction
       })
@@ -76,15 +76,19 @@ export default {
      * @param  {Number} type
      * @return {(Number|null)}
      */
-    staticFee: (state, _, __, rootGetters) => (type) => {
+    staticFee: (state, _, __, rootGetters) => (type, group) => {
       const networkId = rootGetters['session/profile'].networkId
       if (!networkId || !state.staticFees[networkId]) {
         return null
       }
-      console.log('==== static fee ====')
-      console.log(state.staticFees[networkId][type])
 
-      return state.staticFees[networkId][type]
+      if (state.staticFees[networkId][0]) {
+        return state.staticFees[networkId][type]
+      } else if (!state.staticFees[networkId][group]) {
+        return null
+      }
+
+      return state.staticFees[networkId][group][type]
     }
   },
 
@@ -120,7 +124,6 @@ export default {
       state.transactions[transaction.profileId].splice(index, 1)
     },
     SET_STATIC_FEES (state, data) {
-      console.log(data.staticFees)
       state.staticFees[data.networkId] = data.staticFees
     }
   },
@@ -154,7 +157,7 @@ export default {
         return
       }
 
-      const votes = transactions.filter(tx => tx.type === config.TRANSACTION_TYPES.VOTE)
+      const votes = transactions.filter(tx => tx.type === TRANSACTION_TYPES.GROUP_1.VOTE)
       if (!votes.length) {
         return
       }
@@ -198,7 +201,7 @@ export default {
     clearExpired ({ commit, getters, rootGetters }) {
       const expired = []
       const profileId = rootGetters['session/profileId']
-      const threshold = dayjs().subtract(config.APP.transactionExpiryMinutes, 'minute')
+      const threshold = dayjs().subtract(APP.transactionExpiryMinutes, 'minute')
       for (const transaction of getters.byProfileId(profileId)) {
         if (dayjs(transaction.timestamp).isBefore(threshold)) {
           transaction.isExpired = true
@@ -230,9 +233,23 @@ export default {
      * @return {void}
      */
     async updateStaticFees ({ commit, rootGetters }) {
+      let staticFees = {}
+      const feesResponse = await this._vm.$client.fetchStaticFees()
+      if (feesResponse.transfer) {
+        staticFees = Object.values(feesResponse)
+      } else {
+        for (const group of Object.values(TRANSACTION_GROUPS)) {
+          if (!feesResponse[group]) {
+            continue
+          }
+
+          staticFees[group] = Object.values(feesResponse[group])
+        }
+      }
+
       commit('SET_STATIC_FEES', {
         networkId: rootGetters['session/profile'].networkId,
-        staticFees: await this._vm.$client.fetchStaticFees()
+        staticFees
       })
     }
   }

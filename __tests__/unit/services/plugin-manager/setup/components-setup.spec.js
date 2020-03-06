@@ -1,5 +1,5 @@
 import { createLocalVue, mount } from '@vue/test-utils'
-import { createComponentsSetup } from '@/services/plugin-manager/setup/components-setup'
+import { create as createComponentsSetup } from '@/services/plugin-manager/setup/components-setup'
 import { Plugin } from '@/services/plugin-manager/plugin'
 
 jest.mock('fs', () => ({
@@ -31,7 +31,10 @@ const pluginObject = {
 }
 
 const sandbox = {
-  getVM: jest.fn(() => ({
+  getComponentVM: jest.fn(() => ({
+    run: jest.fn()
+  })),
+  getPluginVM: jest.fn(() => ({
     run: jest.fn()
   })),
   app: {}
