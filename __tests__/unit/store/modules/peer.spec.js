@@ -48,10 +48,6 @@ beforeAll(() => {
 
 beforeEach(() => {
   nock.cleanAll()
-  nock('http://127.0.0.1')
-    .persist()
-    .post('/api/v2/wallets/search')
-    .reply(200, { data: [] })
 })
 
 describe('peer store module', () => {
@@ -77,8 +73,8 @@ describe('peer store module', () => {
   })
 
   it('should get random seed server peer', () => {
-    const randomSeedPeers = store.getters['peer/randomSeedPeers'](5, 'ark.mainnet')
-    const randomSeedPeers2 = store.getters['peer/randomSeedPeers'](5, 'ark.mainnet')
+    const randomSeedPeers = store.getters['peer/randomSeedPeers'](5, 't69.mainnet')
+    const randomSeedPeers2 = store.getters['peer/randomSeedPeers'](5, 't69.mainnet')
     expect(randomSeedPeers).not.toEqual(randomSeedPeers2)
   })
 
@@ -307,8 +303,7 @@ describe('peer store module', () => {
       .get('/api/v2/node/syncing')
       .reply(200, {
         data: {
-          height: 10002,
-          version: '2.0.0'
+          height: 10002
         }
       })
 
@@ -343,8 +338,6 @@ describe('peer store module', () => {
           nethash
         }
       })
-
-    nock(`http://${goodPeer1.ip}:${goodPeer1.port}`)
       .get('/api/v2/node/syncing')
       .reply(400)
 

@@ -1,6 +1,8 @@
 'use strict'
 
 import { app, BrowserWindow, ipcMain, screen } from 'electron'
+import { setupPluginManager } from './plugin-manager'
+import { setupUpdater } from './updater'
 import winState from 'electron-window-state'
 import packageJson from '../../package.json'
 
@@ -12,7 +14,9 @@ require('electron-log')
  * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-static-assets.html
  */
 if (process.env.NODE_ENV !== 'development') {
-  global.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\')
+  global.__static = require('path')
+    .join(__dirname, '/static')
+    .replace(/\\/g, '\\\\')
 }
 
 // To E2E tests
@@ -22,22 +26,54 @@ if (process.env.TEMP_USER_DATA === 'true') {
   app.setPath('userData', tempDirectory)
 }
 
-let mainWindow = null
+const windows = {
+  main: null,
+  loading: null
+}
 let deeplinkingUrl = null
 
-const winURL = process.env.NODE_ENV === 'development'
-  ? `http://localhost:9080`
-  : `file://${__dirname}/index.html`
+const winURL =
+  process.env.NODE_ENV === 'development'
+    ? 'http://localhost:9080'
+    : `file://${__dirname}/index.html`
+
+const loadingURL =
+  process.env.NODE_ENV === 'development'
+    ? 'http://localhost:9080/splashscreen.html'
+    : `file://${__dirname}/splashscreen.html`
+
+const createLoadingWindow = () => {
+  windows.loading = new BrowserWindow({
+    width: 800,
+    height: 600,
+    parent: windows.main,
+    skipTaskbar: true,
+    frame: false,
+    autoHideMenuBar: true,
+    resizable: false,
+    webPreferences: {
+      nodeIntegration: true
+    }
+  })
+  windows.loading.setResizable(false)
+  windows.loading.loadURL(loadingURL)
+  windows.loading.show()
+  windows.loading.on('close', () => (windows.loading = null))
+  windows.loading.on('closed', () => (windows.loading = null))
+  windows.loading.webContents.on('did-finish-load', () => windows.loading.show())
+}
 
 function createWindow () {
   const { width, height } = screen.getPrimaryDisplay().workAreaSize
 
   const windowState = winState({
     defaultWidth: width,
-    defaultHeight: height
+    defaultHeight: height,
+    fullScreen: false
   })
 
-  mainWindow = new BrowserWindow({
+  const wasFullScreen = windowState.isFullScreen
+  windows.main = new BrowserWindow({
     width: windowState.width,
     height: windowState.height,
     x: windowState.x,
@@ -50,35 +86,49 @@ function createWindow () {
     }
   })
 
+  // The `mainWindow.show()` is executed after the opening splash screen
+  ipcMain.on('splashscreen:app-ready', () => {
+    if (windows.loading) {
+      windows.loading.close()
+    }
+    windows.main.show()
+    windows.main.setFullScreen(wasFullScreen)
+  })
+
   ipcMain.on('disable-iframe-protection', function (_event, urls) {
     const filter = { urls }
-    mainWindow.webContents.session.webRequest.onHeadersReceived(filter, (details, done) => {
-      const headers = details.responseHeaders
+    windows.main.webContents.session.webRequest.onHeadersReceived(
+      filter,
+      (details, done) => {
+        const headers = details.responseHeaders
 
-      const xFrameOrigin = Object.keys(headers).find(header => header.toString().match(/^x-frame-options$/i))
-      if (xFrameOrigin) {
-        delete headers[xFrameOrigin]
+        const xFrameOrigin = Object.keys(headers).find(header =>
+          header.toString().match(/^x-frame-options$/i)
+        )
+        if (xFrameOrigin) {
+          delete headers[xFrameOrigin]
+        }
+
+        done({
+          cancel: false,
+          responseHeaders: headers,
+          statusLine: details.statusLine
+        })
       }
-
-      done({ cancel: false, responseHeaders: headers, statusLine: details.statusLine })
-    })
+    )
   })
 
-  windowState.manage(mainWindow)
-  mainWindow.loadURL(winURL)
-  mainWindow.once('ready-to-show', () => {
-    mainWindow.show()
-  })
+  windowState.manage(windows.main)
+  windows.main.loadURL(winURL)
 
-  mainWindow.on('closed', () => {
-    mainWindow = null
-  })
+  windows.main.on('close', () => (windows.main = null))
+  windows.main.on('closed', () => (windows.main = null))
 
-  mainWindow.webContents.on('did-finish-load', () => {
+  windows.main.webContents.on('did-finish-load', () => {
     const name = packageJson.build.productName
     const version = app.getVersion()
     const windowTitle = `${name} ${version}`
-    mainWindow.setTitle(windowTitle)
+    windows.main.setTitle(windowTitle)
 
     broadcastURL(deeplinkingUrl)
   })
@@ -91,10 +141,18 @@ function broadcastURL (url) {
     return
   }
 
-  if (mainWindow && mainWindow.webContents) {
-    mainWindow.webContents.send('process-url', url)
+  if (sendToWindow('process-url', url)) {
     deeplinkingUrl = null
   }
+}
+
+function sendToWindow (key, value) {
+  if (windows.main && windows.main.webContents) {
+    windows.main.webContents.send(key, value)
+    return true
+  }
+
+  return false
 }
 
 // Force Single Instance Application
@@ -106,32 +164,37 @@ if (!gotTheLock) {
   app.on('second-instance', (_, argv) => {
     // Someone tried to run a second instance, we should focus our window.
     // argv: An array of the second instance’s (command line / deep linked) arguments
-    if (process.platform === 'linux') {
-      deeplinkingUrl = argv[1]
-      broadcastURL(deeplinkingUrl)
-    } else if (process.platform !== 'darwin') {
-      deeplinkingUrl = argv[2]
-      broadcastURL(deeplinkingUrl)
+    for (const arg of argv) {
+      if (arg.startsWith('ark:')) {
+        deeplinkingUrl = arg
+        broadcastURL(deeplinkingUrl)
+        break
+      }
     }
 
-    if (mainWindow) {
-      if (mainWindow.isMinimized()) {
-        mainWindow.restore()
+    if (windows.main) {
+      if (windows.main.isMinimized()) {
+        windows.main.restore()
       }
-      mainWindow.focus()
+      windows.main.focus()
     }
   })
 
-  if (process.platform === 'linux') {
-    deeplinkingUrl = process.argv[1]
-    broadcastURL(deeplinkingUrl)
-  } else if (process.platform !== 'darwin') {
-    deeplinkingUrl = process.argv[2]
-    broadcastURL(deeplinkingUrl)
+  for (const arg of process.argv) {
+    if (arg.startsWith('ark:')) {
+      deeplinkingUrl = arg
+      broadcastURL(deeplinkingUrl)
+      break
+    }
   }
 }
 
-app.on('ready', createWindow)
+app.on('ready', () => {
+  createLoadingWindow()
+  createWindow()
+  setupPluginManager({ sendToWindow, windows, ipcMain })
+  setupUpdater({ sendToWindow, ipcMain })
+})
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
@@ -140,7 +203,8 @@ app.on('window-all-closed', () => {
 })
 
 app.on('activate', () => {
-  if (mainWindow === null) {
+  if (windows.main === null) {
+    createLoadingWindow()
     createWindow()
   }
 })
@@ -153,23 +217,3 @@ app.on('open-url', (event, url) => {
 })
 
 app.setAsDefaultProtocolClient('ark', process.execPath, ['--'])
-
-/**
- * Auto Updater
- *
- * Uncomment the following code below and install `electron-updater` to
- * support auto updating. Code Signing with a valid certificate is required.
- * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-electron-builder.html#auto-updating
- */
-
-/*
-import { autoUpdater } from 'electron-updater'
-
-autoUpdater.on('update-downloaded', () => {
-  autoUpdater.quitAndInstall()
-})
-
-app.on('ready', () => {
-  if (process.env.NODE_ENV === 'production') autoUpdater.checkForUpdates()
-})
- */

@@ -1,25 +1,30 @@
 export default {
   COMMON: {
+    ADAPTER: 'Adapter',
     ADDRESS: 'Address',
     ALL: 'All',
-    APP_NAME: 'ARK Desktop Wallet',
-    APP_NAME_SHORT: 'ARK Desktop',
+    APP_NAME: 'T69 Desktop Wallet',
+    APP_NAME_SHORT: 'T69 Desktop',
     APPEARANCE: 'Appearance',
     AVATAR: 'Avatar',
     BACK: 'Back',
     BACKGROUND: 'Background',
     BIP39_LANGUAGE: 'Passphrase Language (BIP39)',
+    CATEGORY: 'Category',
     CONFIRM: 'Confirm',
     CURRENCY: 'Currency',
     DATE: 'Date',
-    DELEGATE: 'Delegate',
+    DELEGATE: 'Leader',
     DONE: 'Done',
+    ENABLE_ADVANCED_MODE: 'Enable Advanced Mode to use this feature',
     FAILED_UPDATE: 'Failed to update \'{name}\'. Reason: {reason}',
     FAILED_FETCH: 'Failed to fetch {name}. Reason: "{msg}".',
     FETCH: 'Fetch',
+    FILTER_BLACKLISTED_PLUGINS: 'Apply blacklist',
     FINISH: 'Finish',
     HIDE_WALLET_BUTTON_TEXT: 'Hide text from wallet buttons',
     IS_MARKET_CHART_ENABLED: 'Price chart on the dashboard',
+    INITIALIZING: 'Initializing...',
     LANGUAGE: 'Application Language',
     LEDGER: 'Ledger',
     LEDGER_WALLET: 'This is a Ledger wallet',
@@ -32,16 +37,22 @@ export default {
     OTHER: 'Other',
     PREV: 'Prev',
     PROFILE_NAME: 'Profile name',
+    PRICE_PROVIDER: 'Price Provider',
     REMOVE: 'Remove',
     SAVE: 'Save',
+    SIZE: 'Size',
     SKIP: 'Skip',
     START: 'Start',
     THEME: 'Theme',
     TIME_FORMAT: 'Time format',
+    URL: 'URL',
     VERIFIED_ADDRESS: 'This is a verified address',
+    VERSION: 'Version',
     WARNING: 'Warning',
     WILL: 'will',
-    WALLET: 'Wallet'
+    WALLET: 'Wallet',
+    X_OF_Y: '{0} of {1}',
+    ADVANCED_MODE: 'Advanced Mode'
   },
 
   ANNOUNCEMENTS: {
@@ -69,38 +80,38 @@ export default {
       OWNER: 'This also brings greater responsibility for you, the account owner.',
       WARNING: {
         ACCOUNT: 'Unlike your traditional bank account, {CANNOT_RESTORE}.',
-        CANNOT_RESTORE: 'lost passwords, passphrases or stolen funds cannot be restored by the delegates, ARK.io team, or anyone else'
+        CANNOT_RESTORE: 'lost passwords, passphrases or stolen funds cannot be restored by the leaders, tycoonchain.com team, or anyone else'
       },
       SECURITY: 'The security of your account is solely up to you.'
     },
     RESPONSIBILITY: {
       TITLE: 'Your Responsibility',
       STORAGE: {
-        EXPLANATION: 'The {PASSPHRASE} of each wallet address is able to sign transactions and move funds. This means if your computer dies but you have your passphrase, you can still access your funds. The ARK Desktop Wallet has an additional feature that lets you set an {ENCRYPTED} as well, for easier management. If your computer dies, you cannot use the encrypted password to access your funds from a different machine. {NEED}.',
+        EXPLANATION: 'The {PASSPHRASE} of each wallet address is able to sign transactions and move funds. This means if your computer dies but you have your passphrase, you can still access your funds. The T69 Desktop Wallet has an additional feature that lets you set an {ENCRYPTED} as well, for easier management. If your computer dies, you cannot use the encrypted password to access your funds from a different machine. {NEED}.',
         PASSPHRASE: 'passphrase',
         ENCRYPTED: 'encrypted password',
         NEED: 'You will need the passphrase'
       },
       BACKUP: {
         ALWAYS: 'Always backup your passphrase and keep it in a safe place.',
-        OPTIONS: 'You can write it down on thick paper and store multiple copies in secure locations. You can also store it on an encrypted flash drive. Alternatively, you can use a Ledger Nano S USB hardware device, available at Ledger.com, to store and access your funds and the ARK Desktop Wallet. You can plug your Ledger Nano S into your computer and access the ARK blockchain without needing to enter your passphrase.'
+        OPTIONS: 'You can write it down on thick paper and store multiple copies in secure locations. You can also store it on an encrypted flash drive. Alternatively, you can use a Ledger Nano S USB hardware device, available at Ledger.com, to store and access your funds and the T69 Desktop Wallet. You can plug your Ledger Nano S into your computer and access the T69 blockchain without needing to enter your passphrase.'
       },
       REMEMBER: 'Remember, anyone who has your passphrase can access your funds. Never share your account with anyone and avoid storing it in locations that are susceptible to hacks, such as the Cloud.'
     },
     TURN: {
       TITLE: 'Your Turn',
-      KNOWLEDGE: 'Now, armed with the knowledge of how important it is to keep your passphrases safe, you are ready to claim your financial autonomy with the ARK Desktop Wallet.',
-      SUPPORT: 'ARK is an open-source ecosystem and if you need assistance, the ARK community and team is here to help. Create a post on reddit.ark.io, or join the real-time chat system at slack.ark.io.',
-      CONCLUSION: 'Everyone here on the ARK.io team hopes you enjoy using the ARK Desktop Wallet to participate in the blockchain revolution!'
+      KNOWLEDGE: 'Now, armed with the knowledge of how important it is to keep your passphrases safe, you are ready to claim your financial autonomy with the T69 Desktop Wallet.',
+      SUPPORT: 'T69 is an open-source ecosystem and if you need assistance, the T69 community and team is here to help. Create a post on reddit.tycoonchain.com, or join the real-time chat system at slack.tycoonchain.com.',
+      CONCLUSION: 'Everyone here on the tycoonchain.com team hopes you enjoy using the T69 Desktop Wallet to participate in the blockchain revolution!'
     }
   },
 
   SEARCH: {
-    DEFAULT_PLACEHOLDER: 'Find transaction, address or delegate',
+    DEFAULT_PLACEHOLDER: 'Find transaction, address or leader',
     FILTER: 'Filter',
     SEARCH_BY: 'Search by',
     SELECT_OPTION: 'Select an option',
-    DELEGATE: 'Delegate',
+    DELEGATE: 'Leader',
     WALLETS: 'Wallets',
     PERIOD: 'Period'
   },
@@ -116,10 +127,16 @@ export default {
     FAILED_ENCRYPT: 'Failed to encrypt passphrase'
   },
 
+  LEDGER: {
+    NEEDS_UPDATE: 'Ledger update available! Please update the T69 app via Ledger Live to send transactions on this network'
+  },
+
   PEER: {
     BEST: 'Connect to best',
     CONNECTED: 'Connected to peer',
     CONNECT_CUSTOM: 'Connect custom peer',
+    CUSTOM_TITLE: 'Connect to custom peer',
+    MULTI_SIGNATURE_TITLE: 'Connect multisignature peer',
     CONNECT_FAILED: 'Failed to connect to peer',
     LATENCY: 'Latency',
     DISCONNECT: 'Disconnect from peer',
@@ -135,10 +152,15 @@ export default {
 
   VALIDATION: {
     TOO_LONG: 'The \'{0}\' is too long',
+    TOO_SHORT: 'The \'{0}\' is too short',
+    INVALID_SEED: 'Invalid Seed',
     INVALID_URI: 'Invalid URI',
+    INVALID_URL: 'Invalid URL',
+    INVALID_PORT: 'Invalid Port Number',
     INVALID_FORMAT: 'Invalid format',
     INVALID_TYPE: 'Invalid type',
     MAX_LENGTH: 'Max {0}',
+    MIN_LENGTH: 'Min {0}',
     MUST_BE_GREATER_THAN: 'Must be greater than {0}',
     NOT_MATCH: 'The \'{0}\' does not match the \'{1}\'',
     NOT_VALID: 'The \'{0}\' is not valid',
@@ -164,6 +186,11 @@ export default {
     PUBLIC_KEY: {
       INVALID_LENGTH: 'The public key must be 66 characters long'
     },
+    URL: {
+      INVALID: 'Invalid \'URL\'',
+      NO_GITHUB: 'Only URLs containing \'github.com\' are allowed',
+      NO_GITHUB_REPOSITORY: 'This URL does not point to a GitHub repository'
+    },
     VENDOR_FIELD: {
       LIMIT_REACHED: 'You can enter a maximum of {0} characters only',
       LIMIT_REMAINING: '{0}/{1} Remaining'
@@ -180,7 +207,7 @@ export default {
     'en-US': 'English',
     'es-ES': 'Español',
     'it-IT': 'Italiano',
-    'pt-BR': 'Portugues - Brazil'
+    'pt-BR': 'Português - Brazil'
   },
 
   TIME_FORMAT: {
@@ -203,6 +230,7 @@ export default {
   MARKET: {
     MARKET: 'Market',
     HISTORICAL_DATA: 'Historical data',
+    CHECK_TRADEABLE: 'Check Tradeable',
     DAY: 'Day',
     WEEK: 'Week',
     MONTH: 'Month'
@@ -213,7 +241,7 @@ export default {
     ROWS_PER_PAGE: 'Rows per page',
     NO_TRANSACTIONS: 'No transactions have been found. The latest transactions will be displayed here.',
     NO_CONTACTS: 'No contacts to be shown.',
-    NO_DELEGATES: 'No delegates to be shown.',
+    NO_DELEGATES: 'No leaders to be shown.',
     NO_WALLETS: 'No wallets to be shown.'
   },
 
@@ -224,7 +252,7 @@ export default {
   },
 
   APP_FOOTER: {
-    TEXT: 'Made with ♥ by ARK'
+    TEXT: 'Made with ♥ by T69'
   },
 
   APP_SIDEMENU: {
@@ -234,8 +262,8 @@ export default {
     DASHBOARD: 'Dashboard',
     NETWORK: 'Network',
     NETWORKS: 'Manage networks',
-    PLUGINS: 'Plugins',
-    PLUGINS_PAGES: 'Plugins pages',
+    PLUGIN_MANAGER: 'Plugin Manager',
+    PLUGINS_PAGES: 'Plugin Pages',
     SETTINGS: {
       CURRENCY: 'Currency',
       DARK_MODE: 'Dark mode',
@@ -249,6 +277,7 @@ export default {
       BACKGROUND_UPDATE_LEDGER: 'Update Ledger in background',
       BROADCAST_PEERS: 'Broadcast to multiple peers',
       TITLE: 'Current settings',
+      MANAGE_BLACKLIST: 'Manage plugin blacklist',
       RESET_DATA: {
         TITLE: 'Reset data',
         QUESTION: 'Are you sure you want to wipe your data?',
@@ -260,8 +289,18 @@ export default {
   },
 
   APP_SIDEMENU_NOTIFICATION: {
-    NOTIFICATION: 'A new version ({version}) has been released. Upgrade now!',
     TOOLTIP: 'New version ({version}) has been released!'
+  },
+
+  APP_UPDATER: {
+    RELEASE_NOTES: 'Release Notes',
+    DOWNLOAD_NOW: 'Yes, download now',
+    MAYBE_LATER: 'No, maybe later',
+    DOWNLOADING: 'Downloading {version}',
+    DOWNLOADED: 'Downloaded {version}',
+    QUIT_AND_INSTALL: 'Quit and install',
+    UNKNOWN_ERROR: 'Unknown error. Close this window and try again.',
+    NETWORK_ERROR: 'Looks like your file isn\'t downloading. Verify your connection.'
   },
 
   MARKET_CHART: {
@@ -324,12 +363,16 @@ export default {
 
   INPUT_DELEGATE: {
     ERROR: {
-      REQUIRED: 'The delegate name, address or public key is required',
-      USERNAME_NOT_FOUND: 'The delegate \'{0}\' could not be found',
-      ADDRESS_NOT_FOUND: 'The delegate with the address \'{0}\' could not be found',
-      PUBLIC_KEY_NOT_FOUND: 'The delegate with the public key \'{0}\' could not be found'
+      REQUIRED: 'The leader name, address or public key is required',
+      USERNAME_NOT_FOUND: 'The leader \'{0}\' could not be found',
+      ADDRESS_NOT_FOUND: 'The leader with the address \'{0}\' could not be found',
+      PUBLIC_KEY_NOT_FOUND: 'The leader with the public key \'{0}\' could not be found'
     },
     SEARCH_HINT: 'You can search by username, address or public key'
+  },
+
+  INPUT_EDITABLE_LIST: {
+    NO_ITEMS: 'This list has no items'
   },
 
   INPUT_FEE: {
@@ -357,6 +400,13 @@ export default {
     TITLE: 'Select'
   },
 
+  INPUT_PUBLIC_KEY: {
+    TITLE: 'Public Key',
+    ERROR: {
+      NOT_VALID: 'The public key is not valid'
+    }
+  },
+
   WALLET_SELECTION: {
     PROFILE: 'Sender Profile',
     WALLET: 'Sender Wallet'
@@ -379,7 +429,7 @@ export default {
       EXPORT_WALLETS: 'Failed to export your wallets'
     },
     EXPORT: 'Export 0 Wallets | Export 1 Wallet | Export {count} Wallets',
-    INSTRUCTIONS: 'Your exported wallets will not contain your passphrases, only the addresses and respective names will be saved!',
+    INSTRUCTIONS: '<b>Important:</b> Your exported wallets will not contain your passphrases, only the addresses and respective names will be saved!',
     OPTIONS: {
       ADD_NETWORK: 'Add information about the network',
       EXCLUDE_EMPTY: 'Exclude empty wallets',
@@ -434,7 +484,8 @@ export default {
     EPOCH: 'Epoch',
     WIF: 'WIF',
     SLIP44: 'Slip44',
-    ACTIVE_DELEGATES: 'Active Delegates',
+    ACTIVE_DELEGATES: 'Active Leaders',
+    ADDRESS_VERSION_MISSING: 'Address Version was missing - please check your wallets',
     MARKET_TICKER: 'Market Ticker (Optional)',
     FAILED_FETCH: 'Failed to fetch network information',
     NETWORK_IN_USE: 'This network is in use by one or more profiles and cannot be removed',
@@ -457,12 +508,68 @@ export default {
     CONNECT: 'Connect',
     HOST: 'IP / Host',
     PORT: 'Port',
-    TITLE: 'Connect to custom peer',
     VALIDATING: 'Validating peer details...',
     PLACEHOLDER: {
       HOST: 'http://1.2.3.4',
       PORT: '4003'
     }
+  },
+
+  MODAL_PLUGIN_MANAGE_BLACKLIST: {
+    CLOSE: 'Close',
+    EMPTY: 'There are no plugins on your blacklist',
+    REMOVE_ALL: 'Remove all',
+    TITLE: 'Plugin blacklist'
+  },
+
+  MODAL_PLUGIN_DETAILS: {
+    INSTALL: 'Install',
+    KEYWORDS: 'Keywords',
+    SHOW_PERMISSIONS: 'Show permissions'
+  },
+
+  MODAL_PLUGIN_INSTALL: {
+    CANCEL: 'Cancel',
+    DOWNLOADED: 'Downloaded {plugin}',
+    DOWNLOADING: 'Downloading {plugin}',
+    INSTALL: 'Install now',
+    UPDATE: 'Update now',
+    UNKNOWN_ERROR: 'Unknow error. Close this window and try again.'
+  },
+
+  MODAL_PLUGIN_PERMISSIONS: {
+    ALTERNATIVE_TITLE: 'This plugin needs the following permissions',
+    BACK: 'Back',
+    DOWNLOAD: 'Download now',
+    TITLE: 'Permissions',
+    PERMISSIONS: {
+      ALERTS: 'Allows access to the Desktop Wallet alerts',
+      AUDIO: 'Allows access to play audio from within the Desktop Wallet',
+      AVATARS: 'Plugin contains custom avatars',
+      COMPONENTS: 'Allows loading custom components',
+      EVENTS: 'Allows access to the Desktop Wallet events',
+      HTTP: 'Allows performing external web requests',
+      MENU_ITEMS: 'Allows adding custom menu items to the Desktop Wallet sidebar',
+      MESSAGING: 'Allows WebFrames access to a one-way messaging system',
+      PEER_CURRENT: 'Allows access to the currently connected peer',
+      PUBLIC: 'Allows navigation to wallet routes and provides access to the Font Awesome icon set',
+      PROFILE_ALL: 'Allows access to all available profiles',
+      PROFILE_CURRENT: 'Allows access to the currently active profile',
+      ROUTES: 'Allows loading additional routes into the Desktop Wallet',
+      STORAGE: 'Allows storing data within the Desktop Wallet, using key-value pairs',
+      THEMES: 'Allows loading additional custom themes for the Desktop Wallet',
+      TIMERS: 'Allows using timeouts and intervals',
+      UI_COMPONENTS: 'Allows access to the standard Desktop Wallet components used throughout',
+      WALLET_TABS: 'Allows showing an additional tab/page on the Wallet screen',
+      WEBFRAME: 'Allows showing remote URL pages within a frame',
+      WEBSOCKET: 'Allows connections to websockets'
+    }
+  },
+
+  MODAL_PLUGIN_URL: {
+    TITLE: 'Install from URL',
+    EXPLANATION: 'Fetch the plugin directly from GitHub by using the URL of the plugin repository in the input field below.',
+    DISCLAIMER: '<b>Disclaimer:</b> Please make sure to check the documentation of the plugin before installing it. By installing it on your wallet, you assume every responsibility.'
   },
 
   PASSPHRASE_INPUT: {
@@ -534,11 +641,57 @@ export default {
       NEW_NETWORK: 'New network'
     },
 
-    PLUGINS: {
+    PLUGIN_MANAGER: {
       HEADER: 'Plugins',
-      DISCOVER: 'Discover Plugins',
-      OPEN: 'Open Plugins',
-      RELOAD: 'Reload Plugins'
+      ENABLED: 'Enabled',
+      DISABLED: 'Disabled',
+      INSTALL: 'Install',
+      INSTALLING: 'Installing \'{plugin}\'',
+      INSTALL_URL: 'Install from URL',
+      BLACKLISTING: 'Blacklisting \'{plugin}\'',
+      REMOVING: 'Removing \'{plugin}\'',
+      UPDATING: 'Updating \'{plugin}\'',
+      OFFICIAL: 'Official {author} plugin',
+      MENU: 'Menu',
+      BANNER: {
+        TITLE: 'Welcome to the Plugin Manager',
+        SUBTITLE: 'The easy way to find, manage and install plugins'
+      },
+      CATEGORIES: {
+        ALL: 'All',
+        GAMING: 'Gaming',
+        UTILITY: 'Utility',
+        THEME: 'Themes',
+        OTHER: 'Other'
+      },
+      FILTERS: {
+        ALL: 'all',
+        INSTALLED: 'installed'
+      },
+      NO_SEARCH_RESULTS: 'Unfortunately, searching for "{query}" returned no results',
+      NO_RESULTS: 'There are no {filter} plugins with the category {category}',
+      SEARCH: 'Search',
+      CLICK_TO_RELOAD: 'Reload the plugin repository',
+      ALREADY_INSTALLED: 'You\'ve already installed this plugin',
+      UPDATE: {
+        AVAILABLE: 'Update to latest version ({version})',
+        NOT_AVAILABLE: 'No updates available'
+      },
+      ERRORS: {
+        ALREADY_INSTALLED: 'The plugin \'{plugin}\' is already installed',
+        FETCH: 'The plugin \'{plugin}\' was installed but could not be loaded'
+      },
+      SUCCESS: {
+        INSTALLATION: 'The plugin \'{plugin}\' was installed and loaded successfully',
+        UPDATE: 'The plugin \'{plugin}\' was updated and reloaded successfully',
+        REMOVE: 'The plugin \'{plugin}\' was removed successfully',
+        BLACKLIST: 'The plugin \'{plugin}\' was added to the blacklist',
+        RELOAD: 'The plugin repository was reloaded successfully'
+      },
+      DISCLAIMER: '<b>Disclaimer:</b> The availability of this plugin in the T69 Desktop Wallet does not mean that either tycoonchain.com or T69 SCIC is directly involved in the development or affiliated with the developer providing this plugin. By installing it on your wallet, you assume every responsibility.',
+      REPORT: 'Report this plugin',
+      BLACKLISTED: 'This plugin is already blacklisted',
+      VERSION_MISMATCH: 'This plugin is not compatible with your wallet version'
     },
 
     PROFILE_ALL: {
@@ -559,17 +712,17 @@ export default {
         TITLE: '1. Profile details',
         AVATAR: 'Select your favorite avatar or the first letter of your profile name'
       },
+      // STEP2: {
+      //   INSTRUCTIONS: {
+      //     HEADER: 'Network selection',
+      //     TEXT: 'Choose the network of this profile.'
+      //   },
+      //   CUSTOM_NETWORK: 'or you can choose a custom network',
+      //   CUSTOM_NETWORK_EXPLAIN: 'You can select your custom network or choose any of the available networks.',
+      //   NAME: 'Profile name',
+      //   TITLE: '2. Network'
+      // },
       STEP2: {
-        INSTRUCTIONS: {
-          HEADER: 'Network selection',
-          TEXT: 'Choose the network of this profile.'
-        },
-        CUSTOM_NETWORK: 'or you can choose a custom network',
-        CUSTOM_NETWORK_EXPLAIN: 'You can select your custom network or choose any of the available networks.',
-        NAME: 'Profile name',
-        TITLE: '2. Network'
-      },
-      STEP3: {
         INSTRUCTIONS: {
           HEADER: 'Appearance',
           TEXT: 'Customize this application by selecting one of our themes and backgrounds.'
@@ -578,7 +731,7 @@ export default {
         THEME: 'Choose theme',
         BACKGROUND: 'Select your favorite background',
         NAME: 'Profile name',
-        TITLE: '3. Appearance'
+        TITLE: '2. Appearance'
       }
     },
 
@@ -599,12 +752,28 @@ export default {
           TEXT: 'Here you can choose the default theme (light or dark) and the background.'
         },
         TITLE: 'Wallet design'
+      },
+      TAB_PLUGINS: {
+        INSTRUCTIONS: {
+          HEADER: 'Plugin settings',
+          TEXT: 'Here you can adjust the settings of the Plugin Manager.'
+        },
+        TITLE: 'Plugins'
+      },
+      ADVANCED_MODE: {
+        DECLINE: 'I Decline',
+        ACCEPT: 'I Accept',
+        QUESTION: 'By enabling Advanced Mode you hereby assume the risk associated with downloading files and installing said files from a direct URL link. The aforementioned links have neither been tested nor approved by tycoonchain.com and T69 SCIC. We make no warranties, expressed or implied, as to the sustainability, availability, security, of these URLs. We are not responsible for any consequences which may occur from downloading, viewing, or installing files directly from a URL or feature that is activated via toggling on Advanced Mode. tycoonchain.com and T69 SCIC shall bear no liability for any loss suffered by users who bypass certain measures by toggling on Advanced Mode. By clicking “I Accept” you acknowledge that enabling Advanced Mode may result in you downloading, viewing, or installing content that may have bugs, glitches, lack of functionality, or can cause damage to your machine or result in the loss of data.',
+        TITLE: 'Advanced Mode Disclaimer'
       }
     },
 
     WALLET: {
+      BUSINESS: 'Business',
       TRANSACTIONS: 'Transactions',
-      DELEGATES: 'Delegates',
+      DELEGATES: 'Leaders',
+      IPFS: 'IPFS',
+      MULTI_SIGNATURE: 'Multisignature',
       STATISTICS: 'Statistics',
       SIGN_VERIFY: 'Sign',
       PURCHASE: 'Purchase {ticker}'
@@ -612,7 +781,7 @@ export default {
 
     WALLET_EXCHANGE: {
       CHANGELLY_TERMS: {
-        TITLE: 'Purchase {ticker} directly within ARK Desktop Wallet with our Changelly integration',
+        TITLE: 'Purchase {ticker} directly within T69 Desktop Wallet with our Changelly integration',
         CONTENT: 'Changelly lets you exchange other cryptocurrencies into {ticker} and has an option to buy {ticker} directly with your credit or debit cards.',
         CONFIRMATION: 'I have read and I agree with the {terms} and the {privacy} from Changelly. By clicking {button}, I acknowledge and understand that my transaction may trigger AML/KYC verification according to Changelly {kyc}.',
         TERMS_OF_USE: 'terms of use',
@@ -639,7 +808,7 @@ export default {
       ADDRESS: 'Address',
       NAME: 'Name',
       VOTING_FOR: 'Voting for',
-      DELEGATE_NOT_ACTIVE: '{delegate} ({rank}) is not an active delegate',
+      DELEGATE_NOT_ACTIVE: '{delegate} ({rank}) is not an active leader',
       BALANCE: 'Balance',
       DELETE: 'Delete'
     },
@@ -726,30 +895,24 @@ export default {
 
     WALLET_SHOW: {
       NO_VOTE: 'Wallet hasn\'t voted',
-      ADD_CONTACT: 'Add to contacts'
+      ADD_CONTACT: 'Add to contacts',
+      VOTING_FOR: 'Voting for {delegate}'
     }
-  },
-
-  PLUGIN_ENABLE_CONFIRMATION: {
-    QUESTION: 'Are you sure you want to enable the "{name}" plugin?',
-    NO: 'No, keep it disabled',
-    NOTICE: 'WARNING: By accepting this disclaimer, you are confirming that you are adding an untested and unverified third-party plugin to the desktop wallet. ARK SCIC assumes no liability for any harm caused by this plug-in and has no responsibility to test them for security vulnerabilities. All security testing and vulnerability discovery is the sole responsibility of the plugin author. ARK SCIC makes no warranties, express or implied, regarding the conditions of merchantability or fitness for particular purpose of any third-party plugin. ARK SCIC makes no representations about the functionality, accuracy, availability, quality, completeness, security, validity or non-infringement of any third-party plugins. Any third-party plugin used is done so at your own risk.',
-    YES: 'Yes, enable it'
   },
 
   PLUGIN_TABLE: {
     ACTIONS: 'Actions',
-    ENABLE: 'Enable',
-    ENABLED: 'Enabled',
-    DESCRIPTION: 'Description',
-    DISABLE: 'Disable',
+    AUTHOR: 'Author',
+    CATEGORY: 'Category',
     DISABLED: 'Disabled',
-    ID: 'ID',
+    ENABLED: 'Enabled',
+    LOGO: 'Logo',
     NAME: 'Name',
-    NO_PERMISSIONS: 'No permissions',
+    AVAILABLE: 'Not installed',
     NO_PLUGINS: 'No plugins available',
-    PERMISSIONS: 'Permissions',
-    STATUS: 'Status'
+    SIZE: 'Size',
+    STATUS: 'Status',
+    VERSION: 'Version'
   },
 
   PROFILE_LEAVING_CONFIRMATION: {
@@ -784,34 +947,78 @@ export default {
     TYPE: {
       TRANSFER: 'Transfer',
       SECOND_SIGNATURE: 'Second Signature',
-      DELEGATE_REGISTRATION: 'Delegate Registration',
+      DELEGATE_REGISTRATION: 'Leader Registration',
       VOTE: 'Vote',
       UNVOTE: 'Unvote',
-      MULTI_SIGNATURE: 'Multi Signature',
+      MULTI_SIGN: 'Multisignature Transaction',
+      MULTI_SIGNATURE: 'Multisignature',
       IPFS: 'IPFS',
-      TIMELOCK_TRANSFER: 'Timelock Transfer',
-      MULTI_PAYMENT: 'Multi Payment',
-      DELEGATE_RESIGNATION: 'Delegate Resignation'
+      MULTI_PAYMENT: 'Multipayment',
+      DELEGATE_RESIGNATION: 'Leader Resignation',
+      HTLC_LOCK: 'Timelock',
+      HTLC_CLAIM: 'Timelock Claim',
+      HTLC_REFUND: 'Timelock Refund',
+      BUSINESS_REGISTRATION: 'Business Registration',
+      BUSINESS_RESIGNATION: 'Business Resignation',
+      BUSINESS_UPDATE: 'Business Update',
+      BRIDGECHAIN_REGISTRATION: 'Bridgechain Registration',
+      BRIDGECHAIN_RESIGNATION: 'Bridgechain Resignation',
+      BRIDGECHAIN_UPDATE: 'Bridgechain Update'
     },
     ERROR: {
+      VALIDATION: {
+        TRANSFER: 'Transfer transaction could not be created',
+        SECOND_SIGNATURE: 'Second Signature transaction could not be created',
+        DELEGATE_REGISTRATION: 'Leader Registration transaction could not be created',
+        VOTE: 'Vote transaction could not be created',
+        MULTI_SIGNATURE: 'Multisignature transaction could not be created',
+        IPFS: 'IPFS transaction could not be created',
+        DELEGATE_RESIGNATION: 'Leader Resignation transaction could not be created',
+        BUSINESS: {
+          REGISTRATION: 'Business Registration transaction could not be created',
+          RESIGNATION: 'Business Resignation transaction could not be created',
+          UPDATE: 'Business Update transaction could not be created'
+        },
+        BRIDGECHAIN: {
+          REGISTRATION: 'Bridgechain Registration transaction could not be created',
+          RESIGNATION: 'Bridgechain Resignation transaction could not be created',
+          UPDATE: 'Bridgechain Update transaction could not be created'
+        }
+      },
       TRANSFER: 'Your transaction could not be sent',
       SECOND_SIGNATURE: 'Second signature could not be registered',
-      DELEGATE_REGISTRATION: 'Could not register as delegate',
+      DELEGATE_REGISTRATION: 'Could not register as leader',
       VOTE: 'Vote could not be registered',
       UNVOTE: 'Unvote could not be registered',
-      MULTI_SIGNATURE: 'Multi signature could not be created',
-      IPFS: 'IPFS',
-      TIMELOCK_TRANSFER: 'Timelock transfer could not be created',
-      MULTI_PAYMENT: 'Multi payment could not be created',
-      DELEGATE_RESIGNATION: 'Delegate resignation was unsuccessful',
-      SAVE_OFFLINE: 'Failed to save transaction file',
+      IPFS: 'IPFS could not be created',
+      MULTI_SIGN: 'Could not sign transaction',
+      MULTI_SIGNATURE: 'Multisignature could not be created',
+      HTLC_LOCK: 'Timelock could not be created',
+      HTLC_CLAIM: 'Timelock Claim could not be created',
+      HTLC_REFUND: 'Timelock Refund could not be created',
+      MULTI_PAYMENT: 'Multipayment could not be created',
+      MULTI_PAYMENT_TO_SELF: 'Excluding {amount} sent to itself',
+      DELEGATE_RESIGNATION: 'Leader resignation was unsuccessful',
+      BUSINESS_REGISTRATION: 'Business registration was unsuccessful',
+      BUSINESS_RESIGNATION: 'Business resignation was unsuccessful',
+      BUSINESS_UPDATE: 'Business update was unsuccessful',
+      BRIDGECHAIN_REGISTRATION: 'Bridgechain registration was unsuccessful',
+      BRIDGECHAIN_RESIGNATION: 'Bridgechain resignation was unsuccessful',
+      BRIDGECHAIN_UPDATE: 'Bridgechain update was unsuccessful',
+      SAVE_OFFLINE: 'Failed to save transaction file: {error}',
       LOAD_FROM_FILE: 'Failed to load transaction file',
       EXPIRED: 'Transaction expired before it was processed: {transactionId}',
       FEE_TOO_LOW: 'Transaction could not be sent because the fee ({fee}) is too low',
-      NOTHING_SENT: 'The transaction could not be sent. Please check your network connection or change peer'
+      NOTHING_SENT: 'The transaction could not be sent. Please check your network connection or change peer',
+      WRONG_NONCE: 'The transaction could not be sent. Wrong nonce provided',
+      NETWORK_NOT_CONFIGURED: 'Network not configured',
+      WALLET_NOT_IMPORTED: 'Wallet not imported'
     },
     FOOTER_TEXT: {
-      DELEGATE_REGISTRATION: 'Keep in mind that you cannot change the name of your delegate after the registration has been registered on the blockchain.'
+      DELEGATE_REGISTRATION: 'Keep in mind that you cannot change the name of your leader after the registration has been registered on the blockchain.',
+      DELEGATE_RESIGNATION: 'Keep in mind that you cannot restore your leader after the resignation has been registered on the blockchain.',
+      BUSINESS_RESIGNATION: 'Keep in mind that you cannot restore your business after the resignation has been registered on the blockchain.',
+      BRIDGECHAIN_RESIGNATION: 'Keep in mind that you cannot restore your bridgechain after the resignation has been registered on the blockchain.'
     },
     INFO: {
       BROADCASTING: 'Your transaction is being broadcast to the network',
@@ -820,26 +1027,76 @@ export default {
     SUCCESS: {
       TRANSFER: 'Your transaction was sent successfully',
       SECOND_SIGNATURE: 'Second signature successfully registered',
-      DELEGATE_REGISTRATION: 'Successfully registered as delegate',
+      DELEGATE_REGISTRATION: 'Successfully registered as leader',
       VOTE: 'Voted successfully',
       UNVOTE: 'Unvoted successfully',
-      MULTI_SIGNATURE: 'Multi signature created successfully',
-      IPFS: 'IPFS',
-      TIMELOCK_TRANSFER: 'Timelock transfer created successfully',
-      MULTI_PAYMENT: 'Multi payment created successfully',
-      DELEGATE_RESIGNATION: 'Delegate resignation was successful',
+      MULTI_SIGN: 'Transaction has been signed successfully',
+      MULTI_SIGNATURE: 'Multisignature created successfully',
+      IPFS: 'IPFS created successfully',
+      HTLC_LOCK: 'Timelock created successfully',
+      HTLC_CLAIM: 'Timelock Claim created successfully',
+      HTLC_REFUND: 'Timelock Refund created successfully',
+      MULTI_PAYMENT: 'Multipayment created successfully',
+      DELEGATE_RESIGNATION: 'Leader resignation was successful',
+      BUSINESS_REGISTRATION: 'Business Registration created successfully',
+      BUSINESS_RESIGNATION: 'Business Resignation created successfully',
+      BUSINESS_UPDATE: 'Business Update created successfully',
+      BRIDGECHAIN_REGISTRATION: 'Bridgechain Registration created successfully',
+      BRIDGECHAIN_RESIGNATION: 'Bridgechain Resignation created successfully',
+      BRIDGECHAIN_UPDATE: 'Bridgechain Update created successfully',
       SAVE_OFFLINE: 'The transaction file was saved successfully in: {path}',
       LOAD_FROM_FILE: 'The transaction file was loaded successfully'
     },
     VOTE: {
-      VOTE_DELEGATE: 'Vote for delegate {delegate}',
-      UNVOTE_DELEGATE: 'Unvote delegate {delegate}'
+      VOTE_DELEGATE: 'Vote for leader {delegate}',
+      UNVOTE_DELEGATE: 'Unvote leader {delegate}'
+    },
+    MULTI_PAYMENT: {
+      BUTTON_ADD: 'Add',
+      WARNING_DUPLICATE: 'The address is already a recipient',
+      RECIPIENTS: 'Recipients',
+      NO_RECIPIENTS: 'There are no recipients'
+    },
+    MULTI_SIGNATURE: {
+      ADDRESS: 'Multisignature Address',
+      BUTTON_ADD: 'Add',
+      ERROR_DUPLICATE: 'The public key has already been added',
+      ERROR_MIN_KEYS_TOO_HIGH: 'Minimum required signatures is too high',
+      ERROR_MIN_KEYS_TOO_LOW: 'Minimum required signatures is too low',
+      ERROR_PUBLIC_KEY_NOT_FOUND: 'Could not determine public key',
+      ERROR_PUBLIC_KEY_EXISTS: 'Public key already provided',
+      MIN_KEYS: 'Minimum Required Signatures',
+      N_MORE: '{0} more signature(s)',
+      PUBLIC_KEYS: 'Public Keys',
+      READY: 'Ready',
+      TOTAL_SIGNATURES: 'Total Signatures',
+      TAB: {
+        ADDRESS: 'Address',
+        PUBLIC_KEY: 'Public Key'
+      },
+      YOUR_SIGNATURE: 'Your Signature',
+      NO_SIGNATURES: 'There are no signatures'
+    },
+    BRIDGECHAIN: {
+      BUTTON_ADD: 'Add',
+      NAME: 'Name',
+      SEED_NODE: 'Seed Node IP Address',
+      SEED_NODES: 'Seed Nodes',
+      GENESIS_HASH: 'Genesis Hash',
+      BRIDGECHAIN_REPOSITORY: 'Bridgechain Repository',
+      BRIDGECHAIN_ASSET_REPOSITORY: 'Bridgechain Asset Repository',
+      API_PORT: 'API Port',
+      ERROR_DUPLICATE: 'The seed node has already been added',
+      NO_PEERS: 'There are no peers',
+      INVALID_SEEDS: 'You have an invalid seed node - please check it is up and running correctly | You have invalid seed nodes - please check they are up and running correctly'
     },
     WARNING: {
       BROADCAST: 'Transaction was broadcasted to other peers. It may not be accepted by them'
     },
     AMOUNT: 'Amount',
     BLOCK_ID: 'Block ID',
+    BUSINESS_NAME: 'Business Name',
+    BRIDGECHAIN_NAME: 'Bridgechain Name',
     CONFIRMATION_COUNT: '{confirmations} Confirmations',
     CONFIRM_SEND_ALL: 'This will enable sending all of your tokens from the current wallet in this transaction.',
     CONFIRM_SEND_ALL_TITLE: 'Send all your tokens?',
@@ -849,6 +1106,7 @@ export default {
     DISCARD: 'Discard',
     EXPIRED: 'Expired',
     FEE: 'Transaction fee',
+    HASH: 'Hash',
     ID: 'ID',
     LEDGER_SIGN_NOTICE: 'Next you will confirm the transaction with your Ledger',
     LEDGER_SIGN_WAIT: 'Awaiting Ledger Signature. Please check and sign the transaction when you are ready.',
@@ -856,10 +1114,12 @@ export default {
     LEDGER_USER_DECLINED: 'User declined',
     LOAD_FROM_FILE: 'Load transaction from file',
     MULTIPLE: 'Multiple',
+    NONCE: 'Nonce',
     OPEN_IN_EXPLORER: 'Open in Explorer',
     PASSPHRASE: 'Passphrase',
     PASSWORD: 'Encryption Password',
     RECIPIENT: 'Recipient',
+    RECIPIENTS: 'Recipients',
     RESEND: 'Resend',
     RESENT_NOTICE: 'Transaction {transactionId} has been resent',
     SAVE_OFFLINE: 'Save transaction offline',
@@ -867,9 +1127,12 @@ export default {
     SEND: 'Send',
     SEND_ALL: 'Send All',
     SENDER: 'Sender',
+    SIGN: 'Sign',
     SINGLE: 'Single',
+    STATUS: 'Status',
     TIMESTAMP: 'Timestamp',
     TRANSACTION: 'Transaction',
+    USERNAME: 'Username',
     VENDOR_FIELD: 'Smartbridge',
     WELL_CONFIRMED: 'Well Confirmed',
     WELL_CONFIRMED_COUNT: 'Well Confirmed ({confirmations} confirmations)'
@@ -899,13 +1162,28 @@ export default {
   },
 
   SYNCHRONIZER: {
-    VOTE: 'voted for',
-    UNVOTE: 'unvoted',
-    NEW_SECOND_SIGNATURE: 'New second signature: {address}',
-    NEW_DELEGATE_REGISTRATION: 'New delegate: {address} registered as {username}',
-    NEW_VOTE: 'New vote: {address} {voteUnvote} {publicKey}',
-    NEW_TRANSFER_SENT: 'New transfer: {amount} sent from {sender} to {recipient}',
-    NEW_TRANSFER_RECEIVED: 'New transfer: {amount} received from {sender} to {recipient}'
+    GROUP_1: {
+      VOTE: 'voted for',
+      UNVOTE: 'unvoted',
+      NEW_SECOND_SIGNATURE: 'New second signature: {address}',
+      NEW_DELEGATE_REGISTRATION: 'New leader: {address} registered as {username}',
+      NEW_VOTE: 'New vote: {address} {voteUnvote} {publicKey}',
+      NEW_MULTI_SIGNATURE: 'New multisignature registration: {address}',
+      NEW_IPFS: 'New IPFS hash: {address}',
+      NEW_MULTI_PAYMENT_SENT: 'New multipayment: {amount} sent from {sender} to {recipient}',
+      NEW_MULTI_PAYMENT_RECEIVED: 'New multipayment: {amount} received from {sender} to {recipient}',
+      NEW_DELEGATE_RESIGNATION: 'New leader resignation: {address} registered as {username}',
+      NEW_TRANSFER_SENT: 'New transfer: {amount} sent from {sender} to {recipient}',
+      NEW_TRANSFER_RECEIVED: 'New transfer: {amount} received from {sender} to {recipient}'
+    },
+    GROUP_2: {
+      NEW_BUSINESS_REGISTRATION: 'New business registration: {address} business {name}',
+      NEW_BUSINESS_RESIGNATION: 'New business resignation: {address}',
+      NEW_BUSINESS_UPDATE: 'New business update: {address} business {name}',
+      NEW_BRIDGECHAIN_REGISTRATION: 'New bridgechain registration: {address} bridgechain {name}',
+      NEW_BRIDGECHAIN_RESIGNATION: 'New bridgechain resignation: {address} bridgechain {name}',
+      NEW_BRIDGECHAIN_UPDATE: 'New bridgechain update: {address} bridgechain {name}'
+    }
   },
 
   TRANSACTION_FORM: {
@@ -920,14 +1198,30 @@ export default {
 
   WALLET_HEADING: {
     ACTIONS: {
-      WALLET_NAME: 'Wallet name',
-      CONTACT_NAME: 'Contact name',
-      REGISTER_DELEGATE: 'Register delegate',
-      SECOND_PASSPHRASE: '2nd passphrase',
-      DELETE_WALLET: 'Delete wallet',
-      SHOW_PUBLIC_KEY: 'Show public key',
-      SHOW_ADDRESS: 'Show address'
+      WALLET_NAME: 'Wallet Name',
+      CONTACT_NAME: 'Contact Name',
+      REGISTER_MULTISIGNATURE: 'Register Multisignature',
+      REGISTER_DELEGATE: 'Register Leader',
+      RESIGN_DELEGATE: 'Resign Leader',
+      SECOND_PASSPHRASE: 'Second Passphrase',
+      DELETE_WALLET: 'Delete Wallet',
+      SHOW_PUBLIC_KEY: 'Show Public Key',
+      SHOW_ADDRESS: 'Show Address',
+
+      BUSINESS: {
+        REGISTER: 'Register Business',
+        RESIGN: 'Resign Business',
+        UPDATE: 'Update Business',
+        CANNOT_RESIGN: 'You must resign all bridgechains first'
+      },
+
+      BRIDGECHAIN: {
+        REGISTER: 'Register Bridgechain',
+        RESIGN: 'Resign Bridgechain',
+        UPDATE: 'Update Bridgechain'
+      }
     },
+    PENDING_BALANCE: '{amount} including 1 unconfirmed transaction | {amount} including {n} unconfirmed transactions',
     SECOND_PASSPHRASE_ENABLED: 'Second Signature Enabled'
   },
 
@@ -961,11 +1255,19 @@ export default {
   },
 
   WALLET_DELEGATES: {
+    STATUS: {
+      TITLE: 'Status',
+      ACTIVE: 'Active',
+      STANDBY: 'Standby',
+      RESIGNED: 'Resigned'
+    },
     RANK: 'Rank',
     USERNAME: 'Username',
     RANK_BANNER: 'Rank: {rank}',
+    RANK_NOT_APPLICABLE: 'Not applicable',
+    RANK_NOT_AVAILABLE: 'Not yet available',
     APPROVAL: 'Vote %',
-    FORGED: 'Forged',
+    FORGED: 'Minted',
     BLOCKS: 'Blocks',
     VOTERS: 'Voters',
     UNVOTE: 'Unvote',
@@ -973,21 +1275,71 @@ export default {
     VOTE: 'Vote',
     USERNAME_EMPTY_ERROR: 'The username must have at least 1 character',
     USERNAME_ERROR: 'No special characters or uppercase allowed',
-    USERNAME_EXISTS: 'A delegate with this username already exists',
+    USERNAME_EXISTS: 'A leader with this username already exists',
     USERNAME_MAX_LENGTH_ERROR: 'The username must be less than or equal to 20 characters long',
-    ALREADY_REGISTERED: 'This wallet is already registered as a delegate',
+    ALREADY_REGISTERED: 'This wallet is already registered as a leader',
+    NOT_REGISTERED: 'This wallet is not registered as a leader',
     BLOG: 'Voting Guide',
-    EXPLANATION: 'Voting is an optional, but important mechanism that keeps the ARK network secure. The {delegates} delegates with the most votes from the network are responsible for verifying and forging transactions into new blocks. This page can be used to cast your vote for a delegate that you support. Learn more about voting for a delegate by clicking on the following link:',
-    VOTE_DELEGATE: 'Vote Delegate {delegate}',
-    UNVOTE_DELEGATE: 'Unvote Delegate {delegate}',
+    EXPLANATION: 'Voting is an optional, but important mechanism that keeps the T69 network secure. The {delegates} leaders with the most votes from the network are responsible for verifying and forging transactions into new blocks. This page can be used to cast your vote for a leader that you support. Learn more about voting for a leader by clicking on the following link:',
+    VOTE_DELEGATE: 'Vote Leader {delegate}',
+    UNVOTE_DELEGATE: 'Unvote Leader {delegate}',
     CURRENTLY_VOTED: 'You are currently voting for {delegate}',
-    VOTED_FOR: 'You voted for delegate {delegate}',
-    WALLET_VOTED_FOR: 'This wallet voted for delegate {delegate}',
+    VOTED_FOR: 'You voted for leader {delegate}',
+    WALLET_VOTED_FOR: 'This wallet voted for leader {delegate}',
     VOTE_INFO: 'Info:',
-    NO_VOTE: 'This wallet is not voting. To view more information and vote, use the search or click on any delegate',
+    NO_VOTE: 'This wallet is not voting. To view more information and vote, use the search or click on any leader',
     AWAITING_VOTE_CONFIRMATION: 'Your {type} is awaiting confirmation',
     LOADING_VOTE: 'Loading vote details...',
-    SEARCH_DELEGATE: 'Search delegate'
+    SEARCH_DELEGATE: 'Search leader'
+  },
+
+  WALLET_IPFS: {
+    HEADER: 'IPFS Hash',
+    DESCRIPTION: 'Store an IPFS hash on the network',
+    BUTTON_STORE_HASH: 'Store Hash',
+    MESSAGE: 'IPFS Hash',
+    SIGNATURE: 'IPFS Hash',
+    HASH: 'Hash',
+    HASH_ERROR: 'The IPFS Hash is not a valid hash'
+  },
+
+  WALLET_MULTI_SIGNATURE: {
+    HEADER: 'Multisignature',
+    DESCRIPTION: 'Pending transactions requiring your signature',
+    BUTTON_SET_PEER: 'Set Peer'
+  },
+
+  WALLET_BUSINESS: {
+    BUTTON_REGISTER_BRIDGECHAIN: 'Register Bridgechain',
+    HEADER: 'Bridgechains',
+    DESCRIPTION: 'All bridgechains registered for this business',
+    NAME: 'Name',
+    NAME_ERROR: 'No special characters or uppercase allowed',
+    WEBSITE: 'Website',
+    VAT: 'VAT',
+    REPOSITORY: 'Repository',
+    NO_TRANSACTIONS: 'This wallet has no bridgechains',
+    NOT_REGISTERED: 'This wallet is not registered as a business',
+    COLUMN: {
+      NAME: 'Name',
+      SEEDS: 'Seeds',
+      GENESIS_HASH: 'Genesis Hash',
+      REPOSITORY: 'Repository'
+    },
+    BRIDGECHAIN: {
+      NAME: 'Name',
+      SEED_NODES: 'Seed Nodes',
+      GENESIS_HASH: 'Genesis Hash',
+      BRIDGECHAIN_REPOSITORY: 'Bridgechain Repository',
+      BRIDGECHAIN_ASSET_REPOSITORY: 'Bridgechain Asset Repository',
+      API_PORT: 'API Port',
+      NOT_REGISTERED: 'This bridgechain is not registered',
+      RESIGNED: 'Resigned',
+      BUTTON: {
+        RESIGN: 'Resign',
+        UPDATE: 'Update'
+      }
+    }
   },
 
   WALLET_GRID: {
@@ -1018,12 +1370,34 @@ export default {
     QUESTION: 'Are you sure you want to remove this wallet?'
   },
 
+  PLUGIN_REMOVAL_CONFIRMATION: {
+    NOTE: 'Uninstalling this plugin will remove it from all profiles on this system',
+    QUESTION: 'Are you sure you want to remove \'{plugin}\'?',
+    OPTIONS: {
+      DATA: 'Also delete all plugin data and settings?'
+    },
+    SUCCESS: 'The plugin \'{plugin}\' has been uninstalled',
+    ERROR: 'Could not remove plugin: {error}'
+  },
+
+  PLUGIN_BLACKLIST_CONFIRMATION: {
+    NOTE: 'By blacklisting the plugin it will be disabled on all profiles and will no longer appear in the Plugin Manager',
+    QUESTION: 'Do you want to blacklist \'{plugin}\'?'
+  },
+
+  BLACKLIST_DISCLAIMER_CONFIRMATION: {
+    QUESTION: 'Are you sure you want to disable the blacklist?',
+    NOTE: 'Warning: By turning off filtering, you will be viewing third-party plugins that have not been tested and approved by tycoonchain.com and T69 SCIC. We make no warranties, expressed or implied, as to the sustainability, availability, security, of the third-party plugin. We are not responsible for any of the content presented as a result of viewing, installing, or running any of these third-party plugins. tycoonchain.com and T69 SCIC shall bear no liability for any loss suffered by using third-party plugins. By clicking "I Accept" you acknowledge that unverified third-party plugins may have bugs, glitches, lack of functionality, or can cause damage to your machine or result in the loss of data.',
+    ACCEPT: 'I Accept',
+    CANCEL: 'Cancel'
+  },
+
   WALLET_TRANSACTIONS: {
     TRANSACTION_ID: 'Transaction ID',
     RECIPIENT: 'Recipient',
     SENDER: 'Sender',
     AMOUNT: 'Amount',
-    NEW_TRANSACTIONS: 'This wallet has {count} new transaction{plural}. Press the refresh button to update.'
+    NEW_TRANSACTIONS: '0 | This wallet has 1 new transaction. Press the refresh button to update. | This wallet has {count} new transactions. Press the refresh button to update.'
   },
 
   WALLET_TABLE: {

@@ -1,5 +1,5 @@
 import { isEmpty, random, shuffle } from 'lodash'
-import { PeerDiscovery } from '@arkecosystem/peers'
+import { PeerDiscovery } from '@tycoon69-labs/peers'
 import ClientService from '@/services/client'
 import config from '@config'
 import i18n from '@/i18n'
@@ -43,7 +43,7 @@ export default {
       }
 
       if (ignoreCurrent) {
-        const currentPeer = getters['current']()
+        const currentPeer = getters.current()
         if (currentPeer) {
           peers = peers.filter(peer => {
             return peer.ip !== currentPeer.ip
@@ -60,7 +60,7 @@ export default {
      * @return {(Object|undefined)}
      */
     get: (_, getters) => ip => {
-      return getters['all']().find(peer => peer.ip === ip)
+      return getters.all().find(peer => peer.ip === ip)
     },
 
     /**
@@ -69,7 +69,7 @@ export default {
      * @return {(Object|null)}
      */
     best: (_, getters) => (ignoreCurrent = true, networkId = null) => {
-      const peers = getters['bestPeers'](undefined, ignoreCurrent)
+      const peers = getters.bestPeers(undefined, ignoreCurrent)
       if (!peers) {
         return null
       }
@@ -83,7 +83,7 @@ export default {
      * @return {Object[]} containing peer objects
      */
     randomPeers: (_, getters) => (amount = 5, networkId = null) => {
-      const peers = getters['all'](true) // Ignore current peer
+      const peers = getters.all(true) // Ignore current peer
       if (!peers.length) {
         return []
       }
@@ -122,9 +122,9 @@ export default {
      * @return {Object[]} containing peer objects
      */
     broadcastPeers: (_, getters) => (networkId = null) => {
-      const bestPeers = getters['bestPeers'](10, false, networkId)
-      const randomPeers = getters['randomPeers'](5, networkId)
-      const seedPeers = getters['randomSeedPeers'](5, networkId)
+      const bestPeers = getters.bestPeers(10, false, networkId)
+      const randomPeers = getters.randomPeers(5, networkId)
+      const seedPeers = getters.randomSeedPeers(5, networkId)
       let peers = bestPeers.concat(randomPeers)
       if (seedPeers.length) {
         peers = peers.concat(seedPeers)
@@ -139,7 +139,7 @@ export default {
      * @return {Object[]}
      */
     bestPeers: (_, getters) => (maxRandom = 10, ignoreCurrent = true, networkId = null) => {
-      const peers = getters['all'](ignoreCurrent)
+      const peers = getters.all(ignoreCurrent)
       if (!peers.length) {
         return []
       }
@@ -215,6 +215,27 @@ export default {
 
   actions: {
     /**
+     * Set peers for specific network.
+     * @param  {Object[]} peers
+     * @param  {Number} networkId
+     * @return {void}
+     */
+    setToNetwork ({ commit }, { peers, networkId }) {
+      commit('SET_PEERS', {
+        peers: peers.map(peer => {
+          try {
+            return PeerModel.deserialize(peer)
+          } catch (error) {
+            this._vm.$logger.error(`Could not deserialize peer: ${error.message}`)
+          }
+
+          return null
+        }).filter(peer => peer !== null),
+        networkId
+      })
+    },
+
+    /**
      * Set peers for current network.
      * @param  {Object[]} peers
      * @return {void}
@@ -252,7 +273,6 @@ export default {
 
       if (peer) {
         this._vm.$client.host = getBaseUrl(peer)
-        this._vm.$client.capabilities = peer.version
 
         // TODO only when necessary (when / before sending) (if no dynamic)
         await dispatch('transaction/updateStaticFees', null, { root: true })
@@ -264,10 +284,10 @@ export default {
     },
 
     /**
-     * Refresh peer list.
-     * @return {void}
+     * Get Peer Discovery instance.
+     * @return {PeerDiscovery}
      */
-    async refresh ({ dispatch, getters, rootGetters }, network = null) {
+    async getPeerDiscovery ({ dispatch, getters, rootGetters }, network = null) {
       if (!network) {
         network = rootGetters['session/network']
       }
@@ -277,47 +297,60 @@ export default {
       }
 
       const networkLookup = {
-        'ark.mainnet': 'mainnet',
-        'ark.devnet': 'devnet'
+        't69.mainnet': 'mainnet',
+        't69.devnet': 'devnet'
       }
 
-      let peerDiscovery = null
       if (networkLookup[network.id]) {
-        peerDiscovery = await PeerDiscovery.new({
+        return PeerDiscovery.new({
           networkOrHost: networkLookup[network.id]
         })
-      } else if (getters['current']()) {
-        const peerUrl = getBaseUrl(getters['current']())
-        peerDiscovery = await PeerDiscovery.new({
+      } else if (getters.current()) {
+        const peerUrl = getBaseUrl(getters.current())
+
+        return PeerDiscovery.new({
           networkOrHost: `${peerUrl}/api/v2/peers`
-        })
-      } else {
-        peerDiscovery = await PeerDiscovery.new({
-          networkOrHost: `${network.server}/api/v2/peers`
         })
       }
 
-      peerDiscovery.withLatency(300)
-        .sortBy('latency')
+      return PeerDiscovery.new({
+        networkOrHost: `${network.server}/api/v2/peers`
+      })
+    },
 
-      let peers = await peerDiscovery
-        .findPeersWithPlugin('core-api', {
-          additional: [
-            'height',
-            'latency',
-            'version'
-          ]
-        })
+    /**
+     * Refresh peer list.
+     * @return {void}
+     */
+    async refresh ({ dispatch, getters, rootGetters }, network = null) {
+      let peers = []
 
-      if (!peers.length) {
+      try {
+        const peerDiscovery = await dispatch('getPeerDiscovery', network)
+
+        peerDiscovery.withLatency(300)
+          .sortBy('latency')
+
         peers = await peerDiscovery
-          .findPeersWithPlugin('core-wallet-api', {
+          .findPeersWithPlugin('core-api', {
             additional: [
               'height',
-              'latency',
-              'version'
+              'latency'
             ]
           })
+
+        if (!peers.length) {
+          peers = await peerDiscovery
+            .findPeersWithPlugin('core-wallet-api', {
+              additional: [
+                'height',
+                'latency',
+                'version'
+              ]
+            })
+        }
+      } catch (error) {
+        console.error('Could not refresh peer list:', error)
       }
 
       if (!peers.length) {
@@ -342,7 +375,7 @@ export default {
         }
       }
 
-      let peer = network ? getters['best'](true, network.id) : getters['best']()
+      let peer = network ? getters.best(true, network.id) : getters.best()
       if (!peer) {
         return null
       }
@@ -366,7 +399,7 @@ export default {
      */
     async connectToBest ({ dispatch, getters }, { refresh = true, skipIfCustom = true }) {
       if (skipIfCustom) {
-        const currentPeer = getters['current']()
+        const currentPeer = getters.current()
         if (!isEmpty(currentPeer) && currentPeer.isCustom) {
           // TODO only when necessary (when / before sending) (if no dynamic)
           await dispatch('transaction/updateStaticFees', null, { root: true })
@@ -409,7 +442,7 @@ export default {
     async updateCurrentPeerStatus ({ dispatch, getters }, currentPeer) {
       let updateCurrentPeer = false
       if (isEmpty(currentPeer)) {
-        currentPeer = { ...getters['current']() }
+        currentPeer = { ...getters.current() }
         updateCurrentPeer = true
       }
       if (isEmpty(currentPeer)) {
@@ -473,7 +506,7 @@ export default {
      * @param  {Number} [timeout=3000]
      * @return {(Object|String)}
      */
-    async validatePeer ({ rootGetters }, { host, ip, port, ignoreNetwork = false, timeout = 3000 }) {
+    async validatePeer ({ rootGetters }, { host, ip, port, nethash, ignoreNetwork = false, timeout = 3000 }) {
       let networkConfig
       if (!host && ip) {
         host = ip
@@ -486,12 +519,12 @@ export default {
       try {
         networkConfig = await ClientService.fetchNetworkConfig(baseUrl, timeout)
       } catch (error) {
-        //
+        console.error('Could not get network config:', error)
       }
 
       if (!networkConfig) {
         return i18n.t('PEER.NO_CONNECT')
-      } else if (!ignoreNetwork && networkConfig.nethash !== rootGetters['session/network'].nethash) {
+      } else if (!ignoreNetwork && networkConfig.nethash !== (nethash || rootGetters['session/network'].nethash)) {
         return i18n.t('PEER.WRONG_NETWORK')
       }
 
@@ -505,6 +538,7 @@ export default {
       } catch (error) {
         //
       }
+
       if (!peerStatus) {
         return i18n.t('PEER.STATUS_CHECK_FAILED')
       }

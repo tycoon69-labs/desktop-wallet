@@ -43,7 +43,7 @@
           />
 
           <!-- Announcements -->
-          <MenuNavigationItem
+          <!-- <MenuNavigationItem
             id="announcements"
             :title="$t('APP_SIDEMENU.ANNOUNCEMENTS')"
             class="AppSidemenu__item"
@@ -51,18 +51,18 @@
             :show-badge="showUnread"
             icon="whitepaper"
             @click="redirect($event)"
-          />
+          /> -->
 
-          <!-- Plugins -->
-          <MenuNavigationItem
-            id="plugins"
-            :title="$t('APP_SIDEMENU.PLUGINS')"
+          <!-- Plugin Manager -->
+          <!-- <MenuNavigationItem
+            id="plugin-manager"
+            :title="$t('APP_SIDEMENU.PLUGIN_MANAGER')"
             :is-horizontal="isHorizontal"
             :can-activate="false"
             class="AppSidemenu__item"
-            icon="plugins"
+            icon="manage-plugins"
             @click="redirect($event)"
-          />
+          /> -->
 
           <!-- Plugin pages -->
           <MenuNavigationItem
@@ -72,7 +72,7 @@
             :is-horizontal="isHorizontal"
             :can-activate="false"
             class="AppSidemenu__item"
-            icon="more"
+            icon="my-plugins"
             @click="toggleShowPluginMenu"
           />
 
@@ -87,7 +87,7 @@
         <div class="flexify">
           <!-- Important notification / new releases -->
           <AppSidemenuImportantNotification
-            v-if="isImportantNotificationVisible && hasNewRelease"
+            v-if="false && isImportantNotificationVisible && hasAvailableRelease"
             :is-horizontal="isHorizontal"
             class="AppSidemenu__item"
             @close="hideImportantNotification"
@@ -104,6 +104,7 @@
           <AppSidemenuNetworkStatus
             :is-horizontal="isHorizontal"
             :outside-click="true"
+            :hidden="true"
           />
 
           <!-- Profile settings -->
@@ -139,9 +140,7 @@
 </template>
 
 <script>
-import semver from 'semver'
 import { mapGetters } from 'vuex'
-import releaseService from '@/services/release'
 import AppSidemenuPlugins from './AppSidemenuPlugins'
 import AppSidemenuSettings from './AppSidemenuSettings'
 import AppSidemenuNetworkStatus from './AppSidemenuNetworkStatus'
@@ -182,12 +181,9 @@ export default {
 
   computed: {
     ...mapGetters({
-      latestReleaseVersion: 'app/latestReleaseVersion',
+      hasAvailableRelease: 'updater/hasAvailableRelease',
       unreadAnnouncements: 'announcements/unread'
     }),
-    hasNewRelease () {
-      return semver.lt(releaseService.currentVersion, this.latestReleaseVersion || releaseService.currentVersion)
-    },
     showUnread () {
       return this.unreadAnnouncements.length > 0
     },

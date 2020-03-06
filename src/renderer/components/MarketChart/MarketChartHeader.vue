@@ -9,7 +9,7 @@
     </div>
 
     <Transition name="fade">
-      <div v-if="isExpanded">
+      <div v-if="false && isExpanded">
         <button
           v-for="(translation, period) in $options.periods"
           :key="period"
@@ -25,7 +25,10 @@
       </div>
     </Transition>
 
-    <div class="mt-1">
+    <div
+      v-if="false"
+      class="mt-1"
+    >
       <span class="text-lg font-semibold mr-4 mt-4">
         {{ $t('MARKET_CHART_HEADER.SHOW_CHART') }}
       </span>

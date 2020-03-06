@@ -2,8 +2,8 @@ export default {
   COMMON: {
     ADDRESS: 'Indirizzo',
     ALL: 'Tutto',
-    APP_NAME: 'ARK Desktop Wallet',
-    APP_NAME_SHORT: 'ARK Desktop',
+    APP_NAME: 'T69 Desktop Wallet',
+    APP_NAME_SHORT: 'T69 Desktop',
     APPEARANCE: 'Aspetto',
     AVATAR: 'Avatar',
     BACK: 'Indietro',
@@ -69,29 +69,29 @@ export default {
       OWNER: 'Questo porta anche a maggiori responsabilità nei tuoi confronti, il proprietario del conto',
       WARNING: {
         ACCOUNT: 'A differenza del tuo conto bancario tradizionale, {CANNOT_RESTORE}',
-        CANNOT_RESTORE: 'password perdute, frasi segrete o fondi rubati non potranno essere ripristinati dal team ARK , dai Delegati e da nessun altro.'
+        CANNOT_RESTORE: 'password perdute, frasi segrete o fondi rubati non potranno essere ripristinati dal team T69 , dai Delegati e da nessun altro.'
       },
       SECURITY: 'La sicurezza del tuo conto spetta esclusivamente a te.'
     },
     RESPONSIBILITY: {
       TITLE: 'La tua Responsabilità',
       STORAGE: {
-        EXPLANATION: 'La {PASSPHRASE} di ogni indirizzo portafoglio può firmare transazioni e muovere i fondi. Questo significa che se il tuo computer "muore", ma tu possiedi la tua frase segreta, potrai ancora accedere ai tuoi fondi. L\'ARK Desktop Wallet ha un\'ulteriore funzionalità che ti permette di settare anche un {ENCRYPTED}, per agevolare la gestione. Se il tuo computer "muore", non sarà possibile utilizzare la password cifrata per accedere ai fondi da una macchina differente. {NEED}.',
+        EXPLANATION: 'La {PASSPHRASE} di ogni indirizzo portafoglio può firmare transazioni e muovere i fondi. Questo significa che se il tuo computer "muore", ma tu possiedi la tua frase segreta, potrai ancora accedere ai tuoi fondi. L\'T69 Desktop Wallet ha un\'ulteriore funzionalità che ti permette di settare anche un {ENCRYPTED}, per agevolare la gestione. Se il tuo computer "muore", non sarà possibile utilizzare la password cifrata per accedere ai fondi da una macchina differente. {NEED}.',
         PASSPHRASE: 'frase segreta',
         ENCRYPTED: 'password cifrata',
         NEED: 'Avrai bisogno della frase segreta'
       },
       BACKUP: {
         ALWAYS: 'Effettua sempre il backup della frase segreta e conservala in un luogo sicuro.',
-        OPTIONS: 'È possibile scriverla su carta spessa e archiviarne più copie in posti sicuri. È inoltre possibile memorizzarla su un\'unità flash crittografata. In alternativa, è possibile utilizzare un dispositivo hardware USB Ledger Nano S, disponibile su Ledger.com, per archiviare e accedere ai fondi e all\'ARK Desktop Wallet. Puoi collegare il tuo Ledger Nano S al tuo computer e accedere alla blockchain ARK senza dover inserire la tua frase segreta.'
+        OPTIONS: 'È possibile scriverla su carta spessa e archiviarne più copie in posti sicuri. È inoltre possibile memorizzarla su un\'unità flash crittografata. In alternativa, è possibile utilizzare un dispositivo hardware USB Ledger Nano S, disponibile su Ledger.com, per archiviare e accedere ai fondi e all\'T69 Desktop Wallet. Puoi collegare il tuo Ledger Nano S al tuo computer e accedere alla blockchain T69 senza dover inserire la tua frase segreta.'
       },
       REMEMBER: 'Ricorda, chiunque abbia la frase segreta può accedere ai tuoi fondi. Non condividere mai il tuo conto con nessuno ed evita di memorizzarlo in luoghi che sono suscettibili di hack, come il Cloud.'
     },
     TURN: {
       TITLE: 'Il tuo Turno',
-      KNOWLEDGE: 'Ora, armato della consapevolezza di quanto sia importante mantenere al sicuro le tue frasi segrete, sei pronto a rivendicare la tua autonomia finanziaria con ARK Desktop Wallet.',
-      SUPPORT: 'ARK è un ecosistema open source e se hai bisogno di assistenza, la community e il team ARK sono qui per aiutarti. Crea un post su reddit.ark.io o unisciti al sistema di chat in tempo reale su slack.ark.io.',
-      CONCLUSION: 'Tutti qui, al team di ARK.io, speriamo ti piacerà utilizzare l\'ARK Desktop Wallet e partecipare alla rivoluzione blockchain!'
+      KNOWLEDGE: 'Ora, armato della consapevolezza di quanto sia importante mantenere al sicuro le tue frasi segrete, sei pronto a rivendicare la tua autonomia finanziaria con T69 Desktop Wallet.',
+      SUPPORT: 'T69 è un ecosistema open source e se hai bisogno di assistenza, la community e il team T69 sono qui per aiutarti. Crea un post su reddit.tycoonchain.com o unisciti al sistema di chat in tempo reale su slack.tycoonchain.com.',
+      CONCLUSION: 'Tutti qui, al team di tycoonchain.com, speriamo ti piacerà utilizzare l\'T69 Desktop Wallet e partecipare alla rivoluzione blockchain!'
     }
   },
 
@@ -118,10 +118,11 @@ export default {
 
   PEER: {
     BEST: 'Connetti al migliore',
+    CONFIG_CHECK_FAILED: 'Controllo configurazione fallito',
     CONNECTED: 'Connesso al peer',
     CONNECT_CUSTOM: 'Connetti peer personalizzato',
     CONNECT_FAILED: 'Impossibile connettersi al peer',
-    DELAY: 'Ritardo',
+    LATENCY: 'Latenza',
     DISCONNECT: 'Disconnesso dal peer',
     FAILED_REFRESH: 'Impossibile aggiornare i peers',
     HEIGHT: 'Altezza Blocco',
@@ -224,7 +225,7 @@ export default {
   },
 
   APP_FOOTER: {
-    TEXT: 'Fatto con ♥ da ARK'
+    TEXT: 'Fatto con ♥ da T69'
   },
 
   APP_SIDEMENU: {
@@ -260,8 +261,18 @@ export default {
   },
 
   APP_SIDEMENU_NOTIFICATION: {
-    NOTIFICATION: 'Una nuova versione ({version}) è stata rilasciata. Aggiorna ora!',
     TOOLTIP: 'La nuova versione ({version}) è stata rilasciata!'
+  },
+
+  APP_UPDATER: {
+    RELEASE_NOTES: 'Note di rilascio',
+    DOWNLOAD_NOW: 'Si, scarica ora',
+    MAYBE_LATER: 'No, forse più tardi',
+    DOWNLOADING: 'Scaricamento {version}',
+    DOWNLOADED: 'Scaricato {version}',
+    QUIT_AND_INSTALL: 'Esci e installa',
+    UNKNOWN_ERROR: 'Errore sconosciuto. Chiudi questa finestra e riprova.',
+    NETWORK_ERROR: 'Sembra che il tuo file non venga scaricato. Verifica la tua connessione.'
   },
 
   MARKET_CHART: {
@@ -292,7 +303,7 @@ export default {
 
   MARKET_CHART_HEADER: {
     PRICE: '{currency} Prezzo',
-    SHOW_CHART: 'Show chart'
+    SHOW_CHART: 'Mostra grafico'
   },
 
   BUTTON_CLIPBOARD: {
@@ -379,7 +390,7 @@ export default {
       EXPORT_WALLETS: 'Impossibile esportare i tuoi protafogli'
     },
     EXPORT: 'Esporta 0 Portafogli | Esporta 1 Portafoglio | Esporta {count} Portafogli',
-    INSTRUCTIONS: 'I tuoi portafogli esportati non conterranno le tue frasi segrete, verranno salvati solamente gli indirizzi e i rispettivi nomi!',
+    INSTRUCTIONS: '<b>Importante:</b> I tuoi portafogli esportati non conterranno le tue frasi segrete, verranno salvati solamente gli indirizzi e i rispettivi nomi!',
     OPTIONS: {
       ADD_NETWORK: 'Aggiungi informazioni sulla rete',
       EXCLUDE_EMPTY: 'Escludi portafogli vuoti',
@@ -509,7 +520,7 @@ export default {
       },
       TITLE: 'Inserisci l\'indirizzo del contatto',
       ADDRESS: 'Indirizzo',
-      NAME: 'Nome contatto (opzionala)',
+      NAME: 'Nome contatto (opzionale)',
       NAME_INFO: 'Info:',
       NAME_DESCRIPTION: 'Il nome del contatto non è richiesto, ma può essere utilizzato per comodità dell\'utente',
       FAILED: 'Fallito nel creare il contatto',
@@ -559,17 +570,17 @@ export default {
         TITLE: '1. Dettagli profilo',
         AVATAR: 'Seleziona il tuo avatar preferito o la prima lettera del nome del tuo profilo'
       },
+      // STEP2: {
+      //   INSTRUCTIONS: {
+      //     HEADER: 'Selezione rete',
+      //     TEXT: 'Seleziona la rete di questo profilo'
+      //   },
+      //   CUSTOM_NETWORK: 'oppure scegli una rete personalizzata',
+      //   CUSTOM_NETWORK_EXPLAIN: 'Puoi selezionare la tua rete personalizzata o scegliere una delle reti disponibili.',
+      //   NAME: 'Nome profilo',
+      //   TITLE: '2. Rete'
+      // },
       STEP2: {
-        INSTRUCTIONS: {
-          HEADER: 'Selezione rete',
-          TEXT: 'Seleziona la rete di questo profilo'
-        },
-        CUSTOM_NETWORK: 'oppure scegli una rete personalizzata',
-        CUSTOM_NETWORK_EXPLAIN: 'Puoi selezionare la tua rete personalizzata o scegliere una delle reti disponibili.',
-        NAME: 'Nome profilo',
-        TITLE: '2. Rete'
-      },
-      STEP3: {
         INSTRUCTIONS: {
           HEADER: 'Aspetto',
           TEXT: 'Personalizza questa applicazione scegliendo uno dei nostri temi e sfondi'
@@ -578,7 +589,7 @@ export default {
         THEME: 'Scegli modalità chiara o modalità scura',
         BACKGROUND: 'Scegli il tuo sfondo preferito',
         NAME: 'Nome profilo',
-        TITLE: '3. Aspetto'
+        TITLE: '2. Aspetto'
       }
     },
 
@@ -612,7 +623,7 @@ export default {
 
     WALLET_EXCHANGE: {
       CHANGELLY_TERMS: {
-        TITLE: 'Acquista {ticker} direttamente dall\'ARK Desktop Wallet tramite la nostra integrazione di Changelly',
+        TITLE: 'Acquista {ticker} direttamente dall\'T69 Desktop Wallet tramite la nostra integrazione di Changelly',
         CONTENT: 'Changelly ti permette di scambiare altre criptovalute in {ticker} ed ha un\'opzione per acquistare {ticker} direttamente tramite le tue carte di credito o di debito.',
         CONFIRMATION: 'Ho letto e sono d\'accordo con i termini {terms} e {privacy} di Changelly. Facendo clic su {button}, riconosco e comprendo che la mia transazione potrebbe attivare la verifica AML/KYC in conformità con Changelly {kyc}.',
         TERMS_OF_USE: 'termini d\'uso',
@@ -726,15 +737,9 @@ export default {
 
     WALLET_SHOW: {
       NO_VOTE: 'Il portafoglio non ha votato',
-      ADD_CONTACT: 'Aggiungi ai contatti'
+      ADD_CONTACT: 'Aggiungi ai contatti',
+      VOTING_FOR: 'Votando per {delegate}'
     }
-  },
-
-  PLUGIN_ENABLE_CONFIRMATION: {
-    QUESTION: 'Sei sicuro di voler attivare il plugin "{name}"?',
-    NO: 'No, tenerlo disattivato',
-    NOTICE: 'ATTENZIONE: accettando questa dichiarazione di non responsabilità, confermi di aggiungere al portafoglio desktop un plugin di terze parti, non testato e non verificato. ARK SCIC non si assume alcuna responsabilità per eventuali danni causati da questo plug-in e non si assume alcuna responsabilità di testare i plugin per vulnerabilità di sicurezza. I test di sicurezza e l\'individuazione delle vulnerabilità sono di esclusiva responsabilità dell\'autore del plug-in. ARK SCIC non rilascia alcuna garanzia, espressa o implicita, in merito alle condizioni di commerciabilità o idoneità per scopi particolari di qualsiasi plugin di terze parti. ARK SCIC non rilascia dichiarazioni in merito a sicurezza, validità o non violazione di plug-in di terze parti. Qualsiasi plug-in di terze parti utilizzato viene eseguito a proprio rischio.',
-    YES: 'Si, attiva'
   },
 
   PLUGIN_TABLE: {
@@ -789,7 +794,7 @@ export default {
       UNVOTE: 'Voto Rimosso',
       MULTI_SIGNATURE: 'Firma-Multipla',
       IPFS: 'IPFS',
-      TIMELOCK_TRANSFER: 'Trasferimneto Timelock',
+      HTLC_TRANSFER: 'Trasferimneto Timelock',
       MULTI_PAYMENT: 'Pagamento Multiplo',
       DELEGATE_RESIGNATION: 'Dimissioni Delegato'
     },
@@ -801,14 +806,16 @@ export default {
       UNVOTE: 'Impossibile registrare la rimozione del voto',
       MULTI_SIGNATURE: 'Impossibile creare firma-multipla',
       IPFS: 'IPFS',
-      TIMELOCK_TRANSFER: 'Impossibile creare trasferimento Timelock',
+      HTLC_TRANSFER: 'Impossibile creare trasferimento Timelock',
       MULTI_PAYMENT: 'Impossibile creare pagamento multiplo',
       DELEGATE_RESIGNATION: 'La dimissione del Delegato non è andata a buon fine',
       SAVE_OFFLINE: 'Impossibile salvare il file transazione',
       LOAD_FROM_FILE: 'Impossibile caricare il file transazione',
       EXPIRED: 'Transazione scaduta prima di essere proccessata: {transactionId}',
       FEE_TOO_LOW: 'La transazione non può essere inviata perchè la commissione ({fee}) è troppo bassa',
-      NOTHING_SENT: 'La transazione non può essere inviata. Controlla la tua connessione di rete o cambia peer'
+      NOTHING_SENT: 'La transazione non può essere inviata. Controlla la tua connessione di rete o cambia peer',
+      NETWORK_NOT_CONFIGURED: 'Rete non configurata',
+      WALLET_NOT_IMPORTED: 'Wallet non importato'
     },
     FOOTER_TEXT: {
       DELEGATE_REGISTRATION: 'Tieni presente che non è possibile modificare il nome del Delegato dopo che la registrazione è stata registrata sulla blockchain.'
@@ -825,7 +832,7 @@ export default {
       UNVOTE: 'Voto rimosso con successo',
       MULTI_SIGNATURE: 'Firma-multipla creata con successo',
       IPFS: 'IPFS',
-      TIMELOCK_TRANSFER: 'Trasferimento Timelock creato con successo',
+      HTLC_TRANSFER: 'Trasferimento Timelock creato con successo',
       MULTI_PAYMENT: 'Pagamento multiplo creato con successo',
       DELEGATE_RESIGNATION: 'Dimissioni Delegato date con successo',
       SAVE_OFFLINE: 'File transazione creato con successo in: {path}',
@@ -928,6 +935,7 @@ export default {
       SHOW_PUBLIC_KEY: 'Mostra chiave pubblica',
       SHOW_ADDRESS: 'Mostra indirizzo'
     },
+    PENDING_BALANCE: '{amount} compreso 1 transazione non confermata | {amount} compreso {n} transazioni non confermate',
     SECOND_PASSPHRASE_ENABLED: 'Seconda firma abilitata'
   },
 
@@ -977,7 +985,7 @@ export default {
     USERNAME_MAX_LENGTH_ERROR: 'Il nome utente deve essere inferiore o uguale a 20 caratteri',
     ALREADY_REGISTERED: 'Questo portafoglio è già registrato come Delegato',
     BLOG: 'Guida al voto',
-    EXPLANATION: 'Il voto è opzionale, ma importante, che mantiene la rete ARK sicura. I 51 delegati con il maggior numero di voti della rete sono responsabili della verifica e della forgiatura di transazioni in nuovi blocchi. Questa pagina può essere utilizzata per esprimere il tuo voto per un delegato che vuoi supportare. Ulteriori informazioni sul voto per un delegato sono disponibili al seguente link:',
+    EXPLANATION: 'Il voto è opzionale, ma importante, che mantiene la rete T69 sicura. I 51 delegati con il maggior numero di voti della rete sono responsabili della verifica e della forgiatura di transazioni in nuovi blocchi. Questa pagina può essere utilizzata per esprimere il tuo voto per un delegato che vuoi supportare. Ulteriori informazioni sul voto per un delegato sono disponibili al seguente link:',
     VOTE_DELEGATE: 'Vota Delegato {delegate}',
     UNVOTE_DELEGATE: 'Rimuovi voto a Delegato {delegate}',
     CURRENTLY_VOTED: 'Al momento hai votato per {delegate}',
@@ -1023,7 +1031,7 @@ export default {
     RECIPIENT: 'Destinatario',
     SENDER: 'Mittente',
     AMOUNT: 'Importo',
-    NEW_TRANSACTIONS: 'Questo portafoglio ha {count} nuova/e transazione/i. Premi il pulsante ricarica per aggiornare.'
+    NEW_TRANSACTIONS: '0 | Questo portafoglio ha 1 nuova transazione. Premi il pulsante ricarica per aggiornare. | Questo portafoglio ha {count} nuove transazioni. Premi il pulsante ricarica per aggiornare.'
   },
 
   WALLET_TABLE: {

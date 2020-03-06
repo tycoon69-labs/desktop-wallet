@@ -102,7 +102,7 @@
           <template v-if="votedDelegate.rank">
             <i18n
               tag="span"
-              class="font-semibold px-6 border-r border-theme-line-separator"
+              class="font-semibold px-6"
               path="WALLET_DELEGATES.RANK_BANNER"
             >
               <strong place="rank">
@@ -160,13 +160,23 @@
 import electron from 'electron'
 import at from 'lodash/at'
 /* eslint-disable vue/no-unused-components */
-import { WalletSelectDelegate } from '@/components/Wallet'
 import { ButtonGeneric } from '@/components/Button'
 import { TransactionModal } from '@/components/Transaction'
-import { WalletExchange, WalletHeading, WalletTransactions, WalletDelegates, WalletStatistics } from '../'
-import WalletSignVerify from '../WalletSignVerify'
+import {
+  WalletBusiness,
+  WalletDelegates,
+  WalletExchange,
+  WalletHeading,
+  WalletIpfs,
+  WalletMultiSignature,
+  WalletSelectDelegate,
+  WalletSignVerify,
+  WalletStatistics,
+  WalletTransactions
+} from '../'
 import { MenuTab, MenuTabItem } from '@/components/Menu'
 import SvgIcon from '@/components/SvgIcon'
+import WalletService from '@/services/wallet'
 
 export default {
   components: {
@@ -174,9 +184,12 @@ export default {
     MenuTab,
     MenuTabItem,
     TransactionModal,
+    WalletBusiness,
     WalletDelegates,
     WalletExchange,
     WalletHeading,
+    WalletIpfs,
+    WalletMultiSignature,
     WalletSelectDelegate,
     WalletSignVerify,
     WalletStatistics,
@@ -195,7 +208,7 @@ export default {
     return {
       currentTab: '',
       walletVote: {
-        publicKey: null
+        username: null
       },
       isVoting: false,
       isUnvoting: false,
@@ -217,28 +230,53 @@ export default {
           component: 'WalletTransactions',
           componentName: 'WalletTransactions',
           text: this.$t('PAGES.WALLET.TRANSACTIONS')
-        },
-        {
-          component: 'WalletDelegates',
-          componentName: 'WalletDelegates',
-          text: this.$t('PAGES.WALLET.DELEGATES')
         }
       ]
 
-      if (this.currentWallet && !this.currentWallet.isContact && !this.currentWallet.isLedger) {
+      if (this.currentWallet && this.isOwned) {
+        tabs.push({
+          component: 'WalletDelegates',
+          componentName: 'WalletDelegates',
+          text: this.$t('PAGES.WALLET.DELEGATES')
+        })
+
         tabs.push({
           component: 'WalletSignVerify',
           componentName: 'WalletSignVerify',
           text: this.$t('PAGES.WALLET.SIGN_VERIFY')
         })
+
+        // if (this.currentNetwork && this.currentNetwork.market && this.currentNetwork.market.enabled) {
+        //   tabs.push({
+        //     component: 'WalletExchange',
+        //     componentName: 'WalletExchange',
+        //     text: this.$t('PAGES.WALLET.PURCHASE', { ticker: this.currentNetwork.market.ticker })
+        //   })
+        // }
       }
 
-      if (this.currentNetwork && !this.currentWallet.isContact && this.currentNetwork.market && this.currentNetwork.market.enabled) {
+      if (this.currentNetwork.constants && this.currentNetwork.constants.aip11) {
         tabs.push({
-          component: 'WalletExchange',
-          componentName: 'WalletExchange',
-          text: this.$t('PAGES.WALLET.PURCHASE', { ticker: this.currentNetwork.market.ticker })
+          component: 'WalletIpfs',
+          componentName: 'WalletIpfs',
+          text: this.$t('PAGES.WALLET.IPFS')
         })
+
+        if (this.isOwned) {
+          tabs.push({
+            component: 'WalletMultiSignature',
+            componentName: 'WalletMultiSignature',
+            text: this.$t('PAGES.WALLET.MULTI_SIGNATURE')
+          })
+        }
+
+        if (WalletService.isBusiness(this.currentWallet, false)) {
+          tabs.push({
+            component: 'WalletBusiness',
+            componentName: 'WalletBusiness',
+            text: this.$t('PAGES.WALLET.BUSINESS')
+          })
+        }
       }
 
       // TODO enable when there is something to show
@@ -320,6 +358,12 @@ export default {
           break
       }
     },
+    async currentWallet (newValue, prevValue) {
+      await this.fetchWalletVote()
+      if (!newValue || !prevValue || newValue.address !== prevValue.address) {
+        this.currentTab = 'WalletTransactions'
+      }
+    },
     tabs () {
       this.$nextTick(() => {
         this.$refs.menutab.collectItems()
@@ -370,13 +414,15 @@ export default {
     },
 
     switchToTab (component) {
-      this.currentTab = component
+      if (this.tabs.map(tab => tab.componentName).includes(component)) {
+        this.currentTab = component
+      }
     },
 
     getVoteTitle () {
       if (this.isUnvoting && this.votedDelegate) {
         return this.$t('WALLET_DELEGATES.UNVOTE_DELEGATE', { delegate: this.votedDelegate.username })
-      } else if (this.isVoting && this.selectedDelegate) {
+      } else if (this.isVoting && this.selectedDelegate && !this.selectedDelegate.isResigned) {
         return this.$t('WALLET_DELEGATES.VOTE_DELEGATE', { delegate: this.selectedDelegate.username })
       } else {
         return `${this.$t('COMMON.DELEGATE')} ${this.selectedDelegate.username}`
@@ -394,14 +440,14 @@ export default {
 
         if (walletVote) {
           this.votedDelegate = this.$store.getters['delegate/byPublicKey'](walletVote)
-          this.walletVote.publicKey = walletVote
+          this.walletVote.username = this.votedDelegate.username
         } else {
           this.votedDelegate = null
-          this.walletVote.publicKey = null
+          this.walletVote.username = null
         }
       } catch (error) {
         this.votedDelegate = null
-        this.walletVote.publicKey = null
+        this.walletVote.username = null
 
         const messages = at(error, 'response.body.message')
         if (messages[0] !== 'Wallet not found') {

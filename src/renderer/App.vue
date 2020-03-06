@@ -73,20 +73,32 @@
       />
 
       <PortalTarget
-        :slot-props="{ setBlurFilter }"
+        :slot-props="{ setPortalHasContent }"
         name="modal"
         multiple
-        @change="onPortalChange"
+        @change="onPortalChange('modal', ...arguments)"
+      />
+
+      <PortalTarget
+        :slot-props="{ setPortalHasContent }"
+        name="updater"
+        @change="onPortalChange('updater', ...arguments)"
       />
 
       <PortalTarget
         name="loading"
-        @change="onPortalChange"
+        @change="onPortalChange('loading', ...arguments)"
       />
 
       <PortalTarget
         name="qr-scan"
-        @change="onPortalChange"
+        @change="onPortalChange('qr-scan', ...arguments)"
+      />
+
+      <PortalTarget
+        name="button-dropdown"
+        multiple
+        :slot-props="{ hasBlurFilter }"
       />
 
       <AlertMessage />
@@ -121,8 +133,14 @@ export default {
 
   data: vm => ({
     isReady: false,
-    hasBlurFilter: false,
     isUriTransactionOpen: false,
+    forceBlurFilter: false,
+    portalHasContent: {
+      modal: false,
+      update: false,
+      loading: false,
+      'qr-scan': false
+    },
     uriTransactionSchema: {},
     aliveRouteComponents: []
   }),
@@ -136,6 +154,9 @@ export default {
   }),
 
   computed: {
+    hasBlurFilter () {
+      return Object.values(this.portalHasContent).some(hasContent => !!hasContent)
+    },
     background () {
       return this.$store.getters['session/background'] || `wallpapers/${this.hasSeenIntroduction ? 1 : 2}Default.png`
     },
@@ -290,18 +311,21 @@ export default {
      * @return {void}
      */
     async loadNotEssential () {
+      ipcRenderer.send('updater:check-for-updates')
       await this.$store.dispatch('peer/refresh')
       this.$store.dispatch('peer/connectToBest', {})
+      await this.$store.dispatch('network/updateData')
 
       if (this.session_network) {
         this.$store.dispatch('ledger/init', this.session_network.slip44)
         this.$store.dispatch('delegate/load')
       }
 
-      this.$eventBus.on('client:changed', () => {
-        this.$store.dispatch('ledger/init', this.session_network.slip44)
+      this.$eventBus.on('client:changed', async () => {
         this.$store.dispatch('peer/connectToBest', {})
+        this.$store.dispatch('network/updateData')
         this.$store.dispatch('delegate/load')
+        await this.$store.dispatch('ledger/init', this.session_network.slip44)
         if (this.$store.getters['ledger/isConnected']) {
           this.$store.dispatch('ledger/reloadWallets', { clearFirst: true, forceLoad: true })
         }
@@ -313,15 +337,13 @@ export default {
         this.$warn('Ledger Disconnected!')
       })
 
-      try {
-        await this.$store.dispatch('app/checkNewVersion')
-      } catch (error) {
-        this.$error(this.$t('APP.RELEASE.REQUEST_ERROR'))
-      }
+      await Promise.all([this.$plugins.fetchPluginsFromAdapter(), this.$plugins.fetchBlacklist(), this.$plugins.fetchWhitelist()])
+
+      ipcRenderer.send('splashscreen:app-ready')
     },
 
-    onPortalChange (isActive) {
-      this.hasBlurFilter = isActive
+    onPortalChange (portal, isActive) {
+      this.setPortalHasContent(portal, isActive)
     },
 
     __watchProcessURL () {
@@ -333,6 +355,10 @@ export default {
         } else {
           this.openUriTransaction(uri.deserialize())
         }
+      })
+
+      ipcRenderer.on('updater:update-available', (_, data) => {
+        this.$store.dispatch('updater/setAvailableRelease', data)
       })
     },
 
@@ -346,8 +372,8 @@ export default {
       this.uriTransactionSchema = {}
     },
 
-    setBlurFilter (isActive) {
-      this.hasBlurFilter = isActive
+    setPortalHasContent (portal, isActive) {
+      this.portalHasContent[portal] = isActive
     },
 
     setIntroDone () {
@@ -402,10 +428,6 @@ export default {
 </script>
 
 <style scoped>
-.blur {
-  filter: blur(4px)
-}
-
 .App__main {
   transition: .1s filter linear;
 }

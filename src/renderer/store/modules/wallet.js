@@ -1,9 +1,17 @@
-import { findIndex, unionBy } from 'lodash'
+import { findIndex, unionBy, uniqBy } from 'lodash'
 import WalletModel from '@/models/wallet'
 import Vue from 'vue'
 
 const includes = (objects, find) => objects.map(a => a.id).includes(find.id)
 const includesMessage = (objects, find) => objects.map(a => a.timestamp).includes(find.timestamp)
+const sanitizeWallet = (wallet) => {
+  if (wallet.attributes && wallet.attributes.business && wallet.attributes.business.businessAsset) {
+    wallet.business = wallet.attributes.business.businessAsset
+    wallet.business.resigned = !!wallet.attributes.business.resigned
+  }
+
+  return wallet
+}
 
 /**
  * Internally the wallets are stored aggregated by `profileId``
@@ -45,16 +53,27 @@ export default {
       return state.wallets[profileId].filter(wallet => !wallet.isContact)
     },
 
-    publicByProfileId: (state) => (profileId, getContacts = false) => {
-      if (!state.wallets[profileId]) {
+    publicByProfileId: (state, _, __, rootGetters) => (profileId, getContacts = false) => {
+      const profileWallets = state.wallets[profileId] || []
+      const ledgerWallets = rootGetters['ledger/byProfileId'](profileId)
+
+      const wallets = uniqBy([
+        ...ledgerWallets,
+        ...profileWallets
+      ], 'address')
+
+      if (!wallets.length) {
         return []
       }
 
-      return state.wallets[profileId].filter(wallet => wallet.isContact === getContacts).map(wallet => ({
+      return wallets.filter(wallet => {
+        return wallet.isContact === getContacts || wallet.isContact === undefined
+      }).map(wallet => ({
         address: wallet.address,
         balance: wallet.balance,
         name: wallet.name,
-        publicKey: wallet.publicKey
+        publicKey: wallet.publicKey,
+        ...(wallet.isLedger && { isLedger: wallet.isLedger })
       }))
     },
 
@@ -166,13 +185,13 @@ export default {
       commit('STORE', wallets)
     },
     update ({ commit }, wallet) {
-      const data = WalletModel.deserialize(wallet)
+      const data = WalletModel.deserialize(sanitizeWallet(wallet))
       commit('UPDATE', data)
 
       return data
     },
     updateBulk ({ commit }, wallets) {
-      const data = wallets.map(wallet => WalletModel.deserialize(wallet))
+      const data = wallets.map(wallet => WalletModel.deserialize(sanitizeWallet(wallet)))
       commit('UPDATE_BULK', data)
 
       return data

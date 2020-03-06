@@ -244,7 +244,7 @@ export default {
     language: I18N.defaultLocale,
     step: 0,
     stepImages: [
-      'pages/intro/welcome.svg',
+      'pages/intro/welcome.png',
       'pages/intro/power.svg',
       'pages/intro/duty.svg',
       'pages/intro/responsibility.svg',

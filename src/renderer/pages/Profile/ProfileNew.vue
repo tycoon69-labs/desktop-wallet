@@ -13,7 +13,7 @@
           </p>
 
           <img
-            :src="assets_loadImage(`pages/profile-new/step-${step}.svg`)"
+            :src="assets_loadImage(`pages/profile-new/step-${step}.png`)"
             :title="$t(`PAGES.PROFILE_NEW.STEP${step}.INSTRUCTIONS.HEADER`)"
             class="w-full xl:w-4/5 mt-10"
           >
@@ -67,12 +67,20 @@
                 />
               </div>
 
-              <div class="flex mb-5 w-1/2 ProfileNew__time-format-container">
+              <div class="flex mb-5 ProfileNew__time-format-container">
                 <InputSelect
                   v-model="timeFormat"
                   :items="timeFormats"
                   :label="$t('COMMON.TIME_FORMAT')"
                   name="time-format"
+                  class="flex-1 mr-5"
+                />
+
+                <InputSelect
+                  v-model="priceApi"
+                  :items="priceApis"
+                  :label="$t('COMMON.PRICE_PROVIDER')"
+                  name="price-api"
                   class="flex-1"
                 />
               </div>
@@ -95,7 +103,7 @@
             </div>
           </MenuStepItem>
 
-          <MenuStepItem
+          <!-- <MenuStepItem
             :step="2"
             :is-back-visible="true"
             :is-next-enabled="!$v.step2.$invalid"
@@ -105,36 +113,35 @@
             @next="moveTo(3)"
           >
             <div class="flex flex-col">
-              <!-- Show the two default networks, and a button to load more -->
               <SelectionNetwork
                 :selected="selectedNetwork"
                 :networks="defaultNetworks"
                 @select="selectNetwork"
               />
-              <div v-if="availableCustomNetworks.length">
-                <p class="mt-5 mb-1 text-theme-page-text font-semibold">
-                  {{ $t('PAGES.PROFILE_NEW.STEP2.CUSTOM_NETWORK') }}
-                </p>
-                <p class="text-theme-page-text-light mb-5">
-                  {{ $t('PAGES.PROFILE_NEW.STEP2.CUSTOM_NETWORK_EXPLAIN') }}
-                </p>
-                <SelectionNetwork
-                  :selected="selectedNetwork"
-                  :networks="availableCustomNetworks"
-                  :is-custom="true"
-                  @select="selectNetwork"
-                />
-              </div>
+
+              <p class="mt-5 mb-1 text-theme-page-text font-semibold">
+                {{ $t('PAGES.PROFILE_NEW.STEP2.CUSTOM_NETWORK') }}
+              </p>
+              <p class="text-theme-page-text-light mb-5">
+                {{ $t('PAGES.PROFILE_NEW.STEP2.CUSTOM_NETWORK_EXPLAIN') }}
+              </p>
+              <SelectionNetwork
+                :selected="selectedNetwork"
+                :networks="availableCustomNetworks"
+                :is-custom="true"
+                :add-button="true"
+                @select="selectNetwork"
+              />
             </div>
-          </MenuStepItem>
+          </MenuStepItem> -->
 
           <MenuStepItem
-            :step="3"
+            :step="2"
             :is-back-visible="true"
             :is-next-enabled="!$v.schema.$invalid"
-            :is-disabled="step < 3"
-            :title="$t('PAGES.PROFILE_NEW.STEP3.TITLE')"
-            @back="moveTo(2)"
+            :is-disabled="step < 2"
+            :title="$t('PAGES.PROFILE_NEW.STEP2.TITLE')"
+            @back="moveTo(1)"
             @next="create"
           >
             <div class="flex flex-col h-full w-full justify-around">
@@ -144,7 +151,7 @@
                     {{ $t('COMMON.IS_MARKET_CHART_ENABLED') }}
                   </h5>
                   <p class="text-theme-page-text-light">
-                    {{ $t('PAGES.PROFILE_NEW.STEP3.MARKET_CHART') }}
+                    {{ $t('PAGES.PROFILE_NEW.STEP2.MARKET_CHART') }}
                   </p>
                 </div>
                 <ButtonSwitch
@@ -159,7 +166,7 @@
                     {{ $t('COMMON.THEME') }}
                   </h5>
                   <p class="text-theme-page-text-light">
-                    {{ $t('PAGES.PROFILE_NEW.STEP3.THEME') }}
+                    {{ $t('PAGES.PROFILE_NEW.STEP2.THEME') }}
                   </p>
                 </div>
                 <SelectionTheme
@@ -173,7 +180,7 @@
                     {{ $t('COMMON.BACKGROUND') }}
                   </h5>
                   <p class="text-theme-page-text-light">
-                    {{ $t('PAGES.PROFILE_NEW.STEP3.BACKGROUND') }}
+                    {{ $t('PAGES.PROFILE_NEW.STEP2.BACKGROUND') }}
                   </p>
                 </div>
                 <SelectionBackground
@@ -190,12 +197,12 @@
 </template>
 
 <script>
-import { BIP39, NETWORKS } from '@config'
+import { BIP39, MARKET, NETWORKS } from '@config'
 import Profile from '@/models/profile'
 import { ButtonSwitch } from '@/components/Button'
 import { MenuStep, MenuStepItem } from '@/components/Menu'
 import { InputLanguage, InputSelect, InputText } from '@/components/Input'
-import { SelectionAvatar, SelectionBackground, SelectionNetwork, SelectionTheme } from '@/components/Selection'
+import { SelectionAvatar, SelectionBackground, SelectionTheme } from '@/components/Selection'
 
 export default {
   name: 'ProfileNew',
@@ -209,7 +216,7 @@ export default {
     MenuStepItem,
     SelectionAvatar,
     SelectionBackground,
-    SelectionNetwork,
+    // SelectionNetwork,
     SelectionTheme
   },
 
@@ -277,8 +284,16 @@ export default {
         this.selectTimeFormat(timeFormat)
       }
     },
+    priceApi: {
+      get () {
+        return this.$store.getters['session/priceApi'] || 'coingecko'
+      },
+      set (priceApi) {
+        this.selectPriceApi(priceApi)
+      }
+    },
     currencies () {
-      return this.$store.getters['market/currencies']
+      return Object.keys(MARKET.currencies)
     },
     bip39Languages () {
       return BIP39.languages.reduce((all, language) => {
@@ -292,6 +307,13 @@ export default {
         all[format] = this.$t(`TIME_FORMAT.${format.toUpperCase()}`)
         return all
       }, {})
+    },
+    priceApis () {
+      return {
+        coingecko: 'CoinGecko',
+        cryptocompare: 'CryptoCompare',
+        coincap: 'CoinCap'
+      }
     },
     defaultNetworks () {
       return NETWORKS.map(network => network)
@@ -324,13 +346,14 @@ export default {
    * Reuse the settings of the current profile every time the page is created
    */
   created () {
-    this.selectNetwork(this.defaultNetworks.find(network => network.id === 'ark.mainnet'))
+    this.selectNetwork(this.defaultNetworks.find(network => network.id === 't69.mainnet'))
     this.schema.background = this.background
     this.schema.bip39Language = this.bip39Language
     this.schema.currency = this.currency
     this.schema.isMarketChartEnabled = this.isMarketChartEnabled
     this.schema.language = this.language
     this.schema.timeFormat = this.timeFormat
+    this.schema.priceApi = this.priceApi
 
     // In case we came from a profile using a plugin theme, revert back to default
     const defaultThemes = ['light', 'dark']
@@ -422,6 +445,11 @@ export default {
     async selectTimeFormat (timeFormat) {
       this.schema.timeFormat = timeFormat
       await this.$store.dispatch('session/setTimeFormat', timeFormat)
+    },
+
+    async selectPriceApi (priceApi) {
+      this.schema.priceApi = priceApi
+      await this.$store.dispatch('session/setPriceApi', priceApi)
     }
   },
 
