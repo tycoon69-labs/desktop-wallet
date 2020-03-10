@@ -43,9 +43,16 @@ export default class CryptoCompareAdapter {
 
     // return this.__transformMarketResponse(body.RAW && body.RAW[token] ? body.RAW[token] : {})
     const uri = 'https://emirex.com/api/v1/ticker'
-    const response = await got(uri)
-    const bodyJson = JSON.parse(response.body)
-    const data = bodyJson && bodyJson[`${token}USDT`] ? bodyJson[`${token}USDT`] : {}
+
+    var data = {}
+
+    try {
+      const response = await got(uri)
+      const bodyJson = JSON.parse(response.body)
+      data = bodyJson && bodyJson[`${token}USDT`] ? bodyJson[`${token}USDT`] : {}
+    } catch (error) {
+
+    }
 
     return this.__transformMarketResponse(data)
   }
@@ -94,7 +101,7 @@ export default class CryptoCompareAdapter {
 
     marketData.USD = {
       currency: 'USD',
-      price: response.last
+      price: response.last | 1
     }
 
     return marketData
