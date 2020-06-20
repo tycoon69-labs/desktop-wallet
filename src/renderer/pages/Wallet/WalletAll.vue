@@ -145,7 +145,7 @@
 </template>
 
 <script>
-import { isEqual, some, uniqBy } from 'lodash'
+import { isEqual, uniqBy } from 'lodash'
 import { ButtonLayout } from '@/components/Button'
 import Loader from '@/components/utils/Loader'
 import { ProfileAvatar } from '@/components/Profile'
@@ -186,8 +186,7 @@ export default {
 
     alternativeTotalBalance () {
       const balance = this.currency_subToUnit(this.totalBalance)
-      return balance * this.price
-      // return this.currency_format(balance * this.price, { currency: this.alternativeCurrency })
+      return this.currency_format(balance * this.price, { currency: this.alternativeCurrency })
     },
 
     isMarketEnabled () {
@@ -264,7 +263,7 @@ export default {
     },
 
     showVotedDelegates () {
-      return some(this.selectableWallets, wallet => Object.prototype.hasOwnProperty.call(wallet, 'vote'))
+      return this.selectableWallets.some(wallet => Object.prototype.hasOwnProperty.call(wallet, 'vote'))
     }
   },
 

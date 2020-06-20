@@ -49,9 +49,6 @@ export default new BaseModel({
     constants: {
       type: 'object'
     },
-    crypto: {
-      type: 'object'
-    },
     vendorField: {
       type: 'object',
       properties: {
@@ -59,6 +56,9 @@ export default new BaseModel({
           type: 'integer'
         }
       }
+    },
+    knownWalletsUrl: {
+      type: ['string', 'null']
     },
     knownWallets: {
       type: 'object',

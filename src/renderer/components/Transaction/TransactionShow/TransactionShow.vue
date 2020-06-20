@@ -89,6 +89,7 @@
       />
 
       <ListDividedItem
+        class="TransactionShow__Sender"
         :label="$t('TRANSACTION.SENDER')"
         item-value-class="flex items-center"
       >
@@ -118,6 +119,7 @@
 
       <ListDividedItem
         v-if="showRecipient"
+        class="TransactionShow__Recipient"
         :label="$t('TRANSACTION.RECIPIENT')"
         item-value-class="flex items-center"
       >
@@ -220,6 +222,8 @@
         v-if="transaction.vendorField"
         :value="transaction.vendorField"
         :label="$t('TRANSACTION.VENDOR_FIELD')"
+        item-label-class="mb-auto"
+        item-value-class="max-w-xs break-words text-justify"
       />
 
       <ListDividedItem
@@ -228,10 +232,12 @@
         :label="$t('TRANSACTION.RECIPIENTS')"
         item-value-class="items-center"
       >
-        <TransactionMultiPaymentList
+        <TransactionRecipientList
           :title="null"
           :items="transaction.asset.payments"
+          :show-links="true"
           readonly
+          @click="emitClose"
         />
       </ListDividedItem>
     </ListDivided>
@@ -257,7 +263,7 @@ import { ListDivided, ListDividedItem } from '@/components/ListDivided'
 import { ModalWindow } from '@/components/Modal'
 import { ButtonClipboard, ButtonGeneric } from '@/components/Button'
 import SvgIcon from '@/components/SvgIcon'
-import { TransactionAmount, TransactionMultiPaymentList, TransactionStatusIcon } from '@/components/Transaction'
+import { TransactionAmount, TransactionRecipientList, TransactionStatusIcon } from '@/components/Transaction'
 import WalletAddress from '@/components/Wallet/WalletAddress'
 import WalletService from '@/services/wallet'
 import truncateMiddle from '@/filters/truncate-middle'
@@ -273,7 +279,7 @@ export default {
     ButtonClipboard,
     SvgIcon,
     TransactionAmount,
-    TransactionMultiPaymentList,
+    TransactionRecipientList,
     TransactionStatusIcon,
     WalletAddress
   },
@@ -326,7 +332,7 @@ export default {
     },
 
     amountTooltip () {
-      const walletAddress = this.transaction.walletAddress || this.wallet_fromRoute.address
+      const walletAddress = this.transaction.walletAddress || (this.wallet_fromRoute ? this.wallet_fromRoute.address : null)
       if (!walletAddress || this.transaction.sender !== walletAddress) {
         return null
       } else if (this.transaction.typeGroup === TRANSACTION_GROUPS.MAGISTRATE) {
@@ -377,7 +383,7 @@ export default {
       this.network_openExplorer('address', address)
     },
 
-    openBlock (address) {
+    openBlock () {
       this.network_openExplorer('block', this.transaction.blockId)
     },
 
@@ -418,10 +424,18 @@ export default {
   max-height: 80vh;
 }
 
+.TransactionShow__Sender .ListDividedItem__value,
+.TransactionShow__Recipient .ListDividedItem__value {
+  @apply .max-w-xs;
+}
+.TransactionShow__Sender .ListDividedItem__value .WalletAddress,
+.TransactionShow__Recipient .ListDividedItem__value .WalletAddress {
+  @apply .truncate;
+}
+
 .TransactionShow__Recipients {
   @apply .pb-0;
 }
-
 .TransactionShow__Recipients.ListDividedItem > div {
   @apply .flex-col .items-start;
 }

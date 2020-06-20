@@ -84,6 +84,7 @@ export default {
     component: {
       type: [Object, Function],
       required: false,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       default: () => {}
     },
     isForModal: {

@@ -2,6 +2,7 @@
   <ModalWindow
     :title="title || typeName"
     :container-classes="`TransactionModal ${typeClass}`"
+    :confirm-close="true"
     @close="emitCancel"
   >
     <KeepAlive>
@@ -40,8 +41,9 @@
 </template>
 
 <script>
-import { camelCase, includes, findKey, upperFirst } from 'lodash'
-import { TRANSACTION_TYPES } from '@config'
+import { camelCase } from 'lodash'
+import { upperFirst } from '@/utils'
+import { TRANSACTION_GROUPS, TRANSACTION_TYPES } from '@config'
 import MultiSignature from '@/services/client-multisig'
 import { ModalLoader, ModalWindow } from '@/components/Modal'
 import TransactionForm from './TransactionForm'
@@ -79,7 +81,7 @@ export default {
       type: Number,
       required: true,
       validator: value => {
-        return value === TRANSACTION_TYPES.MULTI_SIGN || includes(TRANSACTION_TYPES.GROUP_1, value)
+        return value === TRANSACTION_TYPES.MULTI_SIGN || Object.values(TRANSACTION_TYPES.GROUP_1).includes(value)
       }
     },
 
@@ -103,7 +105,9 @@ export default {
         return 'MULTI_SIGN'
       }
 
-      const key = findKey(TRANSACTION_TYPES[`GROUP_${this.group}`], type => this.type === type)
+      const transactionTypes = TRANSACTION_TYPES[`GROUP_${this.group}`]
+      const key = Object.keys(transactionTypes).find(type => transactionTypes[type] === this.type)
+
       if (key === 'VOTE' && this.transaction.asset.votes.length) {
         if (this.transaction.asset.votes[0].substring(0, 1) === '-') {
           return 'UNVOTE'
@@ -117,7 +121,9 @@ export default {
         return 'TransactionModalMultiSign'
       }
 
-      const type = findKey(TRANSACTION_TYPES[`GROUP_${this.group}`], type => this.type === type)
+      const transactionTypes = TRANSACTION_TYPES[`GROUP_${this.group}`]
+      const type = Object.keys(transactionTypes).find(type => transactionTypes[type] === this.type)
+
       return `TransactionModal${upperFirst(camelCase(type))}`
     },
     typeName () {
@@ -149,6 +155,12 @@ export default {
     onBack () {
       this.step = 0
       this.transaction = null
+    },
+
+    emitWalletReload () {
+      if (TransactionService.isBridgechainRegistration(this.transaction) || TransactionService.isBridgechainUpdate(this.transaction) || TransactionService.isBridgechainResignation(this.transaction)) {
+        this.$eventBus.emit('wallet:reload:business-bridgechains')
+      }
     },
 
     async pushMultiSignature (sendToNetwork) {
@@ -228,7 +240,8 @@ export default {
               this.storeTransaction(this.transaction)
               this.updateLastFeeByType({
                 fee: this.transaction.fee.toString(),
-                type: this.transaction.type
+                type: this.transaction.type,
+                typeGroup: this.transaction.typeGroup || TRANSACTION_GROUPS.STANDARD
               })
 
               const { data } = response.body
@@ -236,6 +249,8 @@ export default {
               if (data && data.accept.length === 0 && data.broadcast.length > 0) {
                 this.$warn(messages.warningBroadcast)
               }
+
+              this.emitWalletReload()
 
               success = true
               this.$success(messages.success)
@@ -316,17 +331,14 @@ export default {
         id = TransactionService.getId(transaction)
       }
 
-      if (!transaction.timestamp) {
-        transaction.timestamp = Math.floor((new Date()).getTime() / 1000)
-      } else if (transaction.timestamp > Math.floor(new Date().getTime() / 1000)) {
-        transaction.timestamp = Math.floor(transaction.timestamp / 1000)
+      let timestamp
+
+      if (!transaction.timestamp || (transaction.timestamp <= Math.floor(Date.now() / 1000))) {
+        timestamp = Date.now()
+      } else {
+        timestamp = transaction.timestamp
       }
 
-      if (!transaction.timestamp) {
-        transaction.timestamp = Math.floor((new Date()).getTime() / 1000)
-      }
-
-      let timestamp = transaction.timestamp * 1000
       if (transaction.version === 1) {
         const epoch = new Date(this.walletNetwork.constants.epoch)
         timestamp = epoch.getTime() + (transaction.timestamp * 1000)
@@ -349,14 +361,17 @@ export default {
       })
     },
 
-    updateLastFeeByType ({ fee, type }) {
-      this.$store.dispatch('session/setLastFeeByType', { fee, type })
+    updateLastFeeByType ({ fee, type, typeGroup }) {
+      this.$store.dispatch('session/setLastFeeByType', { fee, type, typeGroup })
 
       this.$store.dispatch('profile/update', {
         ...this.session_profile,
         lastFees: {
           ...this.session_profile.lastFees,
-          [type]: fee
+          [typeGroup]: {
+            ...this.session_profile.lastFees[typeGroup],
+            [type]: fee
+          }
         }
       })
     }
@@ -372,6 +387,7 @@ export default {
 .TransactionModalTransfer {
   /* To allow more space on the fee slider */
   min-width: 38rem;
+  max-height: 100%;
 }
 
 .TransactionModalBridgechainRegistration,
@@ -379,8 +395,8 @@ export default {
 .TransactionModalBusinessRegistration,
 .TransactionModalBusinessUpdate,
 .TransactionModalIpfs,
-.TransactionModalMultiPayment,
 .TransactionModalMultiSignature {
   min-width: 35rem;
+  max-height: 80vh;
 }
 </style>

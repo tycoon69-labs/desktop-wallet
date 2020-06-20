@@ -38,23 +38,17 @@
                   :label="$t('PAGES.PROFILE_NEW.STEP1.NAME')"
                   :is-invalid="$v.schema.name.$dirty && $v.schema.name.$invalid"
                   :helper-text="nameError"
-                  class="flex-1 mr-5"
+                  class="flex-1"
                   name="name"
                 />
+              </div>
 
+              <div class="flex mb-5">
                 <InputSelect
                   v-model="currency"
                   :items="currencies"
                   :label="$t('COMMON.CURRENCY')"
                   name="currency"
-                  class="flex-1"
-                />
-              </div>
-
-              <div class="flex mb-5">
-                <InputLanguage
-                  v-model="language"
-                  name="language"
                   class="flex-1 mr-5"
                 />
 
@@ -67,7 +61,7 @@
                 />
               </div>
 
-              <div class="flex mb-5 ProfileNew__time-format-container">
+              <div class="flex mb-5">
                 <InputSelect
                   v-model="timeFormat"
                   :items="timeFormats"
@@ -85,7 +79,7 @@
                 />
               </div>
 
-              <div class="flex items-center justify-between mt-5 pt-5 mb-2 border-t border-theme-line-separator border-dashed">
+              <div class="ProfileNew__avatar flex items-center justify-between mt-5 pt-5 mb-2 border-t border-theme-line-separator border-dashed">
                 <div class="mr-2">
                   <h5 class="mb-2">
                     {{ $t('COMMON.AVATAR') }}
@@ -141,7 +135,7 @@
             :is-next-enabled="!$v.schema.$invalid"
             :is-disabled="step < 2"
             :title="$t('PAGES.PROFILE_NEW.STEP2.TITLE')"
-            @back="moveTo(1)"
+            @back="moveTo(2)"
             @next="create"
           >
             <div class="flex flex-col h-full w-full justify-around">
@@ -174,7 +168,7 @@
                 />
               </div>
 
-              <div class="flex items-center justify-between">
+              <div class="ProfileNew__background flex items-center justify-between">
                 <div>
                   <h5 class="mb-2">
                     {{ $t('COMMON.BACKGROUND') }}
@@ -197,11 +191,11 @@
 </template>
 
 <script>
-import { BIP39, MARKET, NETWORKS } from '@config'
+import { BIP39, I18N, MARKET, NETWORKS } from '@config'
 import Profile from '@/models/profile'
 import { ButtonSwitch } from '@/components/Button'
 import { MenuStep, MenuStepItem } from '@/components/Menu'
-import { InputLanguage, InputSelect, InputText } from '@/components/Input'
+import { InputSelect, InputText } from '@/components/Input'
 import { SelectionAvatar, SelectionBackground, SelectionTheme } from '@/components/Selection'
 
 export default {
@@ -209,14 +203,12 @@ export default {
 
   components: {
     ButtonSwitch,
-    InputLanguage,
     InputSelect,
     InputText,
     MenuStep,
     MenuStepItem,
     SelectionAvatar,
     SelectionBackground,
-    // SelectionNetwork,
     SelectionTheme
   },
 
@@ -234,14 +226,6 @@ export default {
       },
       set (background) {
         this.selectBackground(background)
-      }
-    },
-    language: {
-      get () {
-        return this.$store.getters['session/language']
-      },
-      set (language) {
-        this.selectLanguage(language)
       }
     },
     bip39Language: {
@@ -351,7 +335,7 @@ export default {
     this.schema.bip39Language = this.bip39Language
     this.schema.currency = this.currency
     this.schema.isMarketChartEnabled = this.isMarketChartEnabled
-    this.schema.language = this.language
+    this.schema.language = I18N.defaultLocale
     this.schema.timeFormat = this.timeFormat
     this.schema.priceApi = this.priceApi
 
@@ -411,11 +395,6 @@ export default {
       this.schema.currency = currency
     },
 
-    selectLanguage (language) {
-      this.schema.language = language
-      this.$store.dispatch('session/setLanguage', language)
-    },
-
     selectBip39Language (bip39Language) {
       this.schema.bip39Language = bip39Language
       this.$store.dispatch('session/setBip39Language', bip39Language)
@@ -454,7 +433,7 @@ export default {
   },
 
   validations: {
-    step1: ['schema.avatar', 'schema.currency', 'schema.language', 'schema.name'],
+    step1: ['schema.avatar', 'schema.currency', 'schema.bip39Language', 'schema.name'],
     step2: ['schema.networkId'],
     schema: {
       name: {
@@ -467,9 +446,14 @@ export default {
 }
 </script>
 
-<style scoped>
-.ProfileNew__time-format-container {
-  /* To produce the exact same width  (.pr-5 class / 2) */
-  padding-right: 0.625rem
+<style lang="postcss">
+.ProfileNew__avatar .SelectionAvatar .InputGrid__container button:first-child,
+.ProfileNew__avatar .SelectionAvatar .InputGrid__container button:first-child .InputGridItem {
+  @apply .cursor-default .opacity-100;
+}
+
+.ProfileNew__background .SelectionBackgroundGrid .InputGrid__container button:first-child,
+.ProfileNew__background .SelectionBackgroundGrid .InputGrid__container button:first-child .InputGridItem {
+  @apply .cursor-default .opacity-100;
 }
 </style>

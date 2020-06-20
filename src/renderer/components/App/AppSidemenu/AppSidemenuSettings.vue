@@ -30,8 +30,8 @@
           >
             <MenuDropdown
               ref="currency-menu"
+              container-classes="theme-light"
               :items="currencies"
-              :position="['-40%', '5%']"
               :value="sessionCurrency"
               @select="setCurrency"
             />
@@ -52,8 +52,8 @@
             <MenuDropdown
               v-if="pluginThemes"
               ref="theme-menu"
+              container-classes="theme-light whitespace-no-wrap"
               :items="themes"
-              :position="['-40%', '5%']"
               :value="sessionTheme"
               @select="setTheme"
             />
@@ -168,13 +168,13 @@
 </template>
 
 <script>
+import os from 'os'
 import { MARKET } from '@config'
+import { isEmpty } from '@/utils'
 import { ModalConfirmation } from '@/components/Modal'
 import { MenuNavigationItem, MenuOptions, MenuOptionsItem, MenuDropdown } from '@/components/Menu'
 import { ButtonSwitch } from '@/components/Button'
 import { PluginManageBlacklistModal } from '@/components/PluginManager/PluginManagerModals'
-import { isEmpty, isString } from 'lodash'
-const os = require('os')
 
 export default {
   name: 'AppSidemenuOptionsSettings',
@@ -311,7 +311,17 @@ export default {
         : this.$store.getters['plugin/themes']
     },
     themes () {
-      return ['light', 'dark', ...Object.keys(this.pluginThemes)]
+      const pluginThemes = {}
+
+      for (const [themeId, config] of Object.entries(this.pluginThemes)) {
+        pluginThemes[themeId] = config.name
+      }
+
+      return {
+        light: this.$t('COMMON.THEMES.LIGHT'),
+        dark: this.$t('COMMON.THEMES.DARK'),
+        ...pluginThemes
+      }
     }
   },
 
@@ -333,7 +343,7 @@ export default {
     },
 
     setTheme (theme) {
-      this.sessionTheme = isString(theme) ? theme : (theme ? 'dark' : 'light')
+      this.sessionTheme = typeof theme === 'string' ? theme : (theme ? 'dark' : 'light')
     },
 
     setBackgroundUpdateLedger (update) {

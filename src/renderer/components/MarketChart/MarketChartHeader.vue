@@ -57,7 +57,9 @@ export default {
   },
 
   inject: {
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     getPeriod: { default: () => {} },
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     getIsExpanded: { default: () => {} }
   },
 

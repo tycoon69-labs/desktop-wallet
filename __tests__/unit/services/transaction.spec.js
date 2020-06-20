@@ -5,6 +5,7 @@ import transactionFixture from '../__fixtures__/models/transaction'
 import currencyMixin from '@/mixins/currency'
 
 Transactions.TransactionRegistry.registerTransactionType(MagistrateCrypto.Transactions.BusinessRegistrationTransaction)
+Transactions.TransactionRegistry.registerTransactionType(MagistrateCrypto.Transactions.BridgechainRegistrationTransaction)
 
 const recipientAddress = Identities.Address.fromPassphrase('recipient passphrase')
 const senderPassphrase = 'sender passphrase'
@@ -27,7 +28,9 @@ describe('Services > Transaction', () => {
 
   describe('getBytes', () => {
     it('should return the transaction bytes', () => {
-      expect(TransactionService.getBytes(transactionFixture)).toEqual('00f0eb920302275d8577a0ec2b75fc8683282d53c5db76ebc54514a80c2854e419b793ea259a17ee9f689978490631699e01ca0fc2edbecb5ee0390000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000000000008096980000000000')
+      const transactionBytes = TransactionService.getBytes(transactionFixture)
+      expect(transactionBytes).toBeInstanceOf(Buffer)
+      expect(transactionBytes).toEqual(Buffer.from('00f0eb920302275d8577a0ec2b75fc8683282d53c5db76ebc54514a80c2854e419b793ea259a17ee9f689978490631699e01ca0fc2edbecb5ee0390000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000000000008096980000000000', 'hex'))
     })
   })
 
@@ -440,6 +443,27 @@ describe('Services > Transaction', () => {
         spyReady.mockRestore()
         spyFinalSignature.mockRestore()
       })
+
+      it('should return true if no final signature', () => {
+        for (let i = 1; i <= 10; i++) {
+          transactionObject.multiSign(`passphrase ${i}`)
+        }
+        transaction = transactionObject.getStruct()
+        transaction.multiSignature = multiSignatureAsset
+
+        expect(TransactionService.needsWalletSignature(transaction, senderPublicKey)).toBe(true)
+      })
+
+      it('should return false if all signatures (including final)', () => {
+        for (let i = 1; i <= 10; i++) {
+          transactionObject.multiSign(`passphrase ${i}`)
+        }
+        transactionObject.sign(senderPassphrase)
+        transaction = transactionObject.getStruct()
+        transaction.multiSignature = multiSignatureAsset
+
+        expect(TransactionService.needsWalletSignature(transaction, senderPublicKey)).toBe(false)
+      })
     })
 
     describe('non-registration', () => {
@@ -493,6 +517,16 @@ describe('Services > Transaction', () => {
         transaction.multiSignature = multiSignatureAsset
 
         expect(TransactionService.needsWalletSignature(transaction, multiSignatureAsset.publicKeys[0])).toBe(false)
+      })
+
+      it('should return false if min keys is met', () => {
+        for (let i = 1; i <= multiSignatureAsset.min; i++) {
+          transactionObject.multiSign(`passphrase ${i}`)
+        }
+        transaction = transactionObject.getStruct()
+        transaction.multiSignature = multiSignatureAsset
+
+        expect(TransactionService.needsWalletSignature(transaction, multiSignatureAsset.publicKeys[9])).toBe(false)
       })
     })
   })
@@ -808,9 +842,10 @@ describe('Services > Transaction', () => {
     })
   })
 
-  describe('ledgerSign', () => {
+  describe('ledgerSignWithSchnorr', () => {
     const vmMock = {
       $store: {
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
         dispatch () {}
       },
       $t (translationKey) {
@@ -840,7 +875,7 @@ describe('Services > Transaction', () => {
       spyTranslate.mockRestore()
     })
 
-    it('should sign the transaction', async () => {
+    it('should schnorr sign the transaction', async () => {
       transactionObject.sign(senderPassphrase)
       const transactionJson = transactionObject.getStruct()
 
@@ -849,7 +884,7 @@ describe('Services > Transaction', () => {
       const signature = transactionObject.data.signature
 
       spyDispatch.mockImplementation((key) => {
-        if (key === 'ledger/signTransaction') {
+        if (key === 'ledger/signTransactionWithSchnorr') {
           return signature
         }
       })
@@ -875,7 +910,7 @@ describe('Services > Transaction', () => {
       const signature = transactionObject.data.signature
 
       spyDispatch.mockImplementation((key) => {
-        if (key === 'ledger/signTransaction') {
+        if (key === 'ledger/signTransactionWithSchnorr') {
           return signature
         }
       })
@@ -885,10 +920,106 @@ describe('Services > Transaction', () => {
       expect(transaction.recipientId).toEqual(wallet.address)
     })
 
+    it('should not set the recipientId for bridgechain registration (type 3 group 2)', async () => {
+      transactionObject = new MagistrateCrypto.Builders
+        .BridgechainRegistrationBuilder()
+        .bridgechainRegistrationAsset({
+          name: 'test_bridgechain',
+          seedNodes: [
+            '1.1.1.1',
+            '2.2.2.2',
+            '3.3.3.3',
+            '4.4.4.4'
+          ],
+          ports: {
+            '@arkecosystem/core-api': 4003
+          },
+          genesisHash: '2a44f340d76ffc3df204c5f38cd355b7496c9065a1ade2ef92071436bd72e867',
+          bridgechainRepository: 'https://github.com/arkecosystem/core.git'
+        })
+        .fee(1)
+        .sign(senderPassphrase)
+
+      const signature = transactionObject.data.signature
+
+      spyDispatch.mockImplementation((key) => {
+        if (key === 'ledger/signTransactionWithSchnorr') {
+          return signature
+        }
+      })
+
+      const transaction = await TransactionService.ledgerSign(wallet, transactionObject, vmMock)
+
+      expect(transaction.recipientId).toBeFalsy()
+    })
+
     it('should throw error if no signature', async () => {
       await expect(TransactionService.ledgerSign(wallet, transactionObject, vmMock)).rejects.toThrow('TRANSACTION.LEDGER_USER_DECLINED')
 
       expect(spyTranslate).toHaveBeenCalledWith('TRANSACTION.LEDGER_USER_DECLINED')
+    })
+  })
+
+  describe('isStandard', () => {
+    it('should return true if transaction is transfer', () => {
+      const transaction = Transactions.BuilderFactory
+        .transfer()
+        .amount(1)
+        .fee(1)
+        .recipientId(recipientAddress)
+        .sign(senderPassphrase)
+        .getStruct()
+
+      expect(TransactionService.isStandard(transaction)).toBe(true)
+    })
+
+    it('should return true if transaction is vote', () => {
+      const transaction = Transactions.BuilderFactory
+        .vote()
+        .votesAsset([`+${senderPublicKey}`])
+        .fee(1)
+        .sign(senderPassphrase)
+        .getStruct()
+
+      expect(TransactionService.isStandard(transaction)).toBe(true)
+    })
+
+    it('should return false if transaction is business registration', () => {
+      const transaction = new MagistrateCrypto.Builders
+        .BusinessRegistrationBuilder()
+        .businessRegistrationAsset({
+          name: 'Name',
+          website: 'http://github.com/ark/core.git'
+        })
+        .fee(1)
+        .sign(senderPassphrase)
+        .getStruct()
+
+      expect(TransactionService.isStandard(transaction)).toBe(false)
+    })
+
+    it('should return false if transaction is bridgechain registration', () => {
+      const transaction = new MagistrateCrypto.Builders
+        .BridgechainRegistrationBuilder()
+        .bridgechainRegistrationAsset({
+          name: 'test_bridgechain',
+          seedNodes: [
+            '1.1.1.1',
+            '2.2.2.2',
+            '3.3.3.3',
+            '4.4.4.4'
+          ],
+          ports: {
+            '@arkecosystem/core-api': 4003
+          },
+          genesisHash: '2a44f340d76ffc3df204c5f38cd355b7496c9065a1ade2ef92071436bd72e867',
+          bridgechainRepository: 'https://github.com/arkecosystem/core.git'
+        })
+        .fee(1)
+        .sign(senderPassphrase)
+        .getStruct()
+
+      expect(TransactionService.isStandard(transaction)).toBe(false)
     })
   })
 
@@ -928,6 +1059,55 @@ describe('Services > Transaction', () => {
         .getStruct()
 
       expect(TransactionService.isTransfer(transaction)).toBe(false)
+    })
+  })
+
+  describe('isVote', () => {
+    it('should return true if transaction is vote', () => {
+      const transaction = Transactions.BuilderFactory
+        .vote()
+        .votesAsset([`+${senderPublicKey}`])
+        .fee(1)
+        .sign(senderPassphrase)
+        .getStruct()
+
+      expect(TransactionService.isVote(transaction)).toBe(true)
+    })
+
+    it('should return false if transaction is transfer', () => {
+      const transaction = Transactions.BuilderFactory
+        .transfer()
+        .amount(1)
+        .fee(1)
+        .recipientId(recipientAddress)
+        .sign(senderPassphrase)
+        .getStruct()
+
+      expect(TransactionService.isVote(transaction)).toBe(false)
+    })
+
+    it('should return false if transaction is bridgechain registration (type 3)', () => {
+      const transaction = new MagistrateCrypto.Builders
+        .BridgechainRegistrationBuilder()
+        .bridgechainRegistrationAsset({
+          name: 'test_bridgechain',
+          seedNodes: [
+            '1.1.1.1',
+            '2.2.2.2',
+            '3.3.3.3',
+            '4.4.4.4'
+          ],
+          ports: {
+            '@arkecosystem/core-api': 4003
+          },
+          genesisHash: '2a44f340d76ffc3df204c5f38cd355b7496c9065a1ade2ef92071436bd72e867',
+          bridgechainRepository: 'https://github.com/arkecosystem/core.git'
+        })
+        .fee(1)
+        .sign(senderPassphrase)
+        .getStruct()
+
+      expect(TransactionService.isVote(transaction)).toBe(false)
     })
   })
 })

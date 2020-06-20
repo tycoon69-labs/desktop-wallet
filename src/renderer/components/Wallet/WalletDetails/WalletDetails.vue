@@ -1,11 +1,11 @@
 <template>
   <main class="WalletDetails flex flex-col">
-    <WalletHeading class="sticky pin-t z-10" />
+    <WalletHeading />
 
     <MenuTab
       ref="menutab"
       v-model="currentTab"
-      :class="{ 'rounded-bl-lg' : !isDelegatesTab || !isOwned }"
+      :class="{ 'rounded-b-lg lg:rounded-br-none' : !isDelegatesTab || !isOwned }"
       class="flex-1 overflow-y-auto"
     >
       <MenuTabItem
@@ -44,7 +44,7 @@
     </MenuTab>
     <div
       v-if="isDelegatesTab && isOwned"
-      class="bg-theme-feature px-5 flex flex-row rounded-bl-lg"
+      class="bg-theme-feature px-5 flex flex-row rounded-b-lg lg:rounded-br-none"
     >
       <div
         class="WalletDetails__button rounded-l"
@@ -157,8 +157,8 @@
 </template>
 
 <script>
-import electron from 'electron'
-import at from 'lodash/at'
+import { remote } from 'electron'
+import { at } from 'lodash'
 /* eslint-disable vue/no-unused-components */
 import { ButtonGeneric } from '@/components/Button'
 import { TransactionModal } from '@/components/Transaction'
@@ -246,13 +246,13 @@ export default {
           text: this.$t('PAGES.WALLET.SIGN_VERIFY')
         })
 
-        // if (this.currentNetwork && this.currentNetwork.market && this.currentNetwork.market.enabled) {
-        //   tabs.push({
-        //     component: 'WalletExchange',
-        //     componentName: 'WalletExchange',
-        //     text: this.$t('PAGES.WALLET.PURCHASE', { ticker: this.currentNetwork.market.ticker })
-        //   })
-        // }
+        if (this.currentNetwork && this.currentNetwork.market && this.currentNetwork.market.enabled) {
+          tabs.push({
+            component: 'WalletExchange',
+            componentName: 'WalletExchange',
+            text: this.$t('PAGES.WALLET.PURCHASE', { ticker: this.currentNetwork.market.ticker })
+          })
+        }
       }
 
       if (this.currentNetwork.constants && this.currentNetwork.constants.aip11) {
@@ -405,12 +405,21 @@ export default {
 
   methods: {
     historyBack () {
-      const webContents = electron.remote.getCurrentWindow().webContents
-      if (!webContents.canGoBack()) {
-        throw new Error('It is not possible to go back in history')
-      }
+      const webContents = remote.getCurrentWindow().webContents
 
-      webContents.goBack()
+      if (webContents.canGoBack()) {
+        webContents.goBack()
+      } else {
+        try {
+          if (this.currentWallet.isContact) {
+            this.$router.push({ name: 'contacts' })
+          } else {
+            this.$router.push({ name: 'wallets' })
+          }
+        } catch (error) {
+          throw new Error('It is not possible to go back in history')
+        }
+      }
     },
 
     switchToTab (component) {
@@ -519,9 +528,6 @@ export default {
 </script>
 
 <style lang="postcss">
-.WalletDetails .MenuTab > .MenuTab__nav {
-  @apply .sticky .pin-t .z-10
-}
 .WalletDetails__button {
   transition: 0.5s;
   cursor: pointer;

@@ -18,7 +18,7 @@
       </div>
 
       <button
-        class="ContactAll__CreateButton justify-end"
+        class="ContactAll__CreateButton ml-12 justify-end"
         @click="createContact"
       >
         <span class="ContactAll__CreateButton__icon">
@@ -97,7 +97,7 @@
 </template>
 
 <script>
-import { isEqual, some } from 'lodash'
+import { isEqual } from 'lodash'
 import { ButtonLayout } from '@/components/Button'
 import { ContactRemovalConfirmation, ContactRenameModal } from '@/components/Contact'
 import { WalletGrid, WalletIdenticonPlaceholder } from '@/components/Wallet'
@@ -161,7 +161,7 @@ export default {
     },
 
     showVotedDelegates () {
-      return some(this.contacts, contact => Object.prototype.hasOwnProperty.call(contact, 'vote'))
+      return this.contacts.some(contact => Object.prototype.hasOwnProperty.call(contact, 'vote'))
     }
   },
 
@@ -188,7 +188,7 @@ export default {
       this.contactToRename = contact
     },
 
-    removeContact (contact) {
+    removeContact () {
       this.hideRemovalConfirmation()
     },
 
@@ -237,7 +237,7 @@ export default {
 }
 .ContactAll__CreateButton {
   transition: all .1s ease-in;
-  @apply .flex .items-center .font-semibold .bg-theme-button .rounded .cursor-pointer .text-theme-button-text .ml-12;
+  @apply .flex .items-center .font-semibold .bg-theme-button .rounded .cursor-pointer .text-theme-button-text;
 }
 .ContactAll__CreateButton:hover {
   @apply .bg-blue .text-white;

@@ -1,11 +1,11 @@
 import * as adapters from '@/services/plugin-manager/adapters'
 import releaseService from '@/services/release'
-import { PLUGINS } from '@config'
-import dayjs from 'dayjs'
+import { I18N, PLUGINS } from '@config'
+import { dayjs } from '@/services/datetime'
 import * as fs from 'fs'
 import * as fsExtra from 'fs-extra'
-import got from 'got'
-import { partition, upperFirst } from 'lodash'
+import { partition } from 'lodash'
+import { upperFirst } from '@/utils'
 import * as path from 'path'
 import semver from 'semver'
 import trash from 'trash'
@@ -16,6 +16,7 @@ import { PluginSandbox } from './plugin-manager/plugin-sandbox'
 import { PluginSetup } from './plugin-manager/plugin-setup'
 import { validatePluginPath } from './plugin-manager/utils/validate-plugin-path'
 import validatePackageName from 'validate-npm-package-name'
+import { reqwest } from '@/utils/http'
 
 let rootPath = path.resolve(__dirname, '../../../')
 if (process.env.NODE_ENV === 'production') {
@@ -137,7 +138,20 @@ export class PluginManager {
 
       await this.app.$store.dispatch('profile/update', {
         ...profile,
-        ...{ theme: defaultThemes[0] }
+        theme: defaultThemes[0]
+      })
+    }
+  }
+
+  async unloadLanguages (plugin, profileId) {
+    if (I18N.defaultLocale !== this.app.$store.getters['session/language']) {
+      await this.app.$store.dispatch('session/setLanguage', I18N.defaultLocale)
+
+      const profile = this.app.$store.getters['profile/byId'](profileId)
+
+      await this.app.$store.dispatch('profile/update', {
+        ...profile,
+        language: I18N.defaultLocale
       })
     }
   }
@@ -181,6 +195,10 @@ export class PluginManager {
       await this.unloadThemes(plugin, profileId)
     }
 
+    if (plugin.config.permissions.includes('LANGUAGES')) {
+      await this.unloadLanguages(plugin, profileId)
+    }
+
     await this.app.$store.dispatch('plugin/deleteLoaded', { pluginId, profileId })
 
     if (this.pluginSetups[pluginId]) {
@@ -189,8 +207,29 @@ export class PluginManager {
   }
 
   async fetchLogo (url) {
-    const { body } = await got(url, { encoding: null })
+    const {
+      body
+    } = await reqwest(url, {
+      encoding: null,
+      timeout: 100,
+      retry: 0
+    })
     return body.toString('base64')
+  }
+
+  async fetchImages (images) {
+    if (!images || !images.length) {
+      return []
+    }
+
+    const requests = []
+    for (const imageUrl of images) {
+      requests.push(
+        reqwest(imageUrl, { encoding: null }).then(response => response.body.toString('base64'))
+      )
+    }
+
+    return Promise.all(requests)
   }
 
   async fetchPluginsFromAdapter () {
@@ -204,26 +243,36 @@ export class PluginManager {
     configs = await Promise.all(configs.map(async config => {
       const plugin = await PluginConfiguration.sanitize(config)
 
+      plugin.isGrant = this.app.$store.getters['plugin/isGrant'](plugin.id)
+
       try {
         plugin.logo = await this.fetchLogo(plugin.logo)
-      } catch (error) {
+      } catch {
         plugin.logo = null
       }
 
+      try {
+        plugin.images = await this.fetchImages(plugin.images)
+      } catch {
+        plugin.images = []
+      }
+
+      return plugin
+    }))
+
+    configs = configs.filter(plugin => {
       const validName = validatePackageName(plugin.id).validForNewPackages
       if (!validName) {
         console.info(`${plugin.id} is not a valid package name`)
       }
 
-      const minVersionSatisfied = !plugin.minVersion || semver.gte(releaseService.currentVersion, plugin.minVersion)
-      if (!minVersionSatisfied) {
+      const minimumVersionSatisfied = !plugin.minimumVersion || semver.gte(releaseService.currentVersion, plugin.minimumVersion)
+      if (!minimumVersionSatisfied) {
         console.info(`${plugin.id} requires a higher wallet version`)
       }
 
-      if (validName && minVersionSatisfied) {
-        return plugin
-      }
-    }))
+      return validName && minimumVersionSatisfied
+    })
 
     const plugins = configs.reduce((plugins, config) => {
       plugins[config.id] = { config }
@@ -247,7 +296,7 @@ export class PluginManager {
     const { owner, repository, branch } = this.parsePluginUrl(url)
 
     const baseUrl = `https://raw.githubusercontent.com/${owner}/${repository}/${branch}`
-    const { body } = await got(`${baseUrl}/package.json`, { json: true })
+    const { body } = await reqwest(`${baseUrl}/package.json`, { json: true })
 
     let plugin
 
@@ -259,9 +308,19 @@ export class PluginManager {
 
     plugin.source = `https://github.com/${owner}/${repository}/archive/${branch}.zip`
 
+    plugin.isGrant = this.app.$store.getters['plugin/isGrant'](plugin.id)
+
     try {
       plugin.logo = await this.fetchLogo(plugin.logo)
-    } catch (error) { }
+    } catch (error) {
+      plugin.logo = null
+    }
+
+    try {
+      plugin.images = await this.fetchImages(plugin.images)
+    } catch (error) {
+      plugin.images = []
+    }
 
     return plugin
   }
@@ -272,7 +331,7 @@ export class PluginManager {
     if (force || dayjs().isAfter(dayjs(this.app.$store.getters['plugin/lastFetched']).add(
       PLUGINS.updateInterval.value, PLUGINS.updateInterval.unit
     ))) {
-      requests.push(this.fetchPluginsFromAdapter(), this.fetchBlacklist(), this.fetchWhitelist())
+      requests.push(this.fetchPluginsFromAdapter(), this.fetchPluginsList())
     }
 
     await Promise.all(requests)
@@ -312,21 +371,17 @@ export class PluginManager {
     }
   }
 
-  async fetchBlacklist () {
+  async fetchPluginsList () {
     try {
-      const { body } = await got(PLUGINS.blacklistUrl, { json: true })
-      this.app.$store.dispatch('plugin/setBlacklisted', { scope: 'global', plugins: body.plugins })
-    } catch (error) {
-      console.error(`Could not fetch blacklist from '${PLUGINS.blacklistUrl}: ${error.message}`)
-    }
-  }
-
-  async fetchWhitelist () {
-    try {
-      const { body } = await got(PLUGINS.whitelistUrl, { json: true })
+      const {
+        body
+      } = await reqwest(`${PLUGINS.pluginsUrl}?ts=${(new Date()).getTime()}`, {
+        json: true
+      })
       this.app.$store.dispatch('plugin/setWhitelisted', { scope: 'global', plugins: body.plugins })
+      this.app.$store.dispatch('plugin/setBlacklisted', { scope: 'global', plugins: body.blacklist })
     } catch (error) {
-      console.error(`Could not fetch whitelist from '${PLUGINS.whitelistUrl}: ${error.message}`)
+      console.error(`Could not fetch plugins from the list '${PLUGINS.pluginsUrl}: ${error.message}`)
     }
   }
 
@@ -340,6 +395,8 @@ export class PluginManager {
       throw new errors.PluginAlreadyLoadedError(pluginConfig.id)
     }
 
+    pluginConfig.isGrant = this.app.$store.getters['plugin/isGrant'](pluginConfig.id)
+
     try {
       pluginConfig.logo = fs.readFileSync(`${pluginPath}/logo.png`).toString('base64')
     } catch (error) {
@@ -347,6 +404,18 @@ export class PluginManager {
         pluginConfig.logo = await this.fetchLogo(pluginConfig.logo)
       } catch (error) {
         pluginConfig.logo = null
+      }
+    }
+
+    try {
+      pluginConfig.images = pluginConfig.images.map(image => {
+        return fs.readFileSync(`${pluginPath}/images/${image.split('/').pop()}`).toString('base64')
+      })
+    } catch (error) {
+      try {
+        pluginConfig.images = await this.fetchImages(pluginConfig.images)
+      } catch (error) {
+        pluginConfig.images = []
       }
     }
 

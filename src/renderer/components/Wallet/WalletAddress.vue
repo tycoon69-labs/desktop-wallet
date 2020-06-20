@@ -85,7 +85,9 @@
         @mouseover="onMouseOver"
         @mouseout="onMouseOut"
       >
-        {{ wallet_formatAddress(address, addressLength) }}
+        <slot>
+          {{ wallet_formatAddress(address, addressLength) }}
+        </slot>
       </a>
     </span>
 
@@ -118,6 +120,7 @@ export default {
     asset: {
       type: Object,
       required: false,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       default: () => {}
     },
     type: {

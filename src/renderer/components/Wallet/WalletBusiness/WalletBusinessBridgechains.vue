@@ -37,12 +37,14 @@ export default {
     fetchedBridgechains: [],
     expiryEvents: [],
     totalCount: 0,
+    interval: 60000,
+    timeout: undefined,
     queryParams: {
       page: 1,
       limit: 10,
       sort: {
-        field: 'timestamp',
-        type: 'desc'
+        field: 'name',
+        type: 'asc'
       }
     }
   }),
@@ -76,10 +78,13 @@ export default {
   created () {
     this.loadBridgechains()
     this.$eventBus.on('wallet:reload', this.loadBridgechains)
+    this.$eventBus.on('wallet:reload:business-bridgechains', this.loadBridgechains)
   },
 
   beforeDestroy () {
+    clearTimeout(this.timeout)
     this.$eventBus.off('wallet:reload', this.loadBridgechains)
+    this.$eventBus.off('wallet:reload:business-bridgechains', this.loadBridgechains)
   },
 
   methods: {
@@ -89,17 +94,16 @@ export default {
         return
       }
 
-      let address, publicKey
+      let address
       if (this.wallet_fromRoute) {
         address = this.wallet_fromRoute.address.slice()
-        publicKey = this.wallet_fromRoute.publicKey
       }
 
       this.isFetching = true
 
       try {
         const { limit, page, sort } = this.queryParams
-        const response = await this.$client.fetchBusinessBridgechains(publicKey, {
+        const response = await this.$client.fetchBusinessBridgechains(address, {
           page,
           limit,
           orderBy: `${sort.field}:${sort.type}`
@@ -122,13 +126,22 @@ export default {
      * Fetch the bridgechains and show the loading animation while the response
      * is received
      */
-    async loadBridgechains () {
-      if (!this.wallet_fromRoute || this.isFetching) {
-        return
-      }
+    async loadBridgechains (showLoading = true) {
+      try {
+        if (!this.wallet_fromRoute || this.isFetching) {
+          return
+        }
 
-      this.isLoading = true
-      this.fetchBridgechains()
+        if (showLoading) {
+          this.isLoading = true
+        }
+
+        this.fetchBridgechains()
+      } catch (error) {
+        this.$logger.warn('It is not possible load bridgechain list')
+      } finally {
+        this.timeout = setTimeout(() => this.loadBridgechains(false), this.interval)
+      }
     },
 
     onPageChange ({ currentPage }) {
@@ -144,7 +157,7 @@ export default {
     },
 
     onSortChange ({ source, field, type }) {
-      if (!source) {
+      if (!source || source !== 'bridgechainsTab') {
         return
       }
 

@@ -6,8 +6,11 @@
     <ListDividedItem
       class="TransactionConfirmBusinessUpdate__sender"
       :label="$t('TRANSACTION.SENDER')"
+      item-value-class="w-full"
     >
-      {{ senderLabel }}
+      <span class="break-words">
+        {{ senderLabel }}
+      </span>
       <span
         v-if="senderLabel !== currentWallet.address"
         class="text-sm text-theme-page-text-light"
@@ -17,6 +20,7 @@
     </ListDividedItem>
 
     <ListDividedItem
+      v-if="transaction.asset.businessUpdate.name"
       class="TransactionConfirmBusinessUpdate__name"
       :label="$t('WALLET_BUSINESS.NAME')"
     >
@@ -24,6 +28,7 @@
     </ListDividedItem>
 
     <ListDividedItem
+      v-if="transaction.asset.businessUpdate.website"
       class="TransactionConfirmBusinessUpdate__website"
       :label="$t('WALLET_BUSINESS.WEBSITE')"
     >

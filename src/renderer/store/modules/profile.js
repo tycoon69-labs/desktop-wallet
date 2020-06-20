@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { map, uniqBy } from 'lodash'
+import { uniqBy } from 'lodash'
 import crypto from 'crypto'
 import BaseModule from '../base'
 import ProfileModel from '@/models/profile'
@@ -51,9 +51,20 @@ export default new BaseModule(ProfileModel, {
     },
 
     public: (state, _, __, rootGetters) => (all = false) => {
-      const minimiseProfile = (profile) => ({
+      const isDarkTheme = theme => {
+        if (['light', 'dark'].includes(theme)) {
+          return theme === 'dark'
+        }
+        return rootGetters['plugin/themes'][theme].darkMode
+      }
+
+      const minimiseProfile = profile => ({
         avatar: profile.avatar,
         currency: profile.currency,
+        theme: {
+          name: profile.theme,
+          isDark: isDarkTheme(profile.theme)
+        },
         language: profile.language,
         name: profile.name,
         network: rootGetters['network/byId'](profile.networkId),
@@ -98,13 +109,13 @@ export default new BaseModule(ProfileModel, {
      */
     async delete ({ commit, dispatch, rootGetters }, { id }) {
       // This getter returns a reference that is modified on each deletion
-      const transactionIds = map(rootGetters['transaction/byProfileId'](id), 'id')
+      const transactionIds = rootGetters['transaction/byProfileId'](id).map(transaction => transaction.id)
       for (const transactionId of transactionIds) {
         await dispatch('transaction/delete', { id: transactionId, profileId: id }, { root: true })
       }
 
       // This getter returns a reference that is modified on each deletion
-      const walletIds = map(rootGetters['wallet/byProfileId'](id), 'id')
+      const walletIds = rootGetters['wallet/byProfileId'](id).map(wallet => wallet.id)
       for (const walletId of walletIds) {
         await dispatch('wallet/delete', { id: walletId, profileId: id }, { root: true })
       }

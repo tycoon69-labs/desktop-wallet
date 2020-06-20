@@ -153,6 +153,7 @@
       @update="onUpdate"
       @remove="onRemove"
       @report="onReport"
+      @change-status="onChangeStatus"
       @show-permissions="openPermissionsModal('details')"
     />
 
@@ -251,7 +252,6 @@ export default {
     activeCategory: 'all',
     activeFilter: 'all',
     isBlacklisting: false,
-    isMenuOpen: false,
     isRefreshing: false,
     isUpdate: false,
     isRemoving: false,
@@ -368,6 +368,20 @@ export default {
         this.$store.dispatch('profile/update', {
           ...this.session_profile,
           pluginManagerLayout: layout
+        })
+      }
+    },
+
+    isMenuOpen: {
+      get () {
+        return this.$store.getters['session/pluginMenuOpen']
+      },
+      set (open) {
+        this.$store.dispatch('session/setPluginMenuOpen', open)
+
+        this.$store.dispatch('profile/update', {
+          ...this.session_profile,
+          pluginMenuOpen: open
         })
       }
     },
@@ -625,6 +639,10 @@ export default {
       this.$error(error)
     },
 
+    async onChangeStatus (enabled, pluginId) {
+      await this.updateStatus({ enabled, pluginId })
+    },
+
     async disablePlugin (pluginId, profileId) {
       await this.updateStatus({ enabled: false, pluginId, profileId })
     },
@@ -634,11 +652,18 @@ export default {
     },
 
     async updateStatus ({ enabled, pluginId, profileId = null }) {
-      await this.$store.dispatch('plugin/setEnabled', {
-        enabled,
-        pluginId,
-        profileId
-      })
+      try {
+        await this.$store.dispatch('plugin/setEnabled', {
+          enabled,
+          pluginId,
+          profileId
+        })
+      } catch (error) {
+        this.$error(this.$t(`PAGES.PLUGIN_MANAGER.ERRORS.${enabled ? 'ENABLE' : 'DISABLE'}`, {
+          plugin: pluginId,
+          error: error.message
+        }))
+      }
     }
   }
 }

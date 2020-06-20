@@ -3,7 +3,6 @@ import { useI18nGlobally } from '../../__utils__/i18n'
 import Vue from 'vue'
 import Vuelidate from 'vuelidate'
 import nock from 'nock'
-import { MARKET } from '@config'
 import { NetworkModal } from '@/components/Network'
 import { testIsValid, testNumeric, testRequired, testScheme, testUrl } from '../../__utils__/validation'
 
@@ -12,7 +11,7 @@ const i18n = useI18nGlobally()
 let wrapper
 const mocks = {
   $store: {
-    dispatch () {},
+    dispatch: jest.fn(),
     getters: {
       'network/byName': jest.fn((name) => {
         return name === 'exists'
@@ -137,7 +136,7 @@ describe('NetworkModal', () => {
 
       it('should fetch data and populate', async () => {
         nock('http://1.2.3.4')
-          .get('/api/v2/node/configuration')
+          .get('/api/node/configuration')
           .reply(200, {
             data: {
               nethash: 1234,
@@ -149,7 +148,7 @@ describe('NetworkModal', () => {
             }
           })
 
-        nock(MARKET.source.cryptoCompare)
+        nock('https://min-api.cryptocompare.com')
           .get('/data/price')
           .query({
             fsym: 'TEST',
@@ -228,6 +227,12 @@ describe('NetworkModal', () => {
 
         it('should switch from invalid to valid to invalid when has scheme', () => {
           testScheme(wrapper.vm.$v.form.explorer)
+        })
+      })
+
+      describe('knownWalletsUrl', () => {
+        it('should switch from invalid to valid to invalid for url', () => {
+          testUrl(wrapper.vm.$v.form.knownWalletsUrl)
         })
       })
 
@@ -323,6 +328,7 @@ describe('NetworkModal', () => {
           wrapper.vm.$v.form.symbol.$model = 'A'
           wrapper.vm.$v.form.version.$model = '1'
           wrapper.vm.$v.form.explorer.$model = 'http://1.2.3.4'
+          wrapper.vm.$v.form.knownWalletsUrl.$model = 'http://1.2.3.4/know-wallets.json'
           wrapper.vm.$v.form.epoch.$model = '2019-04-09T15:32:16.123Z'
           wrapper.vm.$v.form.wif.$model = '1'
           wrapper.vm.$v.form.slip44.$model = '1'
@@ -377,6 +383,12 @@ describe('NetworkModal', () => {
 
         it('should disable if invalid explorer', () => {
           wrapper.vm.$v.form.explorer.$model = 'http://test.com:abcd'
+
+          expect(wrapper.vm.$v.form.$invalid).toBe(true)
+        })
+
+        it('should disable if invalid knownWalletsUrl', () => {
+          wrapper.vm.$v.form.knownWalletsUrl.$model = 'http://test.com:abcd/know-wallets.json'
 
           expect(wrapper.vm.$v.form.$invalid).toBe(true)
         })

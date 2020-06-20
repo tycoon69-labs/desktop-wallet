@@ -7,8 +7,13 @@
       v-if="senderLabel"
       :is-floating-label="true"
     >
-      <ListDividedItem :label="$t('TRANSACTION.SENDER')">
-        {{ senderLabel }}
+      <ListDividedItem
+        :label="$t('TRANSACTION.SENDER')"
+        item-value-class="w-full"
+      >
+        <span class="break-words">
+          {{ senderLabel }}
+        </span>
         <span
           v-if="senderLabel !== currentWallet.address"
           class="text-sm text-theme-page-text-light"
@@ -211,7 +216,7 @@ export default {
 
   mixins: [mixin],
 
-  data: vm => ({
+  data: () => ({
     step: 1,
     currentTab: 0,
     address: '',
@@ -434,7 +439,7 @@ export default {
 
   validations: {
     publicKey: {
-      isValid (value) {
+      isValid () {
         if (this.$refs.publicKey) {
           return !this.$refs.publicKey.$v.$invalid
         }
@@ -444,7 +449,7 @@ export default {
     },
 
     address: {
-      isValid (value) {
+      isValid () {
         if (this.$refs.address) {
           return !this.$refs.address.$v.$invalid
         }
