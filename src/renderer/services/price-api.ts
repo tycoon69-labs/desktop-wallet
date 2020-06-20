@@ -35,17 +35,17 @@ class PriceApi {
 
   public async marketData (token: string) {
     try {
-      const res = await fetch('https://emirex.com/api/v1/ticker?filter=t69')
+      const res = await fetch('http://45.76.206.226:3000/price/latest')
       const resJson = await res.json()
-      const marketInfo = resJson.T69USDT
+      const marketInfo = resJson.USD
       return {
         T69: {
           currency: 'USD',
-          price: marketInfo.last,
+          price: marketInfo.price,
           marketCap: 0,
-          volume: marketInfo.baseVolume,
+          volume: marketInfo.volume_24h,
           date: new Date(),
-          change24h: marketInfo.percentChange
+          change24h: marketInfo.percent_change_24h
         }
       }
       // const marketData = this.getAdapter().marketData(token)
