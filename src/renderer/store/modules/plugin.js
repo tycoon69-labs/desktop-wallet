@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import pluginManager from '@/services/plugin-manager'
 import releaseService from '@/services/release'
+import { sortByProps } from '@/utils'
 import { cloneDeep, uniqBy } from 'lodash'
 import semver from 'semver'
 
@@ -17,7 +18,7 @@ export default {
       local: []
     },
     whitelisted: {
-      global: []
+      global: {}
     },
     pluginOptions: {},
     lastFetched: 0
@@ -28,6 +29,14 @@ export default {
 
     all: (_, getters) => {
       return uniqBy([...getters.installed, ...getters.available], 'config.id')
+    },
+
+    official: (_, getters) => {
+      return getters.all.filter(plugin => plugin.config.isOfficial)
+    },
+
+    funded: (_, getters) => {
+      return getters.all.filter(plugin => getters.isGrant(plugin.config.id))
     },
 
     filtered: (_, getters, __, rootGetters) => (query, category, filter) => {
@@ -45,7 +54,7 @@ export default {
         let match = true
 
         if (category === 'all') {
-          match = match && !plugin.config.categories.includes('theme')
+          match = match && !plugin.config.categories.some(category => ['theme', 'language'].includes(category))
         } else if (category && category !== 'all') {
           match = match && plugin.config.categories.includes(category)
         }
@@ -53,6 +62,10 @@ export default {
         if (query) {
           match = match && ['id', 'title', 'description', 'keywords'].some(property => {
             let value = plugin.config[property]
+
+            if (!value) {
+              return false
+            }
 
             if (property === 'keywords') {
               value = value.join(' ')
@@ -133,10 +146,10 @@ export default {
 
     isEnabled: (state, getters) => (pluginId, profileId) => {
       if (!profileId) {
-        return getters.enabled[pluginId]
+        return !!getters.enabled[pluginId]
       }
 
-      return state.enabled[profileId] ? state.enabled[profileId][pluginId] : null
+      return state.enabled[profileId] ? !!state.enabled[profileId][pluginId] : false
     },
 
     isLoaded: (state, getters) => (pluginId, profileId) => {
@@ -144,16 +157,24 @@ export default {
         return !!getters.loaded[pluginId]
       }
 
-      return state.loaded[profileId] ? !!state.loaded[profileId][pluginId] : null
+      return state.loaded[profileId] ? !!state.loaded[profileId][pluginId] : false
     },
 
     isBlacklisted: (_, getters) => pluginId => {
       return getters.blacklisted.global.includes(pluginId) || getters.blacklisted.local.includes(pluginId)
     },
 
-    isWhitelisted: (_, getters) => (plugin) => {
+    isWhitelisted: (_, getters) => plugin => {
       if (Object.prototype.hasOwnProperty.call(getters.whitelisted.global, plugin.config.id)) {
-        return semver.lte(plugin.config.version, getters.whitelisted.global[plugin.config.id])
+        return semver.lte(plugin.config.version, getters.whitelisted.global[plugin.config.id].version)
+      }
+
+      return false
+    },
+
+    isGrant: (_, getters) => pluginId => {
+      if (Object.prototype.hasOwnProperty.call(getters.whitelisted.global, pluginId) && Object.prototype.hasOwnProperty.call(getters.whitelisted.global[pluginId], 'isGrant')) {
+        return getters.whitelisted.global[pluginId].isGrant
       }
 
       return false
@@ -162,11 +183,11 @@ export default {
     isInstalledSupported: (_, getters) => pluginId => {
       const plugin = getters.installedById(pluginId)
 
-      if (!plugin.config.minVersion) {
+      if (!plugin.config.minimumVersion) {
         return true
       }
 
-      return semver.gte(releaseService.currentVersion, plugin.config.minVersion)
+      return semver.gte(releaseService.currentVersion, plugin.config.minimumVersion)
     },
 
     avatar: state => profile => {
@@ -180,12 +201,7 @@ export default {
     },
 
     avatars: (state, getters) => profileId => {
-      let loadedPlugins
-      if (!profileId) {
-        loadedPlugins = getters.loaded
-      } else {
-        loadedPlugins = state.loaded[profileId]
-      }
+      const loadedPlugins = profileId ? state.loaded[profileId] : getters.loaded
 
       if (!loadedPlugins || !Object.keys(loadedPlugins)) {
         return []
@@ -213,7 +229,7 @@ export default {
         menuItems.push(...plugin.menuItems)
       }
 
-      return menuItems
+      return [...menuItems].sort(sortByProps('title'))
     },
 
     themes: (_, getters) => {
@@ -228,6 +244,21 @@ export default {
         }
 
         return themes
+      }, {})
+    },
+
+    languages: (_, getters) => {
+      return Object.keys(getters.loaded).reduce((languages, pluginId) => {
+        const plugin = getters.loaded[pluginId]
+
+        if (plugin.languages) {
+          languages = {
+            ...languages,
+            ...plugin.languages
+          }
+        }
+
+        return languages
       }, {})
     },
 
@@ -255,10 +286,10 @@ export default {
         profileId = rootGetters['session/profileId']
       }
 
-      return state.pluginOptions[profileId] && state.pluginOptions[profileId][pluginId]
+      return !!(state.pluginOptions[profileId] && state.pluginOptions[profileId][pluginId])
     },
 
-    pluginOptions: (state) => (pluginId, profileId) => {
+    pluginOptions: state => (pluginId, profileId) => {
       if (!state.pluginOptions[profileId]) {
         return {}
       } else if (!state.pluginOptions[profileId][pluginId]) {
@@ -273,14 +304,6 @@ export default {
     RESET_PLUGINS (state) {
       state.loaded = {}
       state.installed = {}
-
-      // fix for 'tainted' profiles - can be removed with next release
-      if (state.blacklisted && Array.isArray(state.blacklisted)) {
-        state.blacklisted = {
-          global: state.blacklisted,
-          local: []
-        }
-      }
     },
 
     SET_LAST_FETCHED (state, timestamp) {
@@ -335,6 +358,10 @@ export default {
       Vue.set(state.loaded[data.profileId][data.pluginId], 'themes', data.themes)
     },
 
+    SET_PLUGIN_LANGUAGES (state, data) {
+      Vue.set(state.loaded[data.profileId][data.pluginId], 'languages', data.languages)
+    },
+
     SET_PLUGIN_WALLET_TABS (state, data) {
       Vue.set(state.loaded[data.profileId][data.pluginId], 'walletTabs', data.walletTabs)
     },
@@ -353,6 +380,10 @@ export default {
     DELETE_PLUGIN_OPTIONS (state, { pluginId, profileId }) {
       if (state.pluginOptions[profileId] && state.pluginOptions[profileId][pluginId]) {
         Vue.delete(state.pluginOptions[profileId], pluginId)
+
+        if (!Object.keys(state.pluginOptions[profileId]).length) {
+          Vue.delete(state.pluginOptions, profileId)
+        }
       }
     },
 
@@ -376,7 +407,7 @@ export default {
       }
     },
 
-    async loadPluginsForProfile ({ getters, rootGetters, state }, profile) {
+    async loadPluginsForProfile ({ getters, state }, profile) {
       if (!state.enabled[profile.id]) {
         return
       }
@@ -435,7 +466,7 @@ export default {
       commit('SET_LAST_FETCHED', Date.now())
     },
 
-    setInstalled ({ commit, rootGetters }, plugin) {
+    setInstalled ({ commit }, plugin) {
       commit('SET_INSTALLED_PLUGIN', plugin)
     },
 
@@ -451,7 +482,7 @@ export default {
       }
     },
 
-    setWhitelisted ({ commit, rootGetters }, { scope, plugins }) {
+    setWhitelisted ({ commit }, { scope, plugins }) {
       commit('SET_WHITELISTED_PLUGINS', { scope, plugins })
     },
 
@@ -466,7 +497,7 @@ export default {
       })
     },
 
-    async deletePlugin ({ dispatch, getters, rootGetters, state }, { pluginId, removeOptions = false }) {
+    async deletePlugin ({ dispatch, getters, rootGetters }, { pluginId, removeOptions = false }) {
       if (!getters.installedById(pluginId)) {
         return
       }
@@ -483,16 +514,20 @@ export default {
         }
       }
 
+      if (removeOptions && getters.profileHasPluginOptions(pluginId, 'global')) {
+        dispatch('deletePluginOptionsForProfile', { pluginId, profileId: 'global' })
+      }
+
       try {
         await this._vm.$plugins.deletePlugin(pluginId)
       } catch (error) {
         this._vm.$logger.error(
-          `Could not delete '${pluginId}' plugin': ${error.message}`
+          `Could not delete '${pluginId}' plugin: ${error.message}`
         )
       }
     },
 
-    deleteLoaded ({ commit, getters, rootGetters, state }, { pluginId, profileId = null }) {
+    deleteLoaded ({ commit, getters, rootGetters }, { pluginId, profileId = null }) {
       profileId = profileId || rootGetters['session/profileId']
 
       if (!getters.isLoaded(pluginId, profileId)) {
@@ -543,6 +578,24 @@ export default {
       commit('SET_PLUGIN_THEMES', {
         ...data,
         profileId: data.profileId || rootGetters['session/profileId']
+      })
+    },
+
+    setLanguages ({ commit, getters, rootGetters }, { pluginId, languages, profileId }) {
+      if (!getters.isEnabled(pluginId, profileId)) {
+        throw new Error('Plugin is not enabled')
+      }
+
+      for (const language of Object.keys(languages)) {
+        if (getters.languages[language]) {
+          throw new Error(`Language "${language}" exists already`)
+        }
+      }
+
+      commit('SET_PLUGIN_LANGUAGES', {
+        pluginId,
+        languages,
+        profileId: profileId || rootGetters['session/profileId']
       })
     },
 

@@ -23,12 +23,13 @@
         class="InputCurrency__input flex flex-grow bg-transparent text-theme-page-text"
         type="text"
         @blur="onBlur"
+        @change="onChange"
         @focus="onFocus"
       >
       <div
         v-if="isMarketEnabled && alternativeCurrency"
         :title="alternativeCurrency"
-        class="InputCurrency__alternative-amount flex flex-no-shrink text-grey-dark ml-4"
+        class="InputCurrency__alternative-amount flex flex-no-shrink items-center text-grey-dark ml-4"
       >
         {{ alternativeAmount }}
       </div>
@@ -37,11 +38,10 @@
 </template>
 
 <script>
-import { includes, isString } from 'lodash'
 import { required } from 'vuelidate/lib/validators'
 import { MARKET } from '@config'
-import InputField from './InputField'
 import BigNumber from '@/plugins/bignumber'
+import InputField from './InputField'
 
 /**
  * This component uses a String value internally to avoid several problems, such
@@ -254,7 +254,7 @@ export default {
       if (!bigNum.isNaN()) {
         return bigNum.isPositive() && bigNum.isFinite()
       } else {
-        return !!(isString(amount) && amount.match(/^\s*[0-9.,]+([,. _]+[0-9]+)*\s*$/))
+        return !!(typeof amount === 'string' && amount.match(/^\s*[0-9.,]+([,. _]+[0-9]+)*\s*$/))
       }
     },
     /**
@@ -271,6 +271,11 @@ export default {
     onBlur () {
       this.isFocused = false
       this.$emit('blur')
+    },
+    onChange (event) {
+      const value = event.target.value
+      const numeric = value ? this.sanitizeNumeric(value) : '0'
+      this.$emit('change', isNaN(numeric) ? '0' : numeric)
     },
     onFocus () {
       this.isFocused = true
@@ -372,7 +377,7 @@ export default {
         ...Object.keys(MARKET.currencies),
         ...Object.values(MARKET.currencies).map(currency => currency.symbol)
       ]
-      return includes(currencies, currency)
+      return currencies.includes(currency)
     },
 
     reset () {
@@ -385,13 +390,13 @@ export default {
 
   validations: {
     model: {
-      isNumber (value) {
+      isNumber () {
         return this.inputValue && this.checkAmount(this.inputValue)
       },
-      isMoreThanMinimum (value) {
+      isMoreThanMinimum () {
         return !this.minimumAmount.isGreaterThan(this.inputValue)
       },
-      isLessThanMaximum (value) {
+      isLessThanMaximum () {
         return !this.maximumAmount.isLessThan(this.inputValue)
       },
       isRequired (value) {

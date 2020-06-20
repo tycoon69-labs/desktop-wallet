@@ -6,7 +6,7 @@ const localVue = createLocalVue()
 const i18n = installI18n(localVue)
 
 let wrapper
-const createWrapper = (component, transaction) => {
+const createWrapper = (component) => {
   component = component || TransactionConfirmBridgechainResignation
 
   wrapper = mount(component, {
@@ -43,7 +43,7 @@ describe('TransactionConfirmBridgechainResignation', () => {
     })
 
     it('should output senderLabel', () => {
-      expect(wrapper.find('.TransactionConfirmBridgechainResignation__sender .ListDividedItem__value span').text()).toBe('address-1')
+      expect(wrapper.find('.TransactionConfirmBridgechainResignation__sender .ListDividedItem__value span:first-child').text()).toBe('formatted-address-1')
     })
   })
 

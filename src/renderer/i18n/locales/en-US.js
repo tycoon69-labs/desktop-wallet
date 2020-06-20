@@ -6,6 +6,7 @@ export default {
     APP_NAME: 'T69 Desktop Wallet',
     APP_NAME_SHORT: 'T69 Desktop',
     APPEARANCE: 'Appearance',
+    ARK: 'T69',
     AVATAR: 'Avatar',
     BACK: 'Back',
     BACKGROUND: 'Background',
@@ -15,6 +16,7 @@ export default {
     CURRENCY: 'Currency',
     DATE: 'Date',
     DELEGATE: 'Leader',
+    DESKTOP_WALLET: 'Desktop Wallet',
     DONE: 'Done',
     ENABLE_ADVANCED_MODE: 'Enable Advanced Mode to use this feature',
     FAILED_UPDATE: 'Failed to update \'{name}\'. Reason: {reason}',
@@ -25,6 +27,11 @@ export default {
     HIDE_WALLET_BUTTON_TEXT: 'Hide text from wallet buttons',
     IS_MARKET_CHART_ENABLED: 'Price chart on the dashboard',
     INITIALIZING: 'Initializing...',
+    NO_INTERNET_CONNECTION: 'Initialization is taking longer than expected. Please check your internet connectivity.',
+    INTERNET_STATUS: {
+      NO_INTERNET_CONNECTION: 'No internet connection. Please check your internet connectivity!',
+      WITH_INTERNET_CONNECTION: 'Internet connectivity established!'
+    },
     LANGUAGE: 'Application Language',
     LEDGER: 'Ledger',
     LEDGER_WALLET: 'This is a Ledger wallet',
@@ -44,6 +51,10 @@ export default {
     SKIP: 'Skip',
     START: 'Start',
     THEME: 'Theme',
+    THEMES: {
+      LIGHT: 'Default: Light',
+      DARK: 'Default: Dark'
+    },
     TIME_FORMAT: 'Time format',
     URL: 'URL',
     VERIFIED_ADDRESS: 'This is a verified address',
@@ -52,7 +63,8 @@ export default {
     WILL: 'will',
     WALLET: 'Wallet',
     X_OF_Y: '{0} of {1}',
-    ADVANCED_MODE: 'Advanced Mode'
+    ADVANCED_MODE: 'Advanced Mode',
+    DEFAULT_CHOSEN_FEE: 'Default fee type'
   },
 
   ANNOUNCEMENTS: {
@@ -175,6 +187,8 @@ export default {
     },
     PASSWORD: {
       TOO_SHORT: 'Your password must be at least {0} characters long',
+      LOWER_CASE: 'Your password must contain at least 1 lowercase character',
+      UPPER_CASE: 'Your password must contain at least 1 uppercase character',
       NUMBERS: 'Your password must contain at least 1 number',
       SPECIAL_CHARACTERS: 'Your password must contain at least 1 special character',
       NO_MATCH: 'Your passwords do not match'
@@ -204,10 +218,7 @@ export default {
   },
 
   LANGUAGES: {
-    'en-US': 'English',
-    'es-ES': 'Español',
-    'it-IT': 'Italiano',
-    'pt-BR': 'Português - Brazil'
+    'en-US': 'English'
   },
 
   TIME_FORMAT: {
@@ -442,6 +453,12 @@ export default {
     TITLE: 'Export Wallets'
   },
 
+  MODAL_CLOSE_CONFIRMATION: {
+    QUESTION: 'Are you sure you want to close this window?',
+    CONFIRM: 'Yes, close',
+    CANCEL: 'No, cancel'
+  },
+
   MODAL_CONFIRMATION: {
     CANCEL: 'No, cancel',
     CONTINUE: 'Yes, I am sure',
@@ -481,6 +498,7 @@ export default {
     SYMBOL: 'Symbol',
     VERSION: 'Version',
     EXPLORER: 'Explorer',
+    KNOWN_WALLETS_URL: 'Known Wallets URL',
     EPOCH: 'Epoch',
     WIF: 'WIF',
     SLIP44: 'Slip44',
@@ -506,7 +524,7 @@ export default {
   MODAL_PEER: {
     CANCEL: 'Cancel',
     CONNECT: 'Connect',
-    HOST: 'IP / Host',
+    HOST: 'Protocol + IP / Hostname',
     PORT: 'Port',
     VALIDATING: 'Validating peer details...',
     PLACEHOLDER: {
@@ -547,10 +565,12 @@ export default {
       AUDIO: 'Allows access to play audio from within the Desktop Wallet',
       AVATARS: 'Plugin contains custom avatars',
       COMPONENTS: 'Allows loading custom components',
+      DIALOGS: 'Allows using file dialogs',
       EVENTS: 'Allows access to the Desktop Wallet events',
       HTTP: 'Allows performing external web requests',
       MENU_ITEMS: 'Allows adding custom menu items to the Desktop Wallet sidebar',
       MESSAGING: 'Allows WebFrames access to a one-way messaging system',
+      PEER_ALL: 'Allows access to the peer discovery',
       PEER_CURRENT: 'Allows access to the currently connected peer',
       PUBLIC: 'Allows navigation to wallet routes and provides access to the Font Awesome icon set',
       PROFILE_ALL: 'Allows access to all available profiles',
@@ -558,8 +578,10 @@ export default {
       ROUTES: 'Allows loading additional routes into the Desktop Wallet',
       STORAGE: 'Allows storing data within the Desktop Wallet, using key-value pairs',
       THEMES: 'Allows loading additional custom themes for the Desktop Wallet',
+      LANGUAGES: 'Allows loading additional languages for the Desktop Wallet',
       TIMERS: 'Allows using timeouts and intervals',
       UI_COMPONENTS: 'Allows access to the standard Desktop Wallet components used throughout',
+      UTILS: 'Allows using utilities such as the BigNumber type and dayjs',
       WALLET_TABS: 'Allows showing an additional tab/page on the Wallet screen',
       WEBFRAME: 'Allows showing remote URL pages within a frame',
       WEBSOCKET: 'Allows connections to websockets'
@@ -652,6 +674,7 @@ export default {
       REMOVING: 'Removing \'{plugin}\'',
       UPDATING: 'Updating \'{plugin}\'',
       OFFICIAL: 'Official {author} plugin',
+      GRANTS: 'Funded by T69 Grants',
       MENU: 'Menu',
       BANNER: {
         TITLE: 'Welcome to the Plugin Manager',
@@ -662,11 +685,14 @@ export default {
         GAMING: 'Gaming',
         UTILITY: 'Utility',
         THEME: 'Themes',
+        LANGUAGE: 'Languages',
         OTHER: 'Other'
       },
       FILTERS: {
         ALL: 'all',
-        INSTALLED: 'installed'
+        INSTALLED: 'installed',
+        OFFICIAL: 'official',
+        FUNDED: 'funded'
       },
       NO_SEARCH_RESULTS: 'Unfortunately, searching for "{query}" returned no results',
       NO_RESULTS: 'There are no {filter} plugins with the category {category}',
@@ -679,6 +705,8 @@ export default {
       },
       ERRORS: {
         ALREADY_INSTALLED: 'The plugin \'{plugin}\' is already installed',
+        DISABLE: 'The plugin \'{plugin}\' could not be disabled: {error}',
+        ENABLE: 'The plugin \'{plugin}\' could not be enabled: {error}',
         FETCH: 'The plugin \'{plugin}\' was installed but could not be loaded'
       },
       SUCCESS: {
@@ -774,6 +802,7 @@ export default {
       DELEGATES: 'Leaders',
       IPFS: 'IPFS',
       MULTI_SIGNATURE: 'Multisignature',
+      MULTI_SIGNATURE_WALLET: 'Multisignature wallet',
       STATISTICS: 'Statistics',
       SIGN_VERIFY: 'Sign',
       PURCHASE: 'Purchase {ticker}'
@@ -971,19 +1000,17 @@ export default {
         SECOND_SIGNATURE: 'Second Signature transaction could not be created',
         DELEGATE_REGISTRATION: 'Leader Registration transaction could not be created',
         VOTE: 'Vote transaction could not be created',
+        MULTI_SIGN: 'Could not multisign transaction',
         MULTI_SIGNATURE: 'Multisignature transaction could not be created',
+        MULTI_PAYMENT: 'Multipayment transaction could not be created',
         IPFS: 'IPFS transaction could not be created',
         DELEGATE_RESIGNATION: 'Leader Resignation transaction could not be created',
-        BUSINESS: {
-          REGISTRATION: 'Business Registration transaction could not be created',
-          RESIGNATION: 'Business Resignation transaction could not be created',
-          UPDATE: 'Business Update transaction could not be created'
-        },
-        BRIDGECHAIN: {
-          REGISTRATION: 'Bridgechain Registration transaction could not be created',
-          RESIGNATION: 'Bridgechain Resignation transaction could not be created',
-          UPDATE: 'Bridgechain Update transaction could not be created'
-        }
+        BUSINESS_REGISTRATION: 'Business Registration transaction could not be created',
+        BUSINESS_RESIGNATION: 'Business Resignation transaction could not be created',
+        BUSINESS_UPDATE: 'Business Update transaction could not be created',
+        BRIDGECHAIN_REGISTRATION: 'Bridgechain Registration transaction could not be created',
+        BRIDGECHAIN_RESIGNATION: 'Bridgechain Resignation transaction could not be created',
+        BRIDGECHAIN_UPDATE: 'Bridgechain Update transaction could not be created'
       },
       TRANSFER: 'Your transaction could not be sent',
       SECOND_SIGNATURE: 'Second signature could not be registered',
@@ -1007,8 +1034,10 @@ export default {
       BRIDGECHAIN_UPDATE: 'Bridgechain update was unsuccessful',
       SAVE_OFFLINE: 'Failed to save transaction file: {error}',
       LOAD_FROM_FILE: 'Failed to load transaction file',
+      LOAD_FROM_URI: 'Failed to load transaction URI',
       EXPIRED: 'Transaction expired before it was processed: {transactionId}',
       FEE_TOO_LOW: 'Transaction could not be sent because the fee ({fee}) is too low',
+      NOT_ENOUGH_BALANCE: 'The total amount of the recipients + fee is greater than the balance ({balance}) of the wallet',
       NOTHING_SENT: 'The transaction could not be sent. Please check your network connection or change peer',
       WRONG_NONCE: 'The transaction could not be sent. Wrong nonce provided',
       NETWORK_NOT_CONFIGURED: 'Network not configured',
@@ -1052,10 +1081,8 @@ export default {
       UNVOTE_DELEGATE: 'Unvote leader {delegate}'
     },
     MULTI_PAYMENT: {
-      BUTTON_ADD: 'Add',
-      WARNING_DUPLICATE: 'The address is already a recipient',
-      RECIPIENTS: 'Recipients',
-      NO_RECIPIENTS: 'There are no recipients'
+      TOTAL_AMOUNT: 'Total amount',
+      WARNING_DUPLICATE: 'The address is already a recipient'
     },
     MULTI_SIGNATURE: {
       ADDRESS: 'Multisignature Address',
@@ -1087,7 +1114,7 @@ export default {
       BRIDGECHAIN_ASSET_REPOSITORY: 'Bridgechain Asset Repository',
       API_PORT: 'API Port',
       ERROR_DUPLICATE: 'The seed node has already been added',
-      NO_PEERS: 'There are no peers',
+      NO_SEED_NODES: 'There are no seed nodes',
       INVALID_SEEDS: 'You have an invalid seed node - please check it is up and running correctly | You have invalid seed nodes - please check they are up and running correctly'
     },
     WARNING: {
@@ -1095,10 +1122,11 @@ export default {
     },
     AMOUNT: 'Amount',
     BLOCK_ID: 'Block ID',
-    BUSINESS_NAME: 'Business Name',
     BRIDGECHAIN_NAME: 'Bridgechain Name',
+    BUSINESS_NAME: 'Business Name',
+    BUTTON_ADD: 'Add',
     CONFIRMATION_COUNT: '{confirmations} Confirmations',
-    CONFIRM_SEND_ALL: 'This will enable sending all of your tokens from the current wallet in this transaction.',
+    CONFIRM_SEND_ALL: 'This will enable sending all of your tokens from the current wallet in this transaction. The selected transfer fee will be deducted from the send amount.',
     CONFIRM_SEND_ALL_TITLE: 'Send all your tokens?',
     CONFIRM_SEND_ALL_NOTE: 'Note: once sent, this cannot be undone.',
     CONFIRMATIONS: 'Confirmations',
@@ -1113,8 +1141,10 @@ export default {
     LEDGER_SIGN_FAILED: 'Could not sign transaction with Ledger',
     LEDGER_USER_DECLINED: 'User declined',
     LOAD_FROM_FILE: 'Load transaction from file',
+    LOAD_FROM_URI: 'Load transaction from URI',
     MULTIPLE: 'Multiple',
     NONCE: 'Nonce',
+    NO_RECIPIENTS: 'There are no recipient(s)',
     OPEN_IN_EXPLORER: 'Open in Explorer',
     PASSPHRASE: 'Passphrase',
     PASSWORD: 'Encryption Password',
@@ -1179,10 +1209,10 @@ export default {
     GROUP_2: {
       NEW_BUSINESS_REGISTRATION: 'New business registration: {address} business {name}',
       NEW_BUSINESS_RESIGNATION: 'New business resignation: {address}',
-      NEW_BUSINESS_UPDATE: 'New business update: {address} business {name}',
-      NEW_BRIDGECHAIN_REGISTRATION: 'New bridgechain registration: {address} bridgechain {name}',
-      NEW_BRIDGECHAIN_RESIGNATION: 'New bridgechain resignation: {address} bridgechain {name}',
-      NEW_BRIDGECHAIN_UPDATE: 'New bridgechain update: {address} bridgechain {name}'
+      NEW_BUSINESS_UPDATE: 'New business update: {address}',
+      NEW_BRIDGECHAIN_REGISTRATION: 'New bridgechain registration: {address}, bridgechain {bridgechain}',
+      NEW_BRIDGECHAIN_RESIGNATION: 'New bridgechain resignation: {address}, bridgechain {bridgechain}',
+      NEW_BRIDGECHAIN_UPDATE: 'New bridgechain update: {address}, bridgechain {bridgechain}'
     }
   },
 
@@ -1204,6 +1234,7 @@ export default {
       REGISTER_DELEGATE: 'Register Leader',
       RESIGN_DELEGATE: 'Resign Leader',
       SECOND_PASSPHRASE: 'Second Passphrase',
+      DELETE_CONTACT: 'Delete Contact',
       DELETE_WALLET: 'Delete Wallet',
       SHOW_PUBLIC_KEY: 'Show Public Key',
       SHOW_ADDRESS: 'Show Address',
@@ -1367,7 +1398,8 @@ export default {
 
   WALLET_REMOVAL_CONFIRMATION: {
     NOTE: 'It does not delete any data on the blockchain. You could recover the wallet as long as you have the passphrase',
-    QUESTION: 'Are you sure you want to remove this wallet?'
+    QUESTION: 'Are you sure you want to remove this wallet?',
+    CONTACT_QUESTION: 'Are you sure you want to remove this contact?'
   },
 
   PLUGIN_REMOVAL_CONFIRMATION: {

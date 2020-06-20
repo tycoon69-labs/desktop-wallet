@@ -95,13 +95,7 @@ describe('ledger store module', () => {
   })
 
   describe('updateVersion', () => {
-    it('should not show error if aip11 is false', async () => {
-      await store.dispatch('ledger/updateVersion')
-
-      expect(store._vm.$error).not.toHaveBeenCalled()
-    })
-
-    it('should not show error if aip11 is false', async () => {
+    it('should not show error if disconnected', async () => {
       sessionNetwork.mockReturnValue({
         id: 'abc',
         nethash,
@@ -110,6 +104,32 @@ describe('ledger store module', () => {
         }
       })
 
+      await store.dispatch('ledger/connect')
+      await store.dispatch('ledger/setSlip44', 1234)
+      await disconnectLedger()
+      store._vm.$error.mockReset()
+      await store.dispatch('ledger/updateVersion')
+
+      expect(store._vm.$error).not.toHaveBeenCalled()
+    })
+
+    it('should not show error if aip11 is false', async () => {
+      await store.dispatch('ledger/updateVersion')
+
+      expect(store._vm.$error).not.toHaveBeenCalled()
+    })
+
+    it('should show error if aip11 is true', async () => {
+      sessionNetwork.mockReturnValue({
+        id: 'abc',
+        nethash,
+        constants: {
+          aip11: true
+        }
+      })
+
+      await store.dispatch('ledger/connect')
+      await store.dispatch('ledger/setSlip44', 1234)
       await store.dispatch('ledger/updateVersion')
 
       expect(store._vm.$error).toHaveBeenCalledWith(
@@ -207,11 +227,11 @@ describe('ledger store module', () => {
 
       const response = await store.dispatch('ledger/signTransaction', {
         accountIndex: 1,
-        transactionHex: 'abc'
+        transactionBytes: Buffer.from([1, 2, 3, 4])
       })
 
       expect(response).toBe('SIGNATURE')
-      expect(spy).toHaveBeenNthCalledWith(1, '44\'/1234\'/1\'/0/0', 'abc')
+      expect(spy).toHaveBeenNthCalledWith(1, '44\'/1234\'/1\'/0/0', Buffer.from([1, 2, 3, 4]))
 
       spy.mockRestore()
     })
@@ -224,7 +244,38 @@ describe('ledger store module', () => {
       await disconnectLedger()
       await expect(store.dispatch('ledger/signTransaction', {
         accountIndex: 1,
-        transactionHex: 'abc'
+        transactionBytes: Buffer.from('abc', 'utf-8')
+      })).rejects.toThrow(/.*Ledger not connected$/)
+    })
+  })
+
+  describe('signTransactionWithSchnorr', () => {
+    it('should call ledger service', async () => {
+      await store.dispatch('ledger/connect')
+      await store.dispatch('ledger/setSlip44', 1234)
+
+      const spy = jest.spyOn(ledgerService, 'signTransactionWithSchnorr').mockReturnValue('SIGNATURE')
+
+      const response = await store.dispatch('ledger/signTransactionWithSchnorr', {
+        accountIndex: 1,
+        transactionBytes: 'abc'
+      })
+
+      expect(response).toBe('SIGNATURE')
+      expect(spy).toHaveBeenNthCalledWith(1, '44\'/1234\'/1\'/0/0', 'abc')
+
+      spy.mockRestore()
+    })
+
+    it('should fail with invalid accountIndex', async () => {
+      await expect(store.dispatch('ledger/signTransactionWithSchnorr')).rejects.toThrow(/.*accountIndex must be a Number$/)
+    })
+
+    it('should fail when not connected', async () => {
+      await disconnectLedger()
+      await expect(store.dispatch('ledger/signTransactionWithSchnorr', {
+        accountIndex: 1,
+        transactionBytes: 'abc'
       })).rejects.toThrow(/.*Ledger not connected$/)
     })
   })
@@ -238,11 +289,11 @@ describe('ledger store module', () => {
 
       const response = await store.dispatch('ledger/signMessage', {
         accountIndex: 1,
-        messageHex: 'abc'
+        messageBytes: Buffer.from('abc', 'utf-8')
       })
 
       expect(response).toBe('SIGNATURE')
-      expect(spy).toHaveBeenNthCalledWith(1, '44\'/1234\'/1\'/0/0', 'abc')
+      expect(spy).toHaveBeenNthCalledWith(1, '44\'/1234\'/1\'/0/0', Buffer.from('abc', 'utf-8'))
 
       spy.mockRestore()
     })
@@ -255,7 +306,38 @@ describe('ledger store module', () => {
       await disconnectLedger()
       await expect(store.dispatch('ledger/signMessage', {
         accountIndex: 1,
-        messageHex: 'abc'
+        messageBytes: Buffer.from('abc', 'utf-8')
+      })).rejects.toThrow(/.*Ledger not connected$/)
+    })
+  })
+
+  describe('signMessageWithSchnorr', () => {
+    it('should call ledger service', async () => {
+      await store.dispatch('ledger/connect')
+      await store.dispatch('ledger/setSlip44', 1234)
+
+      const spy = jest.spyOn(ledgerService, 'signMessageWithSchnorr').mockReturnValue('SIGNATURE')
+
+      const response = await store.dispatch('ledger/signMessageWithSchnorr', {
+        accountIndex: 1,
+        messageBytes: 'abc'
+      })
+
+      expect(response).toBe('SIGNATURE')
+      expect(spy).toHaveBeenNthCalledWith(1, '44\'/1234\'/1\'/0/0', 'abc')
+
+      spy.mockRestore()
+    })
+
+    it('should fail with invalid accountIndex', async () => {
+      await expect(store.dispatch('ledger/signMessageWithSchnorr')).rejects.toThrow(/.*accountIndex must be a Number$/)
+    })
+
+    it('should fail when not connected', async () => {
+      await disconnectLedger()
+      await expect(store.dispatch('ledger/signMessageWithSchnorr', {
+        accountIndex: 1,
+        messageBytes: 'abc'
       })).rejects.toThrow(/.*Ledger not connected$/)
     })
   })
@@ -340,12 +422,12 @@ describe('ledger store module', () => {
     it('should load all wallets with multi-wallet search', async () => {
       nock('http://127.0.0.1')
         .persist()
-        .post('/api/v2/wallets/search')
+        .post('/api/wallets/search')
         .reply(200, {
           data: ledgerWallets.slice(0, 9)
         })
 
-      await store.dispatch('ledger/connect')
+      await store.commit('ledger/SET_CONNECTED', true)
       expect(await store.dispatch('ledger/reloadWallets')).toEqual(expectedWallets)
     })
 
@@ -354,7 +436,7 @@ describe('ledger store module', () => {
 
       nock('http://127.0.0.1')
         .persist()
-        .post('/api/v2/wallets/search')
+        .post('/api/wallets/search')
         .reply(200, {
           data: ledgerWallets.slice(0, 9)
         })
@@ -363,7 +445,7 @@ describe('ledger store module', () => {
         expectedWallets[walletId].name = expectedWallets[walletId].address
       }
 
-      await store.dispatch('ledger/connect')
+      await store.commit('ledger/SET_CONNECTED', true)
       expect(await store.dispatch('ledger/reloadWallets')).toEqual(expectedWallets)
     })
 

@@ -165,7 +165,11 @@ export default {
     /**
      * Update flag to determine if ledger app needs update.
      */
-    async updateVersion ({ commit, dispatch, rootGetters }) {
+    async updateVersion ({ commit, dispatch, rootGetters, state }) {
+      if (!state.isConnected) {
+        return
+      }
+
       const network = rootGetters['session/network']
 
       let needsUpdate = false
@@ -207,6 +211,7 @@ export default {
      * @return {void}
      */
     async disconnect ({ commit, dispatch }) {
+      await commit('STOP_ALL_LOADING_PROCESSES')
       commit('SET_CONNECTED', false)
       await ledgerService.disconnect()
       eventBus.emit('ledger:disconnected')
@@ -288,30 +293,60 @@ export default {
         await commit('STOP_ALL_LOADING_PROCESSES')
       }
 
-      const profileId = rootGetters['session/profileId']
-      const currentWallets = getters.wallets
-      const processId = cryptoLibrary.randomBytes(12).toString('base64')
-
-      if (clearFirst) {
-        commit('SET_WALLETS', {})
-        eventBus.emit('ledger:wallets-updated', {})
-      } else if (currentWallets.length) {
-        quantity = currentWallets.length
-      }
-      commit('SET_LOADING', processId)
-      const firstWallet = await dispatch('getWallet', 0)
-      const cachedWallets = keyBy(getters.cachedWallets(firstWallet.address), 'address')
       let wallets = {}
-      let startIndex = 0
-      if (!quantity && Object.keys(cachedWallets).length) {
-        wallets = cachedWallets
-        startIndex = Object.keys(cachedWallets).length - 2
-      }
-
-      // Note: We only batch if search endpoint available, otherwise we would
-      //       be doing unnecessary API calls for potentially cold wallets.
-      const batchIncrement = startIndex === 0 ? 10 : 2
+      const processId = cryptoLibrary.randomBytes(12).toString('base64')
       try {
+        const profileId = rootGetters['session/profileId']
+
+        if (clearFirst) {
+          commit('SET_WALLETS', {})
+          eventBus.emit('ledger:wallets-updated', {})
+        }
+
+        commit('SET_LOADING', processId)
+        const firstWallet = await dispatch('getWallet', 0)
+        const currentWallets = getters.walletsObject
+        const cachedWallets = getters.cachedWallets(firstWallet.address)
+        let startIndex = 0
+        if (cachedWallets.length) {
+          let returnWallets = false
+          if (!quantity || quantity > cachedWallets.length) {
+            wallets = keyBy(cachedWallets, 'address')
+            startIndex = Math.max(0, cachedWallets.length - 1)
+          } else if (quantity < cachedWallets.length) {
+            wallets = keyBy(cachedWallets.slice(0, quantity), 'address')
+            returnWallets = true
+          } else {
+            wallets = keyBy(cachedWallets, 'address')
+            returnWallets = true
+          }
+
+          if (returnWallets) {
+            if (getters.shouldStopLoading(processId)) {
+              commit('CLEAR_LOADING_PROCESS', processId)
+
+              return {}
+            }
+
+            commit('SET_WALLETS', wallets)
+            eventBus.emit('ledger:wallets-updated', wallets)
+            commit('CLEAR_LOADING_PROCESS', processId)
+            dispatch('cacheWallets')
+
+            return wallets
+          }
+        } else if (currentWallets && Object.keys(currentWallets).length) {
+          startIndex = Object.keys(currentWallets).length - 1
+          wallets = { ...currentWallets }
+        }
+
+        let batchIncrement = 10
+        if (quantity && Math.abs(quantity - startIndex) < 10) {
+          batchIncrement = Math.abs(quantity - startIndex)
+        } else if (!quantity && Object.keys(wallets).length > 0) {
+          batchIncrement = 2
+        }
+
         for (let ledgerIndex = startIndex; ; ledgerIndex += batchIncrement) {
           if (getters.shouldStopLoading(processId)) {
             commit('CLEAR_LOADING_PROCESS', processId)
@@ -332,22 +367,8 @@ export default {
             }
           }
 
-          let walletData = []
-          if (batchIncrement > 1) {
-            walletData = await this._vm.$client.fetchWallets(ledgerWallets.map(wallet => wallet.address))
-          } else {
-            try {
-              walletData = [await this._vm.$client.fetchWallet(ledgerWallets[0].address)]
-            } catch (error) {
-              logger.error(error)
-              const message = error.response ? error.response.body.message : error.message
-              if (message !== 'Wallet not found') {
-                throw error
-              }
-            }
-          }
-
           let hasCold = false
+          const walletData = await this._vm.$client.fetchWallets(ledgerWallets.map(wallet => wallet.address))
           const filteredWallets = []
           for (const ledgerWallet of ledgerWallets) {
             const wallet = walletData.find(wallet => wallet.address === ledgerWallet.address)
@@ -402,7 +423,7 @@ export default {
     /**
      * Store ledger wallets in the cache.
      */
-    async updateWallet ({ commit, dispatch, getters, rootGetters }, updatedWallet) {
+    async updateWallet ({ commit, dispatch, getters }, updatedWallet) {
       commit('SET_WALLET', updatedWallet)
       eventBus.emit('ledger:wallets-updated', getters.walletsObject)
       dispatch('cacheWallets')
@@ -411,7 +432,7 @@ export default {
     /**
      * Store several Ledger wallets at once and cache them.
      */
-    async updateWallets ({ commit, dispatch, getters, rootGetters }, walletsToUpdate) {
+    async updateWallets ({ commit, dispatch, getters }, walletsToUpdate) {
       commit('SET_WALLETS', {
         ...getters.walletsObject,
         ...walletsToUpdate
@@ -446,7 +467,7 @@ export default {
     /**
      * Get address and public key from ledger wallet.
      * @param  {Number} accountIndex Index of wallet to get data for.
-     * @return {(String|Boolean)}
+     * @return {Promise<string>}
      */
     async getVersion ({ dispatch }) {
       try {
@@ -496,7 +517,7 @@ export default {
     /**
      * Get public key from ledger wallet.
      * @param  {Number} [accountIndex] Index of wallet to get public key for.
-     * @return {(String|Boolean)}
+     * @return {Promise<string>}
      */
     async getPublicKey ({ dispatch }, accountIndex) {
       try {
@@ -511,18 +532,18 @@ export default {
     },
 
     /**
-     * Sign transaction for ledger wallet.
+     * Sign transaction for ledger wallet using ecdsa signatures.
      * @param  {Object} obj
-     * @param  {String} obj.transactionHex Hex of transaction.
+     * @param  {Buffer} obj.transactionBytes Bytes of transaction.
      * @param  {Number} obj.accountIndex Index of wallet to sign transaction for.
-     * @return {(String|Boolean)}
+     * @return {Promise<string>}
      */
-    async signTransaction ({ dispatch }, { transactionHex, accountIndex } = {}) {
+    async signTransaction ({ dispatch }, { transactionBytes, accountIndex } = {}) {
       try {
         return await dispatch('action', {
           action: 'signTransaction',
           accountIndex,
-          data: transactionHex
+          data: transactionBytes
         })
       } catch (error) {
         logger.error(error)
@@ -531,18 +552,58 @@ export default {
     },
 
     /**
-     * Sign message for ledger wallet.
+     * Sign transaction for ledger wallet using schnorr signatures.
      * @param  {Object} obj
-     * @param  {String} obj.messageHex Hex to sign.
+     * @param  {String} obj.transactionBytes Bytes of transaction.
      * @param  {Number} obj.accountIndex Index of wallet to sign transaction for.
      * @return {(String|Boolean)}
      */
-    async signMessage ({ dispatch }, { messageHex, accountIndex } = {}) {
+    async signTransactionWithSchnorr ({ dispatch }, { transactionBytes, accountIndex } = {}) {
+      try {
+        return await dispatch('action', {
+          action: 'signTransactionWithSchnorr',
+          accountIndex,
+          data: transactionBytes
+        })
+      } catch (error) {
+        logger.error(error)
+        throw new Error(`Could not sign transaction: ${error}`)
+      }
+    },
+
+    /**
+     * Sign message for ledger wallet using ecdsa signatures.
+     * @param  {Object} obj
+     * @param  {Buffer} obj.messageBytes Bytes to sign.
+     * @param  {Number} obj.accountIndex Index of wallet to sign transaction for.
+     * @return {Promise<string>}
+     */
+    async signMessage ({ dispatch }, { messageBytes, accountIndex } = {}) {
       try {
         return await dispatch('action', {
           action: 'signMessage',
           accountIndex,
-          data: messageHex
+          data: messageBytes
+        })
+      } catch (error) {
+        logger.error(error)
+        throw new Error(`Could not sign message: ${error}`)
+      }
+    },
+
+    /**
+     * Sign message for ledger wallet using schnorr signatures.
+     * @param  {Object} obj
+     * @param  {String} obj.messageBytes Bytes to sign.
+     * @param  {Number} obj.accountIndex Index of wallet to sign transaction for.
+     * @return {(String|Boolean)}
+     */
+    async signMessageWithSchnorr ({ dispatch }, { messageBytes, accountIndex } = {}) {
+      try {
+        return await dispatch('action', {
+          action: 'signMessageWithSchnorr',
+          accountIndex,
+          data: messageBytes
         })
       } catch (error) {
         logger.error(error)
@@ -593,8 +654,14 @@ export default {
         async signTransaction () {
           return ledgerService.signTransaction(path, data)
         },
+        async signTransactionWithSchnorr () {
+          return ledgerService.signTransactionWithSchnorr(path, data)
+        },
         async signMessage () {
           return ledgerService.signMessage(path, data)
+        },
+        async signMessageWithSchnorr () {
+          return ledgerService.signMessageWithSchnorr(path, data)
         },
         async getVersion () {
           return ledgerService.getVersion()

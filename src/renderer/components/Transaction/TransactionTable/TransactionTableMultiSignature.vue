@@ -33,7 +33,7 @@
         </div>
 
         <div
-          v-else-if="data.column.field === 'sender'"
+          v-else-if="data.column.field === 'senderPublicKey'"
           class="max-w-xxs"
         >
           <WalletAddress
@@ -44,13 +44,14 @@
         </div>
 
         <div
-          v-else-if="data.column.field === 'recipient'"
+          v-else-if="data.column.field === 'recipientId'"
           class="max-w-xxs"
         >
           <WalletAddress
             :address="data.row.recipient || data.row.recipientId"
             :address-length="8"
             :type="data.row.type"
+            :group="data.row.typeGroup"
             :asset="data.row.asset"
             tooltip-container=".TransactionMultiSignatureTable"
           />
@@ -141,7 +142,8 @@ export default {
         {
           label: this.$t('TRANSACTION.ID'),
           field: 'id',
-          formatFn: this.formatTransactionId
+          formatFn: this.formatTransactionId,
+          sortable: false
         },
         {
           label: this.$t('COMMON.DATE'),
@@ -153,11 +155,13 @@ export default {
         },
         {
           label: this.$t('TRANSACTION.SENDER'),
-          field: 'sender'
+          field: 'senderPublicKey',
+          sortable: false
         },
         {
           label: this.$t('TRANSACTION.RECIPIENT'),
-          field: 'recipient'
+          field: 'recipientId',
+          sortable: false
         },
         {
           label: this.$t('TRANSACTION.STATUS'),

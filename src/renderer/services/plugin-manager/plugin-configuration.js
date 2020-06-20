@@ -2,10 +2,11 @@ import {
   sanitizeAuthor,
   sanitizeCategories,
   sanitizeId,
+  sanitizeImages,
   sanitizeIsOfficial,
   sanitizeKeywords,
   sanitizeLogo,
-  sanitizeMinVersion,
+  sanitizeMinimumVersion,
   sanitizePermissions,
   sanitizeSize,
   sanitizeSource,
@@ -22,9 +23,10 @@ export class PluginConfiguration {
     keywords,
     description,
     logo,
+    images,
     homepage,
     isOfficial,
-    minVersion,
+    minimumVersion,
     permissions,
     size,
     source,
@@ -38,9 +40,10 @@ export class PluginConfiguration {
     this.keywords = keywords
     this.description = description
     this.logo = logo
+    this.images = images
     this.homepage = homepage
     this.isOfficial = isOfficial
-    this.minVersion = minVersion
+    this.minimumVersion = minimumVersion
     this.permissions = permissions
     this.size = size
     this.source = source
@@ -57,9 +60,10 @@ export class PluginConfiguration {
       keywords: sanitizeKeywords(config.keywords),
       description: config.description,
       logo: sanitizeLogo(config),
+      images: sanitizeImages(config),
       homepage: config.homepage,
       isOfficial: sanitizeIsOfficial(config.name),
-      minVersion: sanitizeMinVersion(config),
+      minimumVersion: sanitizeMinimumVersion(config),
       permissions: sanitizePermissions(config),
       size: await sanitizeSize(config, pluginPath) || 0,
       source: sanitizeSource(config),

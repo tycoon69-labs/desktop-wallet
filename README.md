@@ -1,27 +1,27 @@
-# T69 Desktop Wallet
+# ARK Desktop Wallet
 
-![T69 Desktop Wallet](./banner.png)
+![Ark Desktop Wallet](./banner.png)
 
-[![Build Status](https://badgen.now.sh/github/status/tycoon69-labs/desktop-wallet)](https://github.com/tycoon69-labs/desktop-wallet/actions?query=branch%3Adevelop)
-[![Latest Version](https://badgen.now.sh/github/release/tycoon69-labs/desktop-wallet)](https://github.com/tycoon69-labs/desktop-wallet/releases)
+[![Build Status](https://badgen.now.sh/github/status/ArkEcosystem/desktop-wallet)](https://github.com/ArkEcosystem/desktop-wallet/actions?query=branch%3Adevelop)
+[![Latest Version](https://badgen.now.sh/github/release/ArkEcosystem/desktop-wallet)](https://github.com/ArkEcosystem/desktop-wallet/releases)
 [![License: MIT](https://badgen.now.sh/badge/license/MIT/green)](https://opensource.org/licenses/MIT)
 
 > Lead Maintainer: [Alex Barnsley](https://github.com/alexbarnsley)
 
 ## Download
 
-[Latest Release](https://github.com/tycoon69-labs/t69-desktop/releases/latest)
+[Latest Release](https://github.com/ArkEcosystem/ark-desktop/releases/latest)
 
 ## Installing via Package Managers
 
 ### Arch Linux
 
-Install via [AUR](https://aur.archlinux.org/packages/t69-desktop):
+Install via [AUR](https://aur.archlinux.org/packages/ark-desktop):
 
 > Manjaro
 
 ```shell
-pamac build t69-desktop
+pamac build ark-desktop
 ```
 
 ### Mac OS X
@@ -29,12 +29,12 @@ pamac build t69-desktop
 Install via [Homebrew](https://brew.sh/):
 
 ```shell
-brew cask install t69-desktop-wallet
+brew cask install ark-desktop-wallet
 ```
 
 ## Translations
 
-Translations are no longer accepted for the Desktop Wallet. Our plan is to use plugins to provide languages in the near future.
+Translations are no longer accepted for the Desktop Wallet. We are using plugins to provide languages.
 
 ## Development
 
@@ -114,22 +114,13 @@ yarn test:e2e
 
 # Build the application and run end-to-end tests
 yarn test:e2e:full
-
-# List what translations are missing or unused on a specific language. It could capture suggestions that are not accurate
-yarn i18n 'src/renderer/i18n/locales/LANGUAGE.js'
-
-# List what English messages are missing or unused (English is the default language)
-yarn i18n:en-US
-
-# List what translations are missing or unused on every language
-yarn i18n:all
 ```
 
 </details>
 
 ## Security
 
-If you discover a security vulnerability within this package, please send an e-mail to security@t69.io. All security vulnerabilities will be promptly addressed.
+If you discover a security vulnerability within this package, please send an e-mail to security@ark.io. All security vulnerabilities will be promptly addressed.
 
 ## Credits
 
@@ -137,4 +128,4 @@ This project exists thanks to all the people who [contribute](../../contributors
 
 ## License
 
-[MIT](LICENSE) © [Tycoonchain69](https://t69.io)
+[MIT](LICENSE) © [ARK Ecosystem](https://ark.io)

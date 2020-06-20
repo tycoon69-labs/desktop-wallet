@@ -6,8 +6,11 @@
     <ListDividedItem
       class="TransactionConfirmMultiPayment__sender"
       :label="$t('TRANSACTION.SENDER')"
+      item-value-class="w-full"
     >
-      {{ senderLabel }}
+      <span class="break-words">
+        {{ senderLabel }}
+      </span>
       <span
         v-if="senderLabel !== currentWallet.address"
         class="text-sm text-theme-page-text-light"
@@ -17,15 +20,38 @@
     </ListDividedItem>
 
     <ListDividedItem
+      class="TransactionConfirmMultiPayment__amount"
+      :label="$t('TRANSACTION.MULTI_PAYMENT.TOTAL_AMOUNT')"
+    >
+      {{ formatter_networkCurrency(totalAmount) }}
+    </ListDividedItem>
+
+    <ListDividedItem
       class="TransactionConfirmMultiPayment__recipients"
-      :label="$t('TRANSACTION.RECIPIENTS')"
+      :label="`${$t('TRANSACTION.RECIPIENTS')} - ${payments.length}`"
       item-value-class="items-center"
     >
-      <TransactionMultiPaymentList
+      <TransactionRecipientList
         :title="null"
         :items="payments"
         readonly
       />
+    </ListDividedItem>
+
+    <ListDividedItem
+      v-if="transaction.vendorField"
+      class="TransactionConfirmMultiPayment__vendorfield"
+      :label="$t('TRANSACTION.VENDOR_FIELD')"
+      item-value-class="w-full break-words"
+    >
+      {{ transaction.vendorField }}
+    </ListDividedItem>
+
+    <ListDividedItem
+      class="TransactionConfirmMultiPayment__fee"
+      :label="$t('TRANSACTION.FEE')"
+    >
+      {{ formatter_networkCurrency(transaction.fee) }}
     </ListDividedItem>
   </ListDivided>
 </template>
@@ -33,7 +59,7 @@
 <script>
 import { TRANSACTION_TYPES } from '@config'
 import { ListDivided, ListDividedItem } from '@/components/ListDivided'
-import TransactionMultiPaymentList from '@/components/Transaction/TransactionMultiPaymentList'
+import TransactionRecipientList from '@/components/Transaction/TransactionRecipientList'
 
 export default {
   name: 'TransactionConfirmMultiPayment',
@@ -45,12 +71,22 @@ export default {
   components: {
     ListDivided,
     ListDividedItem,
-    TransactionMultiPaymentList
+    TransactionRecipientList
   },
 
   computed: {
     senderLabel () {
       return this.wallet_formatAddress(this.currentWallet.address)
+    },
+
+    totalAmount () {
+      const amount = this.currency_toBuilder(0)
+
+      for (const payment of this.payments) {
+        amount.add(payment.amount)
+      }
+
+      return amount.value
     },
 
     payments () {
@@ -63,6 +99,11 @@ export default {
 <style scoped>
 .TransactionConfirmMultiPayment__recipients {
   @apply .overflow-y-auto;
-  max-height: 200px;
+}
+</style>
+
+<style>
+.TransactionConfirmMultiPayment__recipients .InputEditableList__list {
+  max-height: 13rem;
 }
 </style>

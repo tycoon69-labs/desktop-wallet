@@ -14,7 +14,7 @@ export default {
       const lastTicker = getters.lastTicker
       return lastTicker ? lastTicker.price : null
     },
-    lastTicker: (state, getters, _, rootGetters) => {
+    lastTicker: (state, _, __, rootGetters) => {
       const network = rootGetters['session/network']
       if (!network) {
         return
@@ -22,7 +22,6 @@ export default {
       const ticker = network.market.ticker
       const currency = rootGetters['session/currency']
       const market = `${ticker}/${currency}`
-
       return state.tickers[market]
     }
   },
@@ -41,7 +40,7 @@ export default {
       }
 
       const ticker = network.market.ticker
-      const data = await priceApi.fetchMarketData(ticker)
+      const data = await priceApi.marketData(ticker)
       if (!data) {
         return
       }

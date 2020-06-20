@@ -1,5 +1,4 @@
 import { I18N, MARKET } from '@config'
-import i18n from '@/i18n'
 
 export default {
   namespaced: true,
@@ -33,7 +32,9 @@ export default {
     multiSignaturePeer: null,
     filterBlacklistedPlugins: true,
     pluginAdapter: 'npm',
-    priceApi: 'coingecko'
+    priceApi: 'coingecko',
+    pluginMenuOpen: true,
+    defaultChosenFee: 'AVERAGE'
   }),
 
   getters: {
@@ -87,13 +88,15 @@ export default {
     transactionTableRowCount: state => state.transactionTableRowCount,
     unconfirmedVotes: state => state.unconfirmedVotes,
     lastFees: state => state.lastFees,
-    lastFeeByType: state => type => {
-      return state.lastFees ? state.lastFees[type] : null
+    lastFeeByType: state => (type, typeGroup) => {
+      return (state.lastFees && state.lastFees[typeGroup]) ? state.lastFees[typeGroup][type] : null
     },
     multiSignaturePeer: state => state.multiSignaturePeer,
     filterBlacklistedPlugins: state => state.filterBlacklistedPlugins,
     pluginAdapter: state => state.pluginAdapter,
-    priceApi: state => state.priceApi
+    priceApi: state => state.priceApi,
+    pluginMenuOpen: state => state.pluginMenuOpen,
+    defaultChosenFee: state => state.defaultChosenFee
   },
 
   mutations: {
@@ -201,8 +204,11 @@ export default {
       state.unconfirmedVotes = votes
     },
 
-    SET_LAST_FEES (state, fees) {
-      state.lastFees = fees
+    SET_LAST_FEES_BY_TYPE (state, { fee, type, typeGroup }) {
+      if (!state.lastFees[typeGroup]) {
+        state.lastFees[typeGroup] = {}
+      }
+      state.lastFees[typeGroup][type] = fee
     },
 
     SET_MULTI_SIGNATURE_PEER (state, peer) {
@@ -219,6 +225,14 @@ export default {
 
     SET_PRICE_API (state, priceApi) {
       state.priceApi = priceApi
+    },
+
+    SET_PLUGIN_MENU_OPEN (state, pluginMenuOpen) {
+      state.pluginMenuOpen = pluginMenuOpen
+    },
+
+    SET_DEFAULT_CHOSEN_FEE (state, defaultChosenFee) {
+      state.defaultChosenFee = defaultChosenFee
     },
 
     RESET (state) {
@@ -252,8 +266,8 @@ export default {
       state.filterBlacklistedPlugins = true
       state.pluginAdapter = 'npm'
       state.priceApi = 'coingecko'
-
-      i18n.locale = state.language
+      state.pluginMenuOpen = true
+      state.defaultChosenFee = 'AVERAGE'
     },
 
     REPLACE (state, value) {
@@ -287,8 +301,8 @@ export default {
       state.filterBlacklistedPlugins = value.filterBlacklistedPlugins
       state.pluginAdapter = value.pluginAdapter
       state.priceApi = value.priceApi
-
-      i18n.locale = state.language
+      state.pluginMenuOpen = value.pluginMenuOpen !== undefined ? value.pluginMenuOpen : true
+      state.defaultChosenFee = value.defaultChosenFee
     }
   },
 
@@ -345,7 +359,6 @@ export default {
 
     setLanguage ({ commit }, value) {
       commit('SET_LANGUAGE', value)
-      i18n.locale = value
     },
 
     setBip39Language ({ commit }, value) {
@@ -417,15 +430,8 @@ export default {
       commit('SET_UNCONFIRMED_VOTES', value)
     },
 
-    setLastFees ({ commit }, value) {
-      commit('SET_LAST_FEES', value)
-    },
-
-    setLastFeeByType ({ commit, getters }, { fee, type }) {
-      const fees = getters.lastFees
-      fees[type] = fee
-
-      commit('SET_LAST_FEES', fees)
+    setLastFeeByType ({ commit }, { fee, type, typeGroup }) {
+      commit('SET_LAST_FEES_BY_TYPE', { fee, type, typeGroup })
     },
 
     setMultiSignaturePeer ({ commit }, { host, port }) {
@@ -440,8 +446,16 @@ export default {
       commit('SET_PLUGIN_ADAPTER', value)
     },
 
-    setPriceApi ({ commit, dispatch }, value) {
+    setPriceApi ({ commit }, value) {
       commit('SET_PRICE_API', value)
+    },
+
+    setPluginMenuOpen ({ commit }, value) {
+      commit('SET_PLUGIN_MENU_OPEN', value)
+    },
+
+    setDefaultChosenFee ({ commit }, value) {
+      commit('SET_DEFAULT_CHOSEN_FEE', value)
     }
   }
 }

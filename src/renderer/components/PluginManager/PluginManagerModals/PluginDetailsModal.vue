@@ -2,7 +2,7 @@
   <ModalWindow
     :message="$t('PAGES.PLUGIN_MANAGER.DISCLAIMER')"
     header-classes="flex p-8 -mx-16 -mt-16 bg-theme-secondary-feature rounded-t-lg"
-    container-classes="max-w-md"
+    container-classes="PluginDetailsModal max-w-md"
     @close="emitClose"
   >
     <template #header>
@@ -13,15 +13,17 @@
 
       <div class="flex flex-col ml-5 justify-between">
         <div>
-          <span class="text-theme-page-text font-semibold text-xl">
-            {{ plugin.title }}
-          </span>
+          <div class="flex items-center">
+            <span class="text-theme-page-text font-semibold text-xl">
+              {{ plugin.title }}
+            </span>
+            <PluginManagerCheckmark v-if="plugin.isOfficial" />
+            <PluginManagerGrants v-else-if="plugin.isGrant" />
+          </div>
 
           <span
             class="PluginDetailsModal__header__details"
           >
-            <PluginManagerCheckmark v-if="plugin.isOfficial" />
-
             <span>
               {{ plugin.author }}
             </span>
@@ -46,7 +48,6 @@
               <PluginManagerButtonSwitch
                 :is-active="isEnabled"
                 :is-disabled="!isInstalledSupported"
-                :label="switchButtonLabel"
                 class="mr-2"
                 @change="toggleStatus"
               />
@@ -95,7 +96,13 @@
     </template>
 
     <template #default>
-      <p class="PluginDetailsModal__description">
+      <p
+        class="PluginDetailsModal__description"
+        :class="{
+          'mt-12': !hasImages,
+          'mt-4': hasImages
+        }"
+      >
         {{ plugin.description }}
       </p>
 
@@ -121,6 +128,21 @@
       >
         {{ $t('MODAL_PLUGIN_DETAILS.SHOW_PERMISSIONS') }}
       </a>
+
+      <div class="mt-6">
+        <SliderImage
+          :is-row="true"
+          :images="plugin.images"
+        >
+          <template slot-scope="{ imageIndex, closeImage }">
+            <SliderImageModal
+              :images="plugin.images"
+              :image-index="imageIndex"
+              :close-image="closeImage"
+            />
+          </template>
+        </SliderImage>
+      </div>
 
       <div class="PluginDetailsModal__stats">
         <div>
@@ -168,9 +190,10 @@
 <script>
 import { PLUGINS } from '@config'
 import { ButtonGeneric, ButtonIconGeneric } from '@/components/Button'
-import { PluginLogo, PluginManagerCheckmark } from '@/components/PluginManager'
+import { PluginLogo, PluginManagerCheckmark, PluginManagerGrants } from '@/components/PluginManager'
 import { ModalWindow } from '@/components/Modal'
 import { PluginManagerButtonSwitch } from '@/components/PluginManager/PluginManagerButtons'
+import { SliderImage, SliderImageModal } from '@/components/Slider'
 import SvgIcon from '@/components/SvgIcon'
 import domain from 'getdomain'
 
@@ -181,9 +204,12 @@ export default {
     ButtonGeneric,
     ButtonIconGeneric,
     PluginManagerCheckmark,
+    PluginManagerGrants,
     PluginManagerButtonSwitch,
     ModalWindow,
     PluginLogo,
+    SliderImage,
+    SliderImageModal,
     SvgIcon
   },
 
@@ -213,14 +239,6 @@ export default {
 
     isBlacklisted () {
       return this.$store.getters['plugin/isBlacklisted'](this.plugin.id)
-    },
-
-    switchButtonLabel () {
-      if (this.isEnabled) {
-        return this.$t('PAGES.PLUGIN_MANAGER.ENABLED')
-      }
-
-      return this.$t('PAGES.PLUGIN_MANAGER.DISABLED')
     },
 
     isUpdateAvailable () {
@@ -268,6 +286,10 @@ export default {
       } catch (error) {
         return null
       }
+    },
+
+    hasImages () {
+      return this.plugin.images && this.plugin.images.length > 0
     }
   },
 
@@ -288,11 +310,8 @@ export default {
       this.$emit('show-permissions')
     },
 
-    async toggleStatus (enabled) {
-      await this.$store.dispatch('plugin/setEnabled', {
-        enabled,
-        pluginId: this.plugin.id
-      })
+    toggleStatus (enabled) {
+      this.$emit('change-status', enabled, this.plugin.id)
     },
 
     reportPlugin () {
@@ -311,6 +330,12 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
+.PluginDetailsModal .ModalWindow__container__content {
+  @apply .pb-8;
+}
+.PluginDetailsModal .ModalWindow__container__footer--warning {
+  @apply .py-4;
+}
 .PluginDetailsModal__header__details {
   @apply flex items-center mt-1 text-theme-page-text-light;
 }
@@ -325,7 +350,7 @@ export default {
   @apply border-t pt-4 mt-8 border-theme-line-separator
 }
 .PluginDetailsModal__description {
-  @apply mt-12 mb-4 leading-tight
+  @apply mb-4 leading-tight
 }
 .PluginDetailsModal__keywords {
   @apply mb-4

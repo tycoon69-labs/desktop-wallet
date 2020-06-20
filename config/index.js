@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 const os = require('os')
 const path = require('path')
 
@@ -27,9 +28,7 @@ exports.VENDOR_FIELD = {
 exports.I18N = {
   defaultLocale: 'en-US',
   enabledLocales: [
-    'en-US',
-    'it-IT',
-    'pt-BR'
+    'en-US'
   ]
 }
 
@@ -86,11 +85,6 @@ exports.INTERVALS = {
 }
 
 exports.MARKET = {
-  source: {
-    cryptoCompare: 'https://min-api.cryptocompare.com',
-    coinGecko: 'https://api.coingecko.com/api/v3',
-    coinCap: 'https://api.coincap.io/v2'
-  },
   defaultCurrency: 'USD',
   crypto: [
     // 'BTC',
@@ -119,13 +113,15 @@ exports.MARKET = {
   }
 }
 
+// This section handles fetching Desktop-Wallet Plugins from the NPM registry.
+// It should remain "ARK" unless intentionally implementing a custom package.
 exports.PLUGINS = {
   adapters: ['npm'],
-  blacklistUrl: 'https://raw.githubusercontent.com/ark-ecosystem-desktop-plugins/config/master/blacklist.json',
-  whitelistUrl: 'https://raw.githubusercontent.com/ark-ecosystem-desktop-plugins/config/master/whitelist.json',
+  pluginsUrl: 'https://raw.githubusercontent.com/ark-ecosystem-desktop-plugins/config/master/plugins.json',
   categories: [
     'gaming',
     'theme',
+    'language',
     'utility',
     'other'
   ],
@@ -140,6 +136,7 @@ exports.PLUGINS = {
   officialAuthor: 'ARK Ecosystem',
   path: path.resolve(os.homedir(), '.ark-desktop/plugins'),
   reportUrl: 'https://ark.io/contact',
+  sharePath: path.resolve(os.homedir(), '.t69-desktop/share'),
   updateInterval: {
     value: 1,
     unit: 'day'

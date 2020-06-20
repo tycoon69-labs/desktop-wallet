@@ -60,7 +60,7 @@
 </template>
 
 <script>
-import { isNull, omitBy, uniqBy } from 'lodash'
+import { omitBy, uniqBy } from 'lodash'
 import ModalWindow from '@/components/Modal/ModalWindow'
 import { ButtonGeneric, ButtonSwitch } from '@/components/Button'
 import { ListDivided, ListDividedItem } from '@/components/ListDivided'
@@ -86,7 +86,7 @@ export default {
         },
         excludeEmpty: {
           active: false,
-          filter: el => el.balance
+          filter: el => Number(el.balance)
         },
         excludeLedger: {
           active: false,
@@ -204,6 +204,8 @@ export default {
     },
 
     transformWallets () {
+      const isNull = val => val === null
+
       return this.wallets.map(wallet => {
         return omitBy({
           name: this.getName(wallet.name),
@@ -251,19 +253,24 @@ export default {
 
       try {
         const path = await this.electron_writeFile(raw, defaultPath)
-        this.$success(this.$t('MODAL_EXPORT_WALLETS.SUCCESS.EXPORT_WALLETS', { path }))
+
+        if (path) {
+          this.$success(this.$t('MODAL_EXPORT_WALLETS.SUCCESS.EXPORT_WALLETS', { path }))
+          this.emitClose()
+        } else {
+          return
+        }
       } catch (e) {
         this.$error(this.$t('MODAL_EXPORT_WALLETS.ERROR.EXPORT_WALLETS'))
       } finally {
         this.isExporting = false
-        this.emitClose()
       }
     }
   },
 
   validations: {
     options: {
-      isValid (value) {
+      isValid () {
         return !!this.wallets.length
       }
     }

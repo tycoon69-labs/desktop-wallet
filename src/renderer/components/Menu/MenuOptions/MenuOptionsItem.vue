@@ -37,6 +37,7 @@ export default {
     tooltip: {
       type: [String, Object],
       required: false,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       default: () => {}
     }
   },

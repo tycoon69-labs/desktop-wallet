@@ -25,29 +25,23 @@
       class="overflow-hidden"
     >
       <AppSidemenu
-        v-if="hasAnyProfile"
+        v-if="hasProfile"
         :is-horizontal="true"
-        :class="{
-          'blur': hasBlurFilter
-        }"
         class="block md:hidden z-1"
       />
       <section
         :style="background ? `backgroundImage: url('${assets_loadImage(background)}')` : ''"
-        :class="{
-          'blur': hasBlurFilter
-        }"
-        class="App__main flex flex-col items-center px-6 pb-6 pt-2 lg:pt-6 w-screen-adjusted h-screen-adjusted overflow-hidden -m-2"
+        class="App__main flex flex-col items-center px-4 pb-4 lg:pt-4 w-screen h-screen-adjusted overflow-hidden"
       >
         <div
-          :class="{ 'ml-6': !hasAnyProfile }"
+          :class="{ 'ml-6': !hasProfile }"
           class="App__container w-full h-full flex mt-4 mb-4 lg:mr-6"
         >
           <div
             class="hidden md:flex flex-col"
           >
             <AppSidemenu
-              v-if="hasAnyProfile"
+              v-if="hasProfile"
               class="flex flex-1"
             />
           </div>
@@ -73,32 +67,19 @@
       />
 
       <PortalTarget
-        :slot-props="{ setPortalHasContent }"
         name="modal"
         multiple
-        @change="onPortalChange('modal', ...arguments)"
       />
 
-      <PortalTarget
-        :slot-props="{ setPortalHasContent }"
-        name="updater"
-        @change="onPortalChange('updater', ...arguments)"
-      />
+      <PortalTarget name="updater" />
 
-      <PortalTarget
-        name="loading"
-        @change="onPortalChange('loading', ...arguments)"
-      />
+      <PortalTarget name="loading" />
 
-      <PortalTarget
-        name="qr-scan"
-        @change="onPortalChange('qr-scan', ...arguments)"
-      />
+      <PortalTarget name="qr-scan" />
 
       <PortalTarget
         name="button-dropdown"
         multiple
-        :slot-props="{ hasBlurFilter }"
       />
 
       <AlertMessage />
@@ -110,14 +91,16 @@
 import '@/styles/style.css'
 import fs from 'fs'
 import CleanCss from 'clean-css'
+import { remote, ipcRenderer } from 'electron'
 import { pull, uniq } from 'lodash'
 import { AppFooter, AppIntro, AppSidemenu } from '@/components/App'
+import { I18N } from '@config'
 import AlertMessage from '@/components/AlertMessage'
 import { TransactionModal } from '@/components/Transaction'
-import config from '@config'
 import URIHandler from '@/services/uri-handler'
+import priceApi from '@/services/price-api'
+import i18nSetup from '@/i18n/i18n-setup'
 
-var { remote, ipcRenderer } = require('electron')
 const Menu = remote.Menu
 
 export default {
@@ -131,18 +114,12 @@ export default {
     TransactionModal
   },
 
-  data: vm => ({
+  data: () => ({
     isReady: false,
     isUriTransactionOpen: false,
-    forceBlurFilter: false,
-    portalHasContent: {
-      modal: false,
-      update: false,
-      loading: false,
-      'qr-scan': false
-    },
     uriTransactionSchema: {},
-    aliveRouteComponents: []
+    aliveRouteComponents: [],
+    onLineStatus: window.navigator.onLine || false
   }),
 
   keepableRoutes: Object.freeze({
@@ -154,14 +131,11 @@ export default {
   }),
 
   computed: {
-    hasBlurFilter () {
-      return Object.values(this.portalHasContent).some(hasContent => !!hasContent)
-    },
     background () {
       return this.$store.getters['session/background'] || `wallpapers/${this.hasSeenIntroduction ? 1 : 2}Default.png`
     },
-    hasAnyProfile () {
-      return !!this.$store.getters['profile/all'].length
+    hasProfile () {
+      return !!this.$store.getters['session/profile']
     },
     hasScreenshotProtection () {
       return this.$store.getters['session/screenshotProtection']
@@ -216,6 +190,18 @@ export default {
     },
     themeClass () {
       return `theme-${this.theme}`
+    },
+    pluginLanguages () {
+      return this.$store.getters['plugin/languages']
+    },
+    language () {
+      const language = this.$store.getters['session/language']
+      const defaultLocale = I18N.defaultLocale
+
+      // Ensure that the plugin language is available (not deleted from the file system)
+      return defaultLocale === language || this.pluginLanguages[language]
+        ? language
+        : defaultLocale
     }
   },
 
@@ -258,11 +244,24 @@ export default {
         }
       }
     },
-    pluginThemes (value, oldValue) {
+    pluginThemes () {
       this.applyPluginTheme(this.theme)
     },
-    theme (value, oldValue) {
+    theme (value) {
       this.applyPluginTheme(value)
+    },
+    pluginLanguages () {
+      this.applyPluginLanguage(this.language)
+    },
+    language (value) {
+      this.applyPluginLanguage(value)
+    },
+    onLineStatus (connected) {
+      if (connected) {
+        this.$success(this.$t('COMMON.INTERNET_STATUS.WITH_INTERNET_CONNECTION'))
+      } else {
+        this.$error(this.$t('COMMON.INTERNET_STATUS.NO_INTERNET_CONNECTION'))
+      }
     }
   },
 
@@ -287,17 +286,30 @@ export default {
     })
 
     this.setContextMenu()
+
+    this.__watchProfile()
   },
 
   mounted () {
     this.__watchProcessURL()
+    window.addEventListener('online', this.updateOnlineStatus)
+    window.addEventListener('offline', this.updateOnlineStatus)
   },
 
   methods: {
+    updateOnlineStatus (event) {
+      this.onLineStatus = event.type === 'online'
+    },
+
     async loadEssential () {
       // We need to await plugins in order for all plugins to load properly
-      await this.$plugins.init(this)
-      await this.$store.dispatch('network/load', config.NETWORKS)
+      try {
+        await this.$plugins.init(this)
+      } catch {
+        this.$error('Failed to load plugins. NPM might be down.')
+      }
+
+      await this.$store.dispatch('network/load')
       const currentProfileId = this.$store.getters['session/profileId']
       await this.$store.dispatch('session/reset')
       await this.$store.dispatch('session/setProfileId', currentProfileId)
@@ -337,13 +349,39 @@ export default {
         this.$warn('Ledger Disconnected!')
       })
 
-      await Promise.all([this.$plugins.fetchPluginsFromAdapter(), this.$plugins.fetchBlacklist(), this.$plugins.fetchWhitelist()])
-
       ipcRenderer.send('splashscreen:app-ready')
+
+      try {
+        await Promise.all([this.$plugins.fetchPluginsFromAdapter(), this.$plugins.fetchPluginsList()])
+      } catch {
+        this.$error('Failed to load plugins. NPM might be down.')
+      }
     },
 
-    onPortalChange (portal, isActive) {
-      this.setPortalHasContent(portal, isActive)
+    __watchProfile () {
+      this.$store.watch(
+        (_, getters) => getters['session/profile'],
+        async (profile, oldProfile) => {
+          if (!profile) {
+            return
+          }
+
+          const currentPeer = this.$store.getters['peer/current']()
+          if (currentPeer && currentPeer.ip) {
+            const scheme = currentPeer.isHttps ? 'https://' : 'http://'
+            this.$client.host = `${scheme}${currentPeer.ip}:${currentPeer.port}`
+          }
+
+          if (!oldProfile || profile.id !== oldProfile.id) {
+            this.$eventBus.emit('client:changed')
+          }
+
+          priceApi.setAdapter(profile.priceApi)
+
+          this.$store.dispatch('market/refreshTicker')
+        },
+        { immediate: true }
+      )
     },
 
     __watchProcessURL () {
@@ -370,10 +408,6 @@ export default {
     closeUriTransaction () {
       this.isUriTransactionOpen = false
       this.uriTransactionSchema = {}
-    },
-
-    setPortalHasContent (portal, isActive) {
-      this.portalHasContent[portal] = isActive
     },
 
     setIntroDone () {
@@ -413,14 +447,27 @@ export default {
      * instead of that, those assets are loaded manually and then injected directly on the DOM.
      */
     applyPluginTheme (themeName) {
-      if (themeName && this.pluginThemes) {
+      const $style = document.querySelector('style[name=plugins]')
+
+      if (['light', 'dark'].includes(themeName)) {
+        $style.innerHTML = null
+      } else if (themeName && this.pluginThemes) {
         const theme = this.pluginThemes[themeName]
         if (theme) {
-          const $style = document.querySelector('style[name=plugins]')
           const input = fs.readFileSync(theme.cssPath)
           const output = new CleanCss().minify(input)
           $style.innerHTML = output.styles
+        } else {
+          $style.innerHTML = null
         }
+      }
+    },
+
+    applyPluginLanguage (languageName) {
+      if (languageName === I18N.defaultLocale) {
+        i18nSetup.setLanguage(languageName)
+      } else if (languageName && this.pluginLanguages[languageName]) {
+        i18nSetup.loadLanguage(languageName, this.pluginLanguages[languageName])
       }
     }
   }
@@ -431,19 +478,19 @@ export default {
 .App__main {
   transition: .1s filter linear;
 }
+.App__main.h-screen-adjusted {
+  height: calc(100vh - 80px);
+}
 .App__container {
   max-width: 1400px;
-}
-.App__main.h-screen-adjusted {
-  height: calc(100vh + 1rem);
-}
-.App__main.w-screen-adjusted {
-  width: calc(100vw + 1rem);
 }
 @media (min-width: 768px) {
   .App__page {
     @apply .min-h-full;
     max-height: calc(100vh - 5rem);
+  }
+  .App__main.h-screen-adjusted {
+    @apply h-screen;
   }
 }
 </style>
