@@ -203,7 +203,6 @@
     "productName": "T69 Desktop Wallet",
     "appId": "io.t69.desktop-wallet",
     "artifactName": "${name}-${os}-${arch}-${version}.${ext}",
-    "afterSign": "scripts/notarize.js",
     "npmRebuild": false,
     "publish": {
       "provider": "github",
