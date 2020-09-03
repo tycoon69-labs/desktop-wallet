@@ -2,15 +2,15 @@
 
 ![Ark Desktop Wallet](./banner.png)
 
-[![Build Status](https://badgen.now.sh/github/status/ArkEcosystem/desktop-wallet)](https://github.com/ArkEcosystem/desktop-wallet/actions?query=branch%3Adevelop)
-[![Latest Version](https://badgen.now.sh/github/release/ArkEcosystem/desktop-wallet)](https://github.com/ArkEcosystem/desktop-wallet/releases)
+[![Build Status](https://badgen.now.sh/github/status/tycoon69-labs/desktop-wallet)](https://github.com/tycoon69-labs/desktop-wallet/actions?query=branch%3Adevelop)
+[![Latest Version](https://badgen.now.sh/github/release/tycoon69-labs/desktop-wallet)](https://github.com/tycoon69-labs/desktop-wallet/releases)
 [![License: MIT](https://badgen.now.sh/badge/license/MIT/green)](https://opensource.org/licenses/MIT)
 
 > Lead Maintainer: [Alex Barnsley](https://github.com/alexbarnsley)
 
 ## Download
 
-[Latest Release](https://github.com/ArkEcosystem/ark-desktop/releases/latest)
+[Latest Release](https://github.com/tycoon69-labs/ark-desktop/releases/latest)
 
 ## Installing via Package Managers
 

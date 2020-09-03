@@ -4,7 +4,7 @@
   "version": "2.9.3",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ArkEcosystem/desktop-wallet.git"
+    "url": "git+https://github.com/tycoon69-labs/desktop-wallet.git"
   },
   "author": "ArkEcosystem <info@ark.io>",
   "contributors": [
@@ -16,9 +16,9 @@
   "description": "T69 Ecosystem Desktop Wallet",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/ArkEcosystem/desktop-wallet/issues"
+    "url": "https://github.com/tycoon69-labs/desktop-wallet/issues"
   },
-  "homepage": "https://github.com/ArkEcosystem/desktop-wallet#readme",
+  "homepage": "https://github.com/tycoon69-labs/desktop-wallet#readme",
   "main": "./dist/electron/main.js",
   "scripts": {
     "build": "node .electron-vue/build.js && electron-builder --publish never",
@@ -206,6 +206,7 @@
     "npmRebuild": false,
     "publish": {
       "provider": "github",
+      "owner": "tycoon69-labs",
       "vPrefixedTagName": false
     },
     "extraResources": [
